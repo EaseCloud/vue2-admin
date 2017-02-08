@@ -1,0 +1,12 @@
+[submodule "lib/vue-antd"]
+	path = lib/vue-antd
+	url = https://github.com/easecloud/vue-antd
+	branch = master
+[submodule "lib/vue2-antd"]
+	path = lib/vue2-antd
+	url = https://github.com/easecloud/vue2-antd
+	branch = master
+[submodule "assets/css/less-template"]
+	path = assets/css/less-template
+	url = https://github.com/easecloud/less-template
+	branch = master

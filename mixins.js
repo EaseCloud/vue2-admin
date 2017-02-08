@@ -1,11 +1,12 @@
 // Mixins
 
 import areaData from 'china-area-data';
+import Loading from 'vue-spinner/src/ScaleLoader.vue';
 
 import * as common from './components/_common';
 import * as controls from './components/_control';
 import * as modules from './components/_modules';
-import * as api from '../resource/api';
+import api from './resource/api';
 
 import choices from '../utils/choices';
 
@@ -14,7 +15,7 @@ export default {
     // Auto reload
     if (this.reload) this.reload();
   },
-  components: { ...common, ...controls, ...modules },
+  components: { Loading, ...common, ...controls, ...modules },
   computed: {
     choices() {
       return choices;
@@ -29,7 +30,7 @@ export default {
       return this.model.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`).substr(1);
     },
     api() {
-      return api.resource(this.model);
+      return api(this.model);
     },
   },
   filters: {
@@ -42,14 +43,14 @@ export default {
       const vm = this.$root;
       if (vm.me && !reload) return Promise.resolve(vm.me);
       // debugger; // eslint-disable-line
-      return api.User.get({ action: 'current' }).then(resp => {
+      return api('User').get({ action: 'current' }).then(resp => {
         vm.current_user = resp.data;
         return vm.me;
       });
     },
     login(username, password) {
       const vm = this.$root;
-      return api.User.save(
+      return api('User').save(
         { action: 'login' },
         { username, password }
       ).then(resp => {
@@ -59,7 +60,7 @@ export default {
     },
     logout() {
       const vm = this.$root;
-      return api.User.get({ action: 'logout' }).then(() => {
+      return api('User').get({ action: 'logout' }).then(() => {
         vm.current_user = null;
         vm.$router.push({ name: 'passport_login' });
       });
@@ -143,7 +144,27 @@ export default {
       }
       return path;
     },
+    trim(str) {
+      return str.replace(/^\s+|\s+$/g, '');
+    },
+    toCamel(str) {
+      return str.replace(
+        /([-_][a-z])/g,
+        $1 => $1.toUpperCase().substr(1)
+      ).replace(/^[a-z]/);
+    },
+    toDash(str) {
+      return str.replace(
+        /([A-Z])/g,
+        $1 => `-${$1.toLowerCase()}`
+      ).replace(/^-/, '');
+    },
+    toUnderscore(str) {
+      return str.replace(
+        /([A-Z])/g,
+        $1 => `_${$1.toLowerCase()}`
+      ).replace(/^_/, '');
+    },
   },
-
 };
 
