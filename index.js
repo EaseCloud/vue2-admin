@@ -1,8 +1,11 @@
-import 'font-awesome/less/font-awesome.less';
-
+/** Absolute Imports */
 // Ant Design UI - 恶魔模式
 import 'antd/dist/antd.less';
+import 'font-awesome/less/font-awesome.less';
 
+import VueRouter from 'vue-router';
+
+/** Relative Imports */
 import './assets/css/style.less';
 
 import VueAntd from './lib/vue2-antd';
@@ -12,7 +15,9 @@ import Notifier from './plugins/notifier';
 import mixins from './mixins';
 
 // 应用内配置文件
-import { API_ROOT } from '../config/config';
+import config from '../config/config';
+// Components routes and entrance
+import routes from '../components/routes';
 
 export default {
   install(Vue, options = {}) {
@@ -61,7 +66,7 @@ export default {
     // -------------------------
     // Vue resource config
     // -------------------------
-    Vue.http.options.root = API_ROOT;
+    Vue.http.options.root = config.api_root || '/api';
     Vue.http.options.credentials = true;
     Vue.http.options.xhr = { withCredentials: true };
 
@@ -108,5 +113,59 @@ export default {
         });
       });
     })();
+
+    // -------------------------
+    // Vue router config
+    // -------------------------
+
+    Vue.use(VueRouter);
+
+    const router = new VueRouter({
+      routes: [{
+        // 内部指定登录页面
+        path: '/passport',
+        name: 'passport',
+        component: require('./components/passport/App.vue'),  // eslint-disable-line
+        children: [{
+          path: '/passport/login',
+          name: 'passport_login',
+          component: require('./components/passport/Login.vue'),  // eslint-disable-line
+        }],
+      }, {
+        path: '/',
+        name: 'main',
+        component: require('./components/main/App.vue'),  // eslint-disable-line
+        children: [{
+          path: '/change/password',
+          name: 'main_change_password',
+          component: require('./components/main/ChangePassword.vue'),  // eslint-disable-line
+        }, ...routes],
+      }, {
+        // 内部指定 404 页面
+        path: '*',
+        name: 'not_found',
+        component: require('./components/NotFound.vue'),  // eslint-disable-line
+      }],
+    });
+
+    router.afterEach(route => {
+      // 将路由信息分级放置到 body 的 class 里面
+      let name = 'app';
+      let classNames = 'app';
+      if (route.name) {
+        route.name.split('_').forEach(str => {
+          if (str) {
+            name += `-${str}`;
+            classNames += ` ${name}`;
+          }
+        });
+      }
+      document.body.className = classNames;
+      console.log(`>>> ${route.name}`);
+    });
+
+    const AppConstructor = Vue.extend(require('./components/App.vue'));  // eslint-disable-line
+    window.app = new AppConstructor({ router, el: '#app' });
   },
 };
+

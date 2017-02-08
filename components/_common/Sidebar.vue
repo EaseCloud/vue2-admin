@@ -1,6 +1,6 @@
 <template>
   <aside id="sidebar" class="aside-container">
-    <h1 class="site-title">地主淘管理后台</h1>
+    <h1 class="site-title">{{config.platform_name}}管理后台{{config.version}}</h1>
     <ul class="menu">
       <li v-for="menu in menus"
           :class="{collapsed: menu.expanded===false, expanded: menu.expanded}">

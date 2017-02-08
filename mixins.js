@@ -9,6 +9,7 @@ import * as modules from './components/_modules';
 import api from './resource/api';
 
 import choices from '../config/choices';
+import config from '../config/config';
 
 export default {
   mounted() {
@@ -29,8 +30,8 @@ export default {
     modelUnderscore() {
       return this.model.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`).substr(1);
     },
-    api() {
-      return api(this.model);
+    config() {
+      return config;
     },
   },
   filters: {
@@ -39,6 +40,9 @@ export default {
     },
   },
   methods: {
+    api(model = null) {
+      return api(model || this.model);
+    },
     authenticate(reload = false) {
       const vm = this.$root;
       if (vm.me && !reload) return Promise.resolve(vm.me);
