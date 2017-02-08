@@ -8,7 +8,7 @@ import * as controls from './components/_control';
 import * as modules from './components/_modules';
 import api from './resource/api';
 
-import choices from '../utils/choices';
+import choices from '../config/choices';
 
 export default {
   mounted() {
@@ -75,7 +75,7 @@ export default {
     updateModel(model, id, field, value,
                 notify = '操作成功', callback = null) {
       const vm = this;
-      return api[model].patch({ id }, { [field]: value }).then(resp => {
+      return api(model).patch({ id }, { [field]: value }).then(resp => {
         const item = resp.data;
         if (notify) vm.notify(notify);
         if (callback) callback(item);
@@ -86,7 +86,7 @@ export default {
       const vm = this;
       const promise = confirm ? this.confirm(confirm) : Promise.resolve();
       return promise.then(() => {
-        api[model].delete({ id }).then(() => {
+        api(model).delete({ id }).then(() => {
           if (notify) vm.notify(notify);
           if (callback) callback();
         });
