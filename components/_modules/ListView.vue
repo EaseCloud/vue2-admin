@@ -8,7 +8,7 @@
       <div class="tooltips">
         <slot name="actions">
           <ant-button v-if="options.can_create"
-                      :to="{name: 'main_'+model.toLowerCase()+'_edit', params: {id: 0}}">
+                      :to="{name: 'main_'+modelUnderscore+'_edit', params: {id: 0}}">
             新增
           </ant-button>
           <ant-button type="ghost" @click="$router.back()">返回</ant-button>

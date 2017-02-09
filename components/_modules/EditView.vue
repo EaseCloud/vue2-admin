@@ -102,7 +102,8 @@
         let result = this.item;
         if (typeof path !== 'string') return null;
         path.split('.').forEach(key => {
-          result = result && result[key] || null;
+          result = result && result[key];
+          if (result === undefined) result = null;
         });
         return result;
       },
