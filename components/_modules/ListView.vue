@@ -135,9 +135,11 @@
     methods: {
       getColValue(col, item) {
         let value = item;
-        col.key.split('.').forEach(key => {
-          value = value && value[key] || '';
-        });
+        if (col.key) {
+          col.key.split('.').forEach(key => {
+            value = value && value[key] || '';
+          });
+        }
         if (col.filter) {
           value = col.filter(value, item);
         }
@@ -152,7 +154,8 @@
         api(vm.model).get({
           page: vm.$route.query.page || 1,
           page_size: vm.pager.page_size,
-          ...(vm.filters || vm.$route.query),
+          ...(vm.filters || {}),
+          ...vm.$route.query,
         }).then(resp => {
           vm.items = resp.data.results;
           vm.pager.page_count = Math.ceil(resp.data.count / vm.pager.page_size - 1e-5);

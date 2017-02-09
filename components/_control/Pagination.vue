@@ -56,6 +56,7 @@
             name: vm.$route.name,
             params: vm.$route.params,
           });
+          if (vm.$parent.reload) vm.$parent.reload();
         }
       },
     },
