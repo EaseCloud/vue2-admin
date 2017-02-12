@@ -137,7 +137,7 @@
         let value = item;
         if (col.key) {
           col.key.split('.').forEach(key => {
-            value = value && value[key] || '';
+            value = value === 'undefined' ? null : (value && value[key]);
           });
         }
         if (col.filter) {
