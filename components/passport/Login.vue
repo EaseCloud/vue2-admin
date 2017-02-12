@@ -3,7 +3,7 @@
        style="width: 600px; margin: 0 auto;">
     <div class="ant-card-body">
       <header class="page-header">
-        <h1 class="page-title">地主淘管理后台</h1>
+        <h1 class="page-title">{{config.platform_name}}管理后台</h1>
       </header>
       <div class="form-wrapper">
         <div class="ant-form ant-form-horizontal">
