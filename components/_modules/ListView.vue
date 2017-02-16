@@ -27,6 +27,7 @@
             <thead class="ant-table-thead">
             <tr>
               <th v-for="(col, i) in cols" :style="col.thStyle || {}">
+                <!-- 普通标题以及排序器 -->
                 <a v-if="col.ordering" @click="sort(col.ordering)">
                   {{col.title}}
                   <span class="anticon anticon-caret-up"
@@ -35,6 +36,20 @@
                         v-if="$route.query.ordering == '-'+col.ordering"></span>
                 </a>
                 <template v-else>{{col.title}}</template>
+                <!-- 筛选器 -->
+                <template v-if="col.filtering">
+                  <div v-if="$route.query[col.filtering.search_field]"
+                       class="ant-tag"
+                       style="font-weight: normal; color: #AAA; background: white;">
+                  <span class="ant-tag-text" @click="callFilter(col)">
+                    {{$route.query[col.filtering.search_field]}}
+                    <i class="anticon anticon-cross"
+                       @click.stop="removeQueryKey(col.filtering.search_field)"></i>
+                  </span>
+                  </div>
+                  <span v-else class="anticon anticon-filter"
+                        @click="callFilter(col)"></span>
+                </template>
               </th>
               <th v-if="options.show_actions !== false">操作</th>
             </tr>
@@ -178,14 +193,47 @@
       },
       sort(ordering) {
         const vm = this;
+        vm.setQueryKey(
+          'ordering',
+          vm.$route.query.ordering === ordering ? `-${ordering}` : ordering,
+        );
+      },
+      setQueryKey(key, value) {
+        const vm = this;
         vm.$router.replace({
-          query: Object.assign(vm.$route.query, {
-            ordering: vm.$route.query.ordering === ordering ? `-${ordering}` : ordering,
-          }),
+          query: Object.assign(vm.$route.query, { [key]: value }),
         });
         vm.reload();
+      },
+      removeQueryKey(key) {
+        const vm = this;
+        const query = { ...vm.$route.query };
+        delete query[key];
+        vm.$router.replace({ query });
+        vm.reload();
+      },
+      callFilter(col) {
+        const vm = this;
+        if ((col.filtering.type || 'keyword') === 'keyword') {
+          vm.modalForm({
+            title: '请输入关键词',
+            fields: [{
+              type: 'text',
+              name: 'keyword',
+              label: col.title,
+              value: vm.$route.query[col.filtering.search_field] || '',
+            }],
+          }).then(data => {
+            vm.setQueryKey(col.filtering.search_field, data.keyword);
+          });
+        }
       },
     },
   };
 </script>
 
+<style scoped>
+  .ant-table-thead:not(:hover) .anticon-filter {
+    opacity: 0;
+  }
+</style>
