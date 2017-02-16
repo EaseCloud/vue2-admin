@@ -26,7 +26,16 @@
           <table>
             <thead class="ant-table-thead">
             <tr>
-              <th v-for="(col, i) in cols" :style="col.thStyle || {}">{{col.title}}</th>
+              <th v-for="(col, i) in cols" :style="col.thStyle || {}">
+                <a v-if="col.ordering" @click="sort(col.ordering)">
+                  {{col.title}}
+                  <span class="anticon anticon-caret-up"
+                        v-if="$route.query.ordering == col.ordering"></span>
+                  <span class="anticon anticon-caret-down"
+                        v-if="$route.query.ordering == '-'+col.ordering"></span>
+                </a>
+                <template v-else>{{col.title}}</template>
+              </th>
               <th v-if="options.show_actions !== false">操作</th>
             </tr>
             </thead>
@@ -45,7 +54,7 @@
                 </template>
                 <template v-else-if="col.type=='image'">
                   <img :src="getColValue(col, item)"
-                       :style="{maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
+                       :style="col.style || {maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
                 </template>
                 <template v-else-if="col.type=='switch'">
                   <ant-switch v-model="item[col.key]"
@@ -166,6 +175,15 @@
           return self[field](item);
         }
         return self[field];
+      },
+      sort(ordering) {
+        const vm = this;
+        vm.$router.replace({
+          query: Object.assign(vm.$route.query, {
+            ordering: vm.$route.query.ordering === ordering ? `-${ordering}` : ordering,
+          }),
+        });
+        vm.reload();
       },
     },
   };
