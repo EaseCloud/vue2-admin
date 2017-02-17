@@ -21,12 +21,30 @@
 
 <script lang="babel">
   export default {
-    props: ['page_count', 'page_size', 'manual'],
-    computed: {
-      page() {
-        const vm = this;
-        return Number(vm.$route.query.page || 1);
+    props: {
+      page: {
+        type: Number,
+        default: 1,
       },
+      page_count: {
+        type: Number,
+        default: 1,
+      },
+      page_size: {
+        type: Number,
+        default: 10,
+      },
+      // Deprecated
+//      manual: {
+//        type: Boolean,
+//        default: false,
+//      }
+    },
+    computed: {
+//      page() {
+//        const vm = this;
+//        return Number(vm.$route.query.page || 1);
+//      },
       items() {
         const vm = this;
         const items = [];
@@ -48,16 +66,17 @@
         const query = JSON.parse(JSON.stringify(vm.$route.query));
         query.page = page;
         vm.$emit('change', page);
+        // Deprecated: maual
         // manual 模式通过捕获 @change 事件自行处理换页
         // 如果没有输入 manual，直接通过 $router 参数跳转进行换页
-        if (!vm.manual) {
-          vm.$router.replace({
-            query,
-            name: vm.$route.name,
-            params: vm.$route.params,
-          });
-          if (vm.$parent.reload) vm.$parent.reload();
-        }
+//        if (!vm.manual) {
+//          vm.$router.replace({
+//            query,
+//            name: vm.$route.name,
+//            params: vm.$route.params,
+//          });
+//          if (vm.$parent.reload) vm.$parent.reload();
+//        }
       },
     },
   };

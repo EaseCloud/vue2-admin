@@ -57,11 +57,11 @@
 
       <!--&lt;!&ndash; type: router-link &ndash;&gt;-->
       <!--<ant-col :span="8" class="ant-form-item-control"-->
-               <!--v-else-if="field.type == 'router-link'">-->
-        <!--<router-link :to="field.to(item)">-->
-          <!--123-->
-          <!--{{field.text instanceof Function ? field.text(item) : field.text}}-->
-        <!--</router-link>-->
+      <!--v-else-if="field.type == 'router-link'">-->
+      <!--<router-link :to="field.to(item)">-->
+      <!--123-->
+      <!--{{field.text instanceof Function ? field.text(item) : field.text}}-->
+      <!--</router-link>-->
       <!--</ant-col>-->
 
       <!-- type: link -->
@@ -146,6 +146,17 @@
       <!-- type: district -->
       <ant-col :span="18" v-else-if="field.type == 'district'">
         尚未实现
+      </ant-col>
+
+      <!-- type: list-view -->
+      <ant-col :span="18" v-else-if="field.type == 'list-view'">
+        <list-view-table :model="field.model"
+                         :pk="field.pk"
+                         :cols="cols"
+                         :options="options"
+                         :actions="actions"
+                         :filters="getFilters"
+                         @query="doQuery"></list-view-table>
       </ant-col>
 
       <!-- 尚未实现 -->

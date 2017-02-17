@@ -106,6 +106,7 @@
       },
       pager: {
         type: Object,
+        default: () => ({ page: 1, page_count: 1, page_size: 10 }),
       },
       filters: {
         type: Object,
