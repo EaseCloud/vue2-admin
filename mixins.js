@@ -14,7 +14,10 @@ import config from '../config/config';
 export default {
   mounted() {
     // Auto reload
-    if (this.reload) this.reload();
+    if (this.reload) {
+      // console.log('mounted Reload', this.$route.name);
+      this.reload();
+    }
   },
   components: { Loading, ...common, ...controls, ...modules },
   computed: {
@@ -148,6 +151,7 @@ export default {
       }
       return path;
     },
+    // Naming utils
     trim(str) {
       return str.replace(/^\s+|\s+$/g, '');
     },
@@ -168,6 +172,42 @@ export default {
         /([A-Z])/g,
         $1 => `_${$1.toLowerCase()}`
       ).replace(/^_/, '');
+    },
+    // View utils
+    getColValue(col, item) {
+      let value = item;
+      if (col.key) {
+        col.key.split('.').forEach(key => {
+          value = value === 'undefined' ? null : (value && value[key]);
+        });
+      }
+      if (col.filter) {
+        value = col.filter(value, item);
+      }
+      if (col.mapper) {
+        value = col.mapper[value];
+      }
+      return value;
+    },
+    evaluate(self, field, item) {
+      if (self[field] instanceof Function) {
+        return self[field](item);
+      }
+      return self[field];
+    },
+    setQueryKey(key, value) {
+      const vm = this;
+      vm.$router.replace({
+        query: Object.assign(vm.$route.query, { [key]: value }),
+      });
+      vm.reload();
+    },
+    removeQueryKey(key) {
+      const vm = this;
+      const query = { ...vm.$route.query };
+      delete query[key];
+      vm.$router.replace({ query });
+      vm.reload();
     },
   },
 };

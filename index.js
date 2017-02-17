@@ -4,6 +4,7 @@ import 'antd/dist/antd.less';
 import 'font-awesome/less/font-awesome.less';
 
 import VueRouter from 'vue-router';
+// import Deferred from 'es6-deferred';
 
 /** Relative Imports */
 import './assets/css/style.less';
@@ -148,6 +149,27 @@ export default {
       }],
     });
 
+    // router.beforeEach((to, from, next) => {
+    //   // noReuse 模式，启用组件内参数跳转自动 reload
+    //   if (to.name === from.name && window.app) {
+    //     const vm = window.app.$router.app;
+    //     window.afterRoutePromise = new Deferred();
+    //     console.log('dododo');
+    //     window.afterRoutePromise.then(() => {
+    //       delete window.afterRoutePromise;
+    //       console.log('then');
+    //       console.log('before-reload', vm);
+    //       if (vm.reload) {
+    //         console.log('reload', vm);
+    //         vm.$nextTick(() => {
+    //           vm.reload();
+    //         });
+    //       }
+    //     });
+    //   }
+    //   next();
+    // });
+
     router.afterEach(route => {
       // 将路由信息分级放置到 body 的 class 里面
       let name = 'app';
@@ -160,6 +182,10 @@ export default {
           }
         });
       }
+      // // 强制启动路由跳转后激活 reload
+      // if (window.afterRoutePromise) {
+      //   window.afterRoutePromise.resolve();
+      // }
       document.body.className = classNames;
       console.log(`>>> ${route.name}`);
     });
