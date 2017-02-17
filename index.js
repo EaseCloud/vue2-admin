@@ -1,13 +1,15 @@
 /** Absolute Imports */
 // Ant Design UI - 恶魔模式
 import 'antd/dist/antd.less';
-import 'font-awesome/less/font-awesome.less';
+// import 'font-awesome/less/font-awesome.less';
 
 import VueRouter from 'vue-router';
 // import Deferred from 'es6-deferred';
 
 /** Relative Imports */
 import './assets/css/style.less';
+// import './lib/vue-beauty/package/style/vue-beauty.min.css';
+// import VueAntd from './lib/vue-beauty/vb';
 
 import VueAntd from './lib/vue2-antd';
 import VueHtml5Editor from './plugins/vue-html5-editor';

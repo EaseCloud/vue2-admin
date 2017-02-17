@@ -3,18 +3,18 @@
   <section class="item-form ant-form ant-form-horizontal"
            style="max-width: 800px">
 
-    <ant-row :gutter="6"
-             type="flex"
-             v-for="field in fields">
+    <v-row :gutter="6"
+           type="flex"
+           v-for="field in fields">
 
-      <ant-col :span="6" class="ant-form-item-label">
+      <v-col :span="6" class="ant-form-item-label">
         <label>{{field.title}}</label>
-      </ant-col>
+      </v-col>
 
       <!-- type: input -->
-      <ant-col :span="8" class="ant-form-item-control"
+      <v-col :span="8" class="ant-form-item-control"
                v-if="field.type == 'input' || field.type === undefined">
-        <ant-input v-model="field.value"
+        <v-input v-model="field.value"
                    @input="$emit('update', field)"
                    :type="field.htmlType || 'text'"
                    :min="field.min"
@@ -24,16 +24,16 @@
                    @keypress.enter="$emit('submit')">
           <template slot="before" v-if="field.before">{{field.before}}</template>
           <template slot="after" v-if="field.after">{{field.after}}</template>
-        </ant-input>
+        </v-input>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
-      </ant-col>
+      </v-col>
 
       <!-- type: input number -->
-      <ant-col :span="8" class="ant-form-item-control"
+      <v-col :span="8" class="ant-form-item-control"
                v-else-if="field.type == 'number'">
-        <ant-input-number v-if="typeof field.value == 'number'"
+        <v-input-number v-if="typeof field.value == 'number'"
                           v-model="field.value"
                           @input="$emit('update', field)"
                           :min="field.min"
@@ -43,78 +43,78 @@
                           :decimal-places="field.decimalPlaces"
                           :placeholder="field.placeholder"
                           @keypress.enter="$emit('submit')">
-        </ant-input-number>
+        </v-input-number>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
-      </ant-col>
+      </v-col>
 
       <!-- type: label -->
-      <ant-col :span="8" class="ant-form-item-control"
+      <v-col :span="8" class="ant-form-item-control"
                v-else-if="field.type == 'label'">
         <p class="ant-form-text">{{field.value}}</p>
-      </ant-col>
+      </v-col>
 
       <!--&lt;!&ndash; type: router-link &ndash;&gt;-->
-      <!--<ant-col :span="8" class="ant-form-item-control"-->
+      <!--<v-col :span="8" class="ant-form-item-control"-->
       <!--v-else-if="field.type == 'router-link'">-->
       <!--<router-link :to="field.to(item)">-->
       <!--123-->
       <!--{{field.text instanceof Function ? field.text(item) : field.text}}-->
       <!--</router-link>-->
-      <!--</ant-col>-->
+      <!--</v-col>-->
 
       <!-- type: link -->
-      <ant-col :span="8" class="ant-form-item-control"
+      <v-col :span="8" class="ant-form-item-control"
                v-else-if="field.type == 'link'">
         <router-link :to="field.value.route"
                      v-if="field.value && field.value.route">
           {{field.value.text}}
         </router-link>
-      </ant-col>
+      </v-col>
 
       <!-- type: switch -->
-      <ant-col :span="8" class="ant-form-item-control"
+      <v-col :span="8" class="ant-form-item-control"
                v-else-if="field.type == 'switch'">
-        <ant-switch v-model="field.value"
+        <v-switch v-model="field.value"
                     @input="$emit('update', field)">
           <template slot="checked">{{field.checked}}</template>
           <template slot="unchecked">{{field.unchecked}}</template>
-        </ant-switch>
+        </v-switch>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
-      </ant-col>
+      </v-col>
 
       <!-- type: select -->
       <span v-else-if="field.type == 'select'">尚未实现</span>
 
       <!-- type: radio -->
-      <ant-col :span="18" class="ant-form-item-control"
+      <v-col :span="18" class="ant-form-item-control"
                v-else-if="field.type == 'radio'">
-        <ant-radio-group v-model="field.value"
+        <v-radio-group v-model="field.value"
                          @input="$emit('update', field)"
-                         :options="field.choices"></ant-radio-group>
+                         :options="field.choices"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
-      </ant-col>
+      </v-col>
 
       <!-- type: radio-button -->
-      <ant-col :span="18" class="ant-form-item-control"
+      <v-col :span="18" class="ant-form-item-control"
                v-else-if="field.type == 'radio-button'">
-        <ant-radio-group type="button"
+        <v-radio-group type="button"
                          v-model="field.value"
                          @input="$emit('update', field)"
                          :readonly="!!field.readonly"
-                         :options="field.choices"></ant-radio-group>
+                         :options="field.choices"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
-      </ant-col>
+      </v-col>
 
       <!-- type: image -->
-      <ant-col :span="18" class="ant-form-item-control"
+      <v-col :span="18" class="ant-form-item-control"
                v-else-if="field.type == 'image'">
         <image-picker v-model="field.value"
                       :readonly="!!field.readonly"
@@ -122,10 +122,10 @@
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
-      </ant-col>
+      </v-col>
 
       <!-- type: gallery -->
-      <ant-col :span="18" class="ant-form-item-control"
+      <v-col :span="18" class="ant-form-item-control"
                v-else-if="field.type == 'gallery'">
         <gallery-picker v-model="field.value"
                         :readonly="!!field.readonly"
@@ -133,23 +133,23 @@
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
-      </ant-col>
+      </v-col>
 
       <!-- type: geo -->
-      <ant-col :span="18" v-else-if="field.type == 'geo'">
+      <v-col :span="18" v-else-if="field.type == 'geo'">
         <geo-picker v-model="field.value"
                     :max="field.max"
                     :readonly="field.readonly"
                     @input="$emit('update', field)"></geo-picker>
-      </ant-col>
+      </v-col>
 
       <!-- type: district -->
-      <ant-col :span="18" v-else-if="field.type == 'district'">
+      <v-col :span="18" v-else-if="field.type == 'district'">
         尚未实现
-      </ant-col>
+      </v-col>
 
       <!-- type: list-view -->
-      <ant-col :span="18" v-else-if="field.type == 'list-view'">
+      <v-col :span="18" v-else-if="field.type == 'list-view'">
         <list-view-table :model="field.options.model"
                          :pk="field.options.pk"
                          :cols="field.options.cols"
@@ -157,26 +157,26 @@
                          :actions="field.options.actions"
                          :filters="field.options.filters"></list-view-table>
         <!--:pager="pager"-->
-      </ant-col>
+      </v-col>
 
       <!-- type: object -->
-      <ant-col :span="18" class="ant-form-item-control"
-               v-else-if="field.type == 'object'">
+      <v-col :span="18" class="ant-form-item-control"
+             v-else-if="field.type == 'object'">
         <template v-if="field.value">
           <router-link :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
                   params: {id: field.value[field.options.pk || 'id']}}">
             {{field.value[field.options.display_field || 'name']}}
           </router-link>
-          <ant-button size="small" style="margin-left: 10px;"
-                      @click="pickObject(field)">选择
-          </ant-button>
+          <v-button size="small" style="margin-left: 10px;"
+                    @click="pickObject(field)">选择
+          </v-button>
         </template>
-      </ant-col>
+      </v-col>
 
       <!-- 尚未实现 -->
       <span v-else>字段类型{{field.type}}尚未实现</span>
 
-    </ant-row>
+    </v-row>
 
     <object-picker :options="objectPickerField.options"
                    v-if="objectPickerField"

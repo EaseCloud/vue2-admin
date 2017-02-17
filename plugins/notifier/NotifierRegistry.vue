@@ -75,6 +75,14 @@
                          v-model="field.value"
                          @keypress.enter="modalFormAction(true)"/>
                 </div>
+                <!-- type: password -->
+                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'password'">
+                  <input type="password"
+                         class="ant-input"
+                         :placeholder="field.placeholder"
+                         v-model="field.value"
+                         @keypress.enter="modalFormAction(true)"/>
+                </div>
                 <!-- type: number -->
                 <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'number'">
                   <input type="number"

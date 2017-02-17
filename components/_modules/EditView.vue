@@ -8,27 +8,27 @@
       <div class="tooltips">
         <!-- 保存动作 -->
         <template v-if="options.can_edit">
-          <ant-button @click="submit(false)">保存并继续编辑</ant-button>
-          <ant-button type="primary" @click="submit()">保存</ant-button>
+          <v-button @click="submit(false)">保存并继续编辑</v-button>
+          <v-button type="primary" @click="submit()">保存</v-button>
         </template>
         <!-- 动态动作按钮 -->
         <template v-for="action in actions">
-          <ant-button
+          <v-button
             v-show="!action.isVisible || action.isVisible(item)"
             :type="action.buttonClass || 'ghost'"
             @click="action.action(item)">
             {{action.title}}
-          </ant-button> <!--防止按钮之间粘住-->
+          </v-button> <!--防止按钮之间粘住-->
         </template>
         <!-- 删除动作 -->
         <template v-if="options.can_delete">
-          <ant-button type="dashed" v-if="item[pk]"
+          <v-button type="dashed" v-if="item[pk]"
                       @click="deleteModel(model, item[pk], '确认删除【'+item.name+'】？',
                   '', redirectList)">
             删除
-          </ant-button>
+          </v-button>
         </template>
-        <ant-button type="ghost" @click="$router.back()">返回</ant-button>
+        <v-button type="ghost" @click="$router.back()">返回</v-button>
       </div>
     </header>
 

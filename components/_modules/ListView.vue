@@ -7,11 +7,11 @@
       <h4 class="page-header-subtitle">{{subtitle}}</h4>
       <div class="tooltips">
         <slot name="actions">
-          <ant-button v-if="options.can_create"
+          <v-button v-if="options.can_create"
                       :to="{name: 'main_'+modelUnderscore+'_edit', params: {id: 0}}">
             新增
-          </ant-button>
-          <ant-button type="ghost" @click="$router.back()">返回</ant-button>
+          </v-button>
+          <v-button type="ghost" @click="$router.back()">返回</v-button>
         </slot>
       </div>
     </header>

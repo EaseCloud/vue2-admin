@@ -53,37 +53,37 @@
                    :style="col.style || {maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
             </template>
             <template v-else-if="col.type=='switch'">
-              <ant-switch v-model="item[col.key]"
+              <v-switch v-model="item[col.key]"
                           @change="updateModel(
                             model, item[pk], col.key, $event, '', reload)">
                 <span slot="checked">{{col.checked}}</span>
                 <span slot="unchecked">{{col.unchecked}}</span>
-              </ant-switch>
+              </v-switch>
             </template>
           </td>
           <!-- Action Row -->
           <td v-if="options.show_actions !== false">
             <slot name="row-action">
               <template v-for="action in actions">
-                <ant-button
+                <v-button
                   v-show="action.isVisible === undefined || !action.isVisible || action.isVisible(item)"
                   size="small"
                   :type="action.buttonClass || 'ghost'"
                   @click="action.action(item)">
                   {{evaluate(action, 'title', item)}}
-                </ant-button> <!--防止按钮之间粘住-->
+                </v-button> <!--防止按钮之间粘住-->
               </template>
-              <ant-button v-if="options.can_edit"
+              <v-button v-if="options.can_edit"
                           size="small" type="ghost"
                           :to="{name:'main_'+modelUnderscore+'_edit', params: {id: item[pk]}}">
                 编辑
-              </ant-button>
-              <ant-button v-if="options.can_delete"
+              </v-button>
+              <v-button v-if="options.can_delete"
                           size="small" type="dashed"
                           @click="deleteModel(
                             model, item[pk], '确认删除【'+item.name+'】?', '', reload)">
                 删除
-              </ant-button>
+              </v-button>
             </slot>
           </td>
         </tr>

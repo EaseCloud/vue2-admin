@@ -71,6 +71,10 @@ export default {
             vm.modalFormData.fields.forEach(item => {
               form[item.name] = item.value;
             });
+            if ((vm.modalFormData.validator instanceof Function)
+              && !vm.modalFormData.validator(form)) {
+              return false;
+            }
           }
           vm.modalFormData = null;
           return deferred[success ? 'resolve' : 'reject'](form);
