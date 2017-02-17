@@ -88,7 +88,7 @@
         const vm = this;
         // 获取主体信息
         if (Number(vm.$route.params.id)) {
-          api(vm.model).get({
+          vm.api().get({
             id: vm.$route.params.id,
           }).then(resp => {
             vm.item = resp.data;
@@ -111,44 +111,53 @@
         const vm = this;
         // set default value
         vm.fields.forEach(field => {
-          let result = null;
+          // 获取初始值
+          let promiseGetResult = null;
           if (field.type === 'geo') {
-            result = {
+            promiseGetResult = Promise.resolve({
               lat: vm.getField(field.key && field.key.lat || 'geo_lat'),
               lng: vm.getField(field.key && field.key.lng || 'geo_lng'),
               label: vm.getField(field.key && field.key.label || 'geo_label'),
-            };
+            });
           } else if (field.type === 'image') {
-            result = vm.getField(field.key.read);
+            promiseGetResult = Promise.resolve(vm.getField(field.key.read));
           } else if (field.type === 'gallery') {
-            result = vm.getField(field.key.read);
+            promiseGetResult = Promise.resolve(vm.getField(field.key.read));
           } else if (field.type === 'link') {
             // deprecated: textField, routeName, idField
-            result = {
+            promiseGetResult = Promise.resolve({
               route: field.route instanceof Function && field.route(vm.item)
               || field.route instanceof String && { path: field.route }
               || field.route instanceof Object && field,
               text: field.text instanceof Function && field.text(vm.item)
               || !(field.text instanceof Function) && field.text || '',
-            };
+            });
+          } else if (field.type === 'object') {
+            promiseGetResult = vm.api(field.options.model).get({
+              id: vm.getField(field.key),
+            }).then(resp => resp.data);
           } else {
-            result = vm.getField(field.key);
+            promiseGetResult = Promise.resolve(vm.getField(field.key));
           }
-          // default
-          if (result === undefined && field.default) {
-            result = field.default;
-          }
-          // mapper
-          if (field.mapper) {
-            result = field.mapper[result];
-          }
-          // filter
-          if (field.filter) {
-            result = field.filter(result);
-          }
-          // Update
-          vm.$set(field, 'value', result);
-//          console.log(JSON.parse(JSON.stringify(vm.fields)));
+          //
+          promiseGetResult.then(rawResult => {
+            let result = rawResult;
+            // default
+            if (result === undefined && field.default) {
+              result = field.default;
+            }
+            // mapper
+            if (field.mapper) {
+              result = field.mapper[result];
+            }
+            // filter
+            if (field.filter) {
+              result = field.filter(result);
+            }
+            // Update
+            vm.$set(field, 'value', result);
+//            console.log(JSON.parse(JSON.stringify(vm.fields)));
+          });
         });
       },
       redirectList() {
@@ -187,6 +196,7 @@
         } else {
           vm.item[field.key] = field.value;
         }
+        vm.render();
       },
     },
   };

@@ -150,19 +150,38 @@
 
       <!-- type: list-view -->
       <ant-col :span="18" v-else-if="field.type == 'list-view'">
-        <list-view-table :model="field.model"
-                         :pk="field.pk"
-                         :cols="cols"
-                         :options="options"
-                         :actions="actions"
-                         :filters="getFilters"
-                         @query="doQuery"></list-view-table>
+        <list-view-table :model="field.options.model"
+                         :pk="field.options.pk"
+                         :cols="field.options.cols"
+                         :options="field.options.options"
+                         :actions="field.options.actions"
+                         :filters="field.options.filters"></list-view-table>
+        <!--:pager="pager"-->
+      </ant-col>
+
+      <!-- type: object -->
+      <ant-col :span="18" class="ant-form-item-control"
+               v-else-if="field.type == 'object'">
+        <template v-if="field.value">
+          <router-link :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
+                  params: {id: field.value[field.options.pk || 'id']}}">
+            {{field.value[field.options.display_field || 'name']}}
+          </router-link>
+          <ant-button size="small" style="margin-left: 10px;"
+                      @click="pickObject(field)">选择
+          </ant-button>
+        </template>
       </ant-col>
 
       <!-- 尚未实现 -->
-      <span v-else>尚未实现</span>
+      <span v-else>字段类型{{field.type}}尚未实现</span>
 
     </ant-row>
+
+    <object-picker :options="objectPickerField.options"
+                   v-if="objectPickerField"
+                   @input="pickObjectAction($event)"
+                   @cancel="objectPickerField=null"></object-picker>
 
   </section>
 
@@ -173,8 +192,23 @@
     props: {
       fields: Array,
     },
-    methods: {},
+    data() {
+      return {
+        objectPickerField: null,
+      };
+    },
+    methods: {
+      pickObject(field) {
+        const vm = this;
+        vm.objectPickerField = field;
+      },
+      pickObjectAction(id) {
+        const vm = this;
+        const field = JSON.parse(JSON.stringify(vm.objectPickerField));
+        vm.objectPickerField = null;
+        field.value = id;
+        vm.$emit('update', field);
+      },
+    },
   };
 </script>
-
-

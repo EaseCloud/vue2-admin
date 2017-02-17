@@ -38,8 +38,8 @@
     </div>
 
     <footer class="page-footer">
-      <pagination @change="pageTo"
-                  :page="$route.query.page"
+      <pagination @change="$refs.table.pageTo($event)"
+                  :page="Number($route.query.page) || 1"
                   :page_count="pager.page_count"
                   :page_size="pager.page_size"/>
     </footer>
@@ -105,13 +105,6 @@
         });
         vm.$router.replace({
           query: routeQuery,
-        });
-      },
-      pageTo(page) {
-        const vm = this;
-        vm.doQuery({ page });
-        vm.$nextTick(() => {
-          vm.$refs.table.reload();
         });
       },
     },
