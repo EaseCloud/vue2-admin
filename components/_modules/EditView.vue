@@ -190,6 +190,7 @@
           vm.item[field.key && field.key.lng || 'geo_lng'] = field.value.lng;
           vm.item[field.key && field.key.label || 'geo_label'] = field.value.label;
         } else if (field.type === 'image') {
+          vm.item[field.key.read] = field.value;
           vm.item[field.key.write] = field.value && field.value.id;
         } else if (field.type === 'gallery') {
           vm.item[field.key.write] = field.value.map(image => image.id);

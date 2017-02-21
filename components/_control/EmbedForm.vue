@@ -13,15 +13,15 @@
 
       <!-- type: input -->
       <v-col :span="8" class="ant-form-item-control"
-               v-if="field.type == 'input' || field.type === undefined">
+             v-if="field.type == 'input' || field.type === undefined">
         <v-input v-model="field.value"
-                   @input="$emit('update', field)"
-                   :type="field.htmlType || 'text'"
-                   :min="field.min"
-                   :max="field.max"
-                   size="large"
-                   :placeholder="field.placeholder"
-                   @keypress.enter="$emit('submit')">
+                 @input="$emit('update', field)"
+                 :type="field.htmlType || 'text'"
+                 :min="field.min"
+                 :max="field.max"
+                 size="large"
+                 :placeholder="field.placeholder"
+                 @keypress.enter="$emit('submit')">
           <template slot="before" v-if="field.before">{{field.before}}</template>
           <template slot="after" v-if="field.after">{{field.after}}</template>
         </v-input>
@@ -32,17 +32,17 @@
 
       <!-- type: input number -->
       <v-col :span="8" class="ant-form-item-control"
-               v-else-if="field.type == 'number'">
+             v-else-if="field.type == 'number'">
         <v-input-number v-if="typeof field.value == 'number'"
-                          v-model="field.value"
-                          @input="$emit('update', field)"
-                          :min="field.min"
-                          :max="field.max"
-                          :step="field.step"
-                          size="large"
-                          :decimal-places="field.decimalPlaces"
-                          :placeholder="field.placeholder"
-                          @keypress.enter="$emit('submit')">
+                        v-model="field.value"
+                        @input="$emit('update', field)"
+                        :min="field.min"
+                        :max="field.max"
+                        :step="field.step"
+                        size="large"
+                        :decimal-places="field.decimalPlaces"
+                        :placeholder="field.placeholder"
+                        @keypress.enter="$emit('submit')">
         </v-input-number>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
@@ -51,7 +51,7 @@
 
       <!-- type: label -->
       <v-col :span="8" class="ant-form-item-control"
-               v-else-if="field.type == 'label'">
+             v-else-if="field.type == 'label'">
         <p class="ant-form-text">{{field.value}}</p>
       </v-col>
 
@@ -66,7 +66,7 @@
 
       <!-- type: link -->
       <v-col :span="8" class="ant-form-item-control"
-               v-else-if="field.type == 'link'">
+             v-else-if="field.type == 'link'">
         <router-link :to="field.value.route"
                      v-if="field.value && field.value.route">
           {{field.value.text}}
@@ -75,9 +75,9 @@
 
       <!-- type: switch -->
       <v-col :span="8" class="ant-form-item-control"
-               v-else-if="field.type == 'switch'">
+             v-else-if="field.type == 'switch'">
         <v-switch v-model="field.value"
-                    @input="$emit('update', field)">
+                  @input="$emit('update', field)">
           <template slot="checked">{{field.checked}}</template>
           <template slot="unchecked">{{field.unchecked}}</template>
         </v-switch>
@@ -91,10 +91,10 @@
 
       <!-- type: radio -->
       <v-col :span="18" class="ant-form-item-control"
-               v-else-if="field.type == 'radio'">
+             v-else-if="field.type == 'radio'">
         <v-radio-group v-model="field.value"
-                         @input="$emit('update', field)"
-                         :options="field.choices"></v-radio-group>
+                       @input="$emit('update', field)"
+                       :options="field.choices"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -102,12 +102,12 @@
 
       <!-- type: radio-button -->
       <v-col :span="18" class="ant-form-item-control"
-               v-else-if="field.type == 'radio-button'">
+             v-else-if="field.type == 'radio-button'">
         <v-radio-group type="button"
-                         v-model="field.value"
-                         @input="$emit('update', field)"
-                         :readonly="!!field.readonly"
-                         :options="field.choices"></v-radio-group>
+                       v-model="field.value"
+                       @input="$emit('update', field)"
+                       :readonly="!!field.readonly"
+                       :options="field.choices"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -115,7 +115,7 @@
 
       <!-- type: image -->
       <v-col :span="18" class="ant-form-item-control"
-               v-else-if="field.type == 'image'">
+             v-else-if="field.type == 'image'">
         <image-picker v-model="field.value"
                       :readonly="!!field.readonly"
                       @input="$emit('update', field)"></image-picker>
@@ -126,7 +126,7 @@
 
       <!-- type: gallery -->
       <v-col :span="18" class="ant-form-item-control"
-               v-else-if="field.type == 'gallery'">
+             v-else-if="field.type == 'gallery'">
         <gallery-picker v-model="field.value"
                         :readonly="!!field.readonly"
                         @input="$emit('update', field)"></gallery-picker>
