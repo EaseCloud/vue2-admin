@@ -22,11 +22,10 @@
       </div>
     </div>
     <div class="ant-upload ant-upload-select ant-upload-select-picture-card"
-         v-if="!readonly"
-         v-show="!value" @click="uploadImage">
+         v-if="!readonly && !value" @click="uploadImage">
       <div class="rc-upload" role="button">
         <!--<input type="file" accept="" style="display: none;">-->
-        <i class="anticon anticon-plus "></i>
+        <i class="anticon anticon-plus"></i>
         <div class="ant-upload-text">上传</div>
       </div>
     </div>
