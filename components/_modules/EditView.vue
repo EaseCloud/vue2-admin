@@ -23,7 +23,7 @@
         <!-- 删除动作 -->
         <template v-if="options.can_delete">
           <v-button type="dashed" v-if="item[pk]"
-                      @click="deleteModel(model, item[pk], '确认删除【'+item.name+'】？',
+                    @click="deleteModel(model, item[pk], '确认删除【'+item.name+'】？',
                   '', redirectList)">
             删除
           </v-button>
@@ -173,9 +173,13 @@
           if (backToList) {
             vm.redirectList();
           } else {
+            // 创建的情况
             if (!vm.item[vm.pk]) {
               vm.$router.replace({
-                params: { id: resp.data.id },
+//                name: vm.$route.name,
+                params: {
+                  id: resp.data[vm.pk],
+                },
               });
             }
             vm.reload();
@@ -190,8 +194,10 @@
           vm.item[field.key && field.key.lng || 'geo_lng'] = field.value.lng;
           vm.item[field.key && field.key.label || 'geo_label'] = field.value.label;
         } else if (field.type === 'image') {
+          vm.item[field.key.read] = field.value;
           vm.item[field.key.write] = field.value && field.value.id;
         } else if (field.type === 'gallery') {
+          vm.item[field.key.read] = field.value;
           vm.item[field.key.write] = field.value.map(image => image.id);
         } else {
           vm.item[field.key] = field.value;

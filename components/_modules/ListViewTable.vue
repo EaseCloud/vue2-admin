@@ -47,6 +47,7 @@
                            v-if="col.route && col.route(item)">
                 {{col.text(item)}}
               </router-link>
+              <template v-else>{{col.text(item)}}</template>
             </template>
             <template v-else-if="col.type=='image'">
               <img :src="getColValue(col, item)"
