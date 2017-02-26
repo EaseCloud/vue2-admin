@@ -852,7 +852,6 @@
             this.checked.oldtime = this.value;
             this.showDay(this.value);
           } else {
-//            console.log(this.value);
             this.selectedDays = JSON.parse(this.value);
             if (this.selectedDays.length) {
               this.checked.oldtime = this.selectedDays[0];
@@ -900,7 +899,6 @@
           var ctime = this.checked.year + '-' + this.checked.month + '-' + this.checked.day + ' ' + this.checked.hour + ':' + this.checked.min;
           this.checked.currentMoment = (0, _moment2.default)(ctime, 'YYYY-MM-DD HH:mm');
           result = (0, _moment2.default)(this.checked.currentMoment).format(this.format);
-          console.log(this.format);
         } else {
           result = JSON.stringify(this.selectedDays);
         }

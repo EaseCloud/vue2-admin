@@ -107,57 +107,61 @@
         });
         return result;
       },
+      renderField(field) {
+        const vm = this;
+        // 获取初始值
+        let promiseGetResult = null;
+        if (field.type === 'geo') {
+          promiseGetResult = Promise.resolve({
+            lat: vm.getField(field.key && field.key.lat || 'geo_lat'),
+            lng: vm.getField(field.key && field.key.lng || 'geo_lng'),
+            label: vm.getField(field.key && field.key.label || 'geo_label'),
+          });
+        } else if (field.type === 'image') {
+          promiseGetResult = Promise.resolve(vm.getField(field.key.read));
+        } else if (field.type === 'gallery') {
+          promiseGetResult = Promise.resolve(vm.getField(field.key.read));
+        } else if (field.type === 'link') {
+          // deprecated: textField, routeName, idField
+          promiseGetResult = Promise.resolve({
+            route: field.route instanceof Function && field.route(vm.item)
+            || field.route instanceof String && { path: field.route }
+            || field.route instanceof Object && field,
+            text: field.text instanceof Function && field.text(vm.item)
+            || !(field.text instanceof Function) && field.text || '',
+          });
+        } else if (field.type === 'object') {
+          const objectId = vm.getField(field.key);
+          promiseGetResult = objectId
+            ? vm.api(field.options.model).get({ id: objectId }).then(resp => resp.data)
+            : Promise.resolve(null);
+        } else {
+          promiseGetResult = Promise.resolve(vm.getField(field.key));
+        }
+        // 处理原始的字段值
+        promiseGetResult.then(rawResult => {
+          let result = rawResult;
+          // default
+          if (result === undefined && field.default) {
+            result = field.default;
+          }
+          // mapper
+          if (field.mapper) {
+            result = field.mapper[result];
+          }
+          // filter
+          if (field.filter) {
+            result = field.filter(result);
+          }
+          // Update
+          vm.$set(field, 'value', result);
+        });
+      },
       render() {
         const vm = this;
         // set default value
         vm.fields.forEach(field => {
-          // 获取初始值
-          let promiseGetResult = null;
-          if (field.type === 'geo') {
-            promiseGetResult = Promise.resolve({
-              lat: vm.getField(field.key && field.key.lat || 'geo_lat'),
-              lng: vm.getField(field.key && field.key.lng || 'geo_lng'),
-              label: vm.getField(field.key && field.key.label || 'geo_label'),
-            });
-          } else if (field.type === 'image') {
-            promiseGetResult = Promise.resolve(vm.getField(field.key.read));
-          } else if (field.type === 'gallery') {
-            promiseGetResult = Promise.resolve(vm.getField(field.key.read));
-          } else if (field.type === 'link') {
-            // deprecated: textField, routeName, idField
-            promiseGetResult = Promise.resolve({
-              route: field.route instanceof Function && field.route(vm.item)
-              || field.route instanceof String && { path: field.route }
-              || field.route instanceof Object && field,
-              text: field.text instanceof Function && field.text(vm.item)
-              || !(field.text instanceof Function) && field.text || '',
-            });
-          } else if (field.type === 'object') {
-            promiseGetResult = vm.api(field.options.model).get({
-              id: vm.getField(field.key),
-            }).then(resp => resp.data);
-          } else {
-            promiseGetResult = Promise.resolve(vm.getField(field.key));
-          }
-          //
-          promiseGetResult.then(rawResult => {
-            let result = rawResult;
-            // default
-            if (result === undefined && field.default) {
-              result = field.default;
-            }
-            // mapper
-            if (field.mapper) {
-              result = field.mapper[result];
-            }
-            // filter
-            if (field.filter) {
-              result = field.filter(result);
-            }
-            // Update
-            vm.$set(field, 'value', result);
-//            console.log(JSON.parse(JSON.stringify(vm.fields)));
-          });
+          vm.renderField(field);
         });
       },
       redirectList() {
@@ -176,7 +180,6 @@
             // 创建的情况
             if (!vm.item[vm.pk]) {
               vm.$router.replace({
-//                name: vm.$route.name,
                 params: {
                   id: resp.data[vm.pk],
                 },
@@ -188,7 +191,6 @@
       },
       onUpdate(field) {
         const vm = this;
-//        console.log(JSON.parse(JSON.stringify(field)));
         if (field.type === 'geo') {
           vm.item[field.key && field.key.lat || 'geo_lat'] = field.value.lat;
           vm.item[field.key && field.key.lng || 'geo_lng'] = field.value.lng;
@@ -202,7 +204,7 @@
         } else {
           vm.item[field.key] = field.value;
         }
-        vm.render();
+        vm.renderField(field);
       },
     },
   };

@@ -175,20 +175,18 @@
       <!-- type: object -->
       <v-col :span="18" class="ant-form-item-control"
              v-else-if="field.type == 'object'">
-        <template v-if="field.value">
-          <router-link v-if="field.value[field.options.pk || 'id']"
-                       style="margin-right: 10px;"
-                       :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
+        <router-link v-if="field.value && field.value[field.options.pk || 'id']"
+                     style="margin-right: 10px;"
+                     :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
                   params: {id: field.value[field.options.pk || 'id']}}">
-            {{field.value[field.options.display_field || 'name']}}
-          </router-link>
-          <v-button size="small"
-                    @click="pickObject(field)">选择
-          </v-button>
-          <v-button size="small" v-if="field.value[field.options.pk || 'id']"
-                    @click="field.value = null; $emit('update', field)">清除
-          </v-button>
-        </template>
+          {{field.value[field.options.display_field || 'name']}}
+        </router-link>
+        <v-button size="small"
+                  @click="pickObject(field)">选择
+        </v-button>
+        <v-button size="small" v-if="field.value"
+                  @click="field.value = null; $emit('update', field)">清除
+        </v-button>
       </v-col>
 
 
@@ -223,7 +221,7 @@
       },
       pickObjectAction(id) {
         const vm = this;
-        const field = JSON.parse(JSON.stringify(vm.objectPickerField));
+        const field = vm.objectPickerField;
         vm.objectPickerField = null;
         field.value = id;
         vm.$emit('update', field);
