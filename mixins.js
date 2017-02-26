@@ -134,7 +134,7 @@ export default {
         if (vm.$router.history.hashbang) {
           path = `!${path}`;
         }
-        path = `#${path}`;
+        if (path[0] !== '#') path = `#${path}`;
       }
       if (absolute) {
         // finally we add the absolute prefix before that

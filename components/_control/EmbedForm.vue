@@ -163,12 +163,17 @@
       <v-col :span="18" class="ant-form-item-control"
              v-else-if="field.type == 'object'">
         <template v-if="field.value">
-          <router-link :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
+          <router-link v-if="field.value[field.options.pk || 'id']"
+                       style="margin-right: 10px;"
+                       :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
                   params: {id: field.value[field.options.pk || 'id']}}">
             {{field.value[field.options.display_field || 'name']}}
           </router-link>
-          <v-button size="small" style="margin-left: 10px;"
+          <v-button size="small"
                     @click="pickObject(field)">选择
+          </v-button>
+          <v-button size="small" v-if="field.value[field.options.pk || 'id']"
+                    @click="field.value = null; $emit('update', field)">清除
           </v-button>
         </template>
       </v-col>
