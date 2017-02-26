@@ -49,6 +49,19 @@
         </div>
       </v-col>
 
+      <!-- type: datepicker -->
+      <v-col :span="8" class="ant-form-item-control"
+             v-else-if="field.type == 'datepicker'">
+        <datepicker :placeholder="field.placeholder"
+                    v-model="field.value"
+                    :type="field.pick_time?'min':'day'"
+                    @input="$emit('update', field)"
+                    :format="field.format || (field.pick_time ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD')"
+                    :limit="[{type: 'fromto', to: field.to || '2999-01-01'},
+                    {type: 'fromto', from: field.from || '1900-01-01'}]"
+                    :input-class="{'ant-input': true}"></datepicker>
+      </v-col>
+
       <!-- type: label -->
       <v-col :span="8" class="ant-form-item-control"
              v-else-if="field.type == 'label'">
@@ -177,6 +190,7 @@
           </v-button>
         </template>
       </v-col>
+
 
       <!-- 尚未实现 -->
       <span v-else>字段类型{{field.type}}尚未实现</span>

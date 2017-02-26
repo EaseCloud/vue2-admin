@@ -371,7 +371,9 @@
           class="cov-datepicker"
           :class="inputClass"
           readonly="readonly"
-          :placeholder="placeholder" v-model="time" :required="required" @click="showCheck" @foucus="showCheck"
+          :placeholder="placeholder"
+          v-model="value"
+          :required="required" @click="showCheck" @foucus="showCheck"
           :style="option.inputStyle"/>
       </div>
       <div class="datepicker-overlay" v-if="showInfo.check" @click="dismiss($event)"
@@ -466,9 +468,9 @@
   exports.default = {
     props: {
       required: false,
-      time: {
+      value: {
         type: String,
-        required: true
+        default: '',
       },
       format: {
         type: String,
@@ -843,15 +845,15 @@
         this.showDay(this.checked.currentMoment);
       },
       showCheck: function showCheck() {
-        if (this.time === '') {
+        if (this.value === '') {
           this.showDay();
         } else {
           if (this.type === 'day' || this.type === 'min') {
-            this.checked.oldtime = this.time;
-            this.showDay(this.time);
+            this.checked.oldtime = this.value;
+            this.showDay(this.value);
           } else {
-            console.log(this.time);
-            this.selectedDays = JSON.parse(this.time);
+//            console.log(this.value);
+            this.selectedDays = JSON.parse(this.value);
             if (this.selectedDays.length) {
               this.checked.oldtime = this.selectedDays[0];
               this.showDay(this.selectedDays[0]);
@@ -893,15 +895,17 @@
         }
       },
       picked: function picked() {
+        let result = '';
         if (this.type === 'day' || this.type === 'min') {
           var ctime = this.checked.year + '-' + this.checked.month + '-' + this.checked.day + ' ' + this.checked.hour + ':' + this.checked.min;
           this.checked.currentMoment = (0, _moment2.default)(ctime, 'YYYY-MM-DD HH:mm');
-          this.time = (0, _moment2.default)(this.checked.currentMoment).format(this.format);
+          result = (0, _moment2.default)(this.checked.currentMoment).format(this.format);
+          console.log(this.format);
         } else {
-          this.time = JSON.stringify(this.selectedDays);
+          result = JSON.stringify(this.selectedDays);
         }
         this.showInfo.check = false;
-        this.$emit('change', this.time);
+        this.$emit('input', result);
       },
       dismiss: function dismiss(evt) {
         if (evt.target.className === 'datepicker-overlay') {
@@ -912,9 +916,8 @@
         }
       },
       clear: function clear(evt) {
-        this.time = '';
         this.showInfo.check = false;
-        this.$emit('change', this.time);
+        this.$emit('input', '');
       },
       shiftActTime: function shiftActTime() {
         // shift activated time items to visible position.
