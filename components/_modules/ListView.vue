@@ -5,10 +5,15 @@
     <header class="page-header">
       <h3 class="page-header-title">{{title}}</h3>
       <h4 class="page-header-subtitle">{{subtitle}}</h4>
+      <!--<h4 class="page-header-subtitle"-->
+          <!--v-if="options.total">(总数：{{total}})</h4>-->
       <div class="tooltips">
         <slot name="actions">
+          <v-button v-if="options.can_download" @click="download">
+            导出
+          </v-button>
           <v-button v-if="options.can_create"
-                      :to="{name: 'main_'+modelUnderscore+'_edit', params: {id: 0}}">
+                    :to="{name: 'main_'+modelUnderscore+'_edit', params: {id: 0}}">
             新增
           </v-button>
           <v-button type="ghost" @click="$router.back()">返回</v-button>
@@ -43,6 +48,8 @@
                   :page_count="pager.page_count"
                   :page_size="pager.page_size"/>
     </footer>
+
+    <a class="invisible" ref="download"></a>
 
   </div>
 
@@ -105,6 +112,80 @@
         });
         vm.$router.replace({
           query: routeQuery,
+        });
+      },
+      download() {
+        const vm = this;
+        const filename = `${vm.subtitle}.csv`;
+
+        function getValue(obj, path) {
+          let o = obj;
+          path.split('.').forEach(key => {
+            if (!o) return;
+            o = o[key];
+          });
+          return (o || '').toString();
+        }
+
+        // 密码验证
+        vm.verifyPassword(vm.options.download_need_password).then(() => {
+//        const promise = data ? Promise.resolve(data) :
+//          vm.getDownloadData().then(resp => resp.data.results);
+          const promise = vm.getDownloadData().then(resp => resp.data.results);
+          promise.then(items => {
+            let text = vm.cols.map(x => `"${x.title.replace('"', '""') || ''}"`).join(',');
+            items.forEach(item => {
+              text += '\n';
+              text += vm.cols.map(({ key, title, filter }) => {
+                const value = key ? getValue(item, key).replace('"', '""') : '';
+                return value ? `"${filter ? filter(value) : value}"` : '';
+              }).join(',');
+            });
+            const el = vm.$refs.download;
+            el.download = filename;
+            el.href = `data:text/plain,${encodeURIComponent(text)}`;
+            el.click();
+          });
+        }, () => {
+        });
+      },
+      verifyPassword(needVerify = false) {
+        const vm = this;
+        if (!needVerify) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          vm.modalForm({
+            title: '请输入管理员密码',
+            fields: [{
+              type: 'password',
+              name: 'password',
+              label: '管理员密码',
+              value: '',
+            }],
+            validator(data) {
+              if (!data.password.length) {
+                vm.notify('密码不能为空');
+                return false;
+              }
+              return true;
+            },
+          }).then(data => {
+            vm.api('User').save({
+              action: 'verify_password',
+            }, {
+              password: data.password,
+            }).then(() => {
+              resolve();
+            }, () => {
+              reject('密码错误');
+            });
+          });
+        });
+      },
+      getDownloadData() {
+        const vm = this;
+        return vm.api(vm.model).get({
+          page_size: 1000000,
+          ...vm.filters,
         });
       },
     },
