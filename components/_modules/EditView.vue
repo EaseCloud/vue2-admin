@@ -15,6 +15,8 @@
         <template v-if="options.can_edit_run">
           <v-button @click="submit(false)">保存并继续编辑</v-button>
           <v-button type="primary" @click="submit(true, true)">保存</v-button>
+        <template v-if="options.can_edit_back">
+          <v-button type="primary" @click="submit(false)">保存</v-button>
         </template>
         <!-- 动态动作按钮 -->
         <template v-for="action in actions">
@@ -33,7 +35,7 @@
             删除
           </v-button>
         </template>
-        <v-button type="ghost" @click="$router.back()">返回</v-button>
+        <v-button type="ghost" @click="$router.back()" v-if="!options.can_edit_back">返回</v-button>
       </div>
     </header>
 

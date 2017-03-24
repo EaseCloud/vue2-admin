@@ -30,6 +30,7 @@
 
 <script lang="babel">
   import menus from '../../../config/menus';
+  import api from '../../resource/api';
 
   export default {
     data() {
@@ -38,6 +39,17 @@
       };
     },
     methods: {
+      reload() {
+        const vm = this;
+        console.log(menus);
+        api('Menu').save({
+          action: 'get_menu_by_group',
+        }, {
+          user: vm.me.id,
+        }).then(resp => {
+          vm.menus = resp.data;
+        });
+      },
       toggle(menu, event) {
         const vm = this;
         // 如果有链接直接跳转

@@ -55,7 +55,7 @@
             </template>
             <template v-else-if="col.type=='switch'">
               <v-switch v-model="item[col.key]"
-                          @change="updateModel(
+                        @change="updateModel(
                             model, item[pk], col.key, $event, '', reload)">
                 <span slot="checked">{{col.checked}}</span>
                 <span slot="unchecked">{{col.unchecked}}</span>
@@ -75,13 +75,13 @@
                 </v-button> <!--防止按钮之间粘住-->
               </template>
               <v-button v-if="options.can_edit"
-                          size="small" type="ghost"
-                          :to="{name:'main_'+modelUnderscore+'_edit', params: {id: item[pk]}}">
+                        size="small" type="ghost"
+                        :to="{name:'main_'+modelUnderscore+'_edit', params: {id: item[pk]}}">
                 编辑
               </v-button>
               <v-button v-if="options.can_delete"
-                          size="small" type="dashed"
-                          @click="deleteModel(
+                        size="small" type="dashed"
+                        @click="deleteModel(
                             model, item[pk], '确认删除【'+item.name+'】?', '', reload)">
                 删除
               </v-button>

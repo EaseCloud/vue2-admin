@@ -5,6 +5,7 @@
 
     <v-row :gutter="6"
            type="flex"
+           :key="field.pk"
            v-for="field in fields">
 
       <v-col :span="6" class="ant-form-item-label">
@@ -132,6 +133,15 @@
         <image-picker v-model="field.value"
                       :readonly="!!field.readonly"
                       @input="$emit('update', field)"></image-picker>
+        <div v-if="field.description"
+             class="ant-form-explain">{{field.description}}
+        </div>
+      </v-col>
+
+      <!-- type: qrcode -->
+      <v-col :span="18" class="ant-form-item-control"
+             v-else-if="field.type == 'qrcode'">
+        <img :src="field.src" alt="二维码">
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>

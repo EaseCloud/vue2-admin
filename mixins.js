@@ -79,8 +79,7 @@ export default {
         this.query();
       }
     },
-    updateModel(model, id, field, value,
-                notify = '操作成功', callback = null) {
+    updateModel(model, id, field, value, notify = '操作成功', callback = null) {
       const vm = this;
       return api(model).patch({ id }, { [field]: value }).then(resp => {
         const item = resp.data;
@@ -88,8 +87,7 @@ export default {
         if (callback) callback(item);
       });
     },
-    deleteModel(model, id, confirm = '确认删除此对象？',
-                notify = '操作成功', callback = null) {
+    deleteModel(model, id, confirm = '确认删除此对象？', notify = '操作成功', callback = null) {
       const vm = this;
       const promise = confirm ? this.confirm(confirm) : Promise.resolve();
       return promise.then(() => {
