@@ -11,6 +11,11 @@
           <v-button @click="submit(false)">保存并继续编辑</v-button>
           <v-button type="primary" @click="submit()">保存</v-button>
         </template>
+        <!-- run 保存动作-->
+        <template v-if="options.can_edit_run">
+          <v-button @click="submit(false)">保存并继续编辑</v-button>
+          <v-button type="primary" @click="submit(true, true)">保存</v-button>
+        </template>
         <!-- 动态动作按钮 -->
         <template v-for="action in actions">
           <v-button
@@ -167,13 +172,17 @@
       redirectList() {
         this.$router.push({ name: `main_${this.modelUnderscore}_list` });
       },
-      submit(backToList = true) {
+      submit(backToList = true, back = false) {
         const vm = this;
         const promise = Number(vm.$route.params.id)
           ? api(vm.model).patch({ id: vm.item[vm.pk] }, vm.item)
           : api(vm.model).save({ ...vm.item });
         promise.then(resp => {
           vm.notify('操作成功');
+          if (back) {
+            vm.$router.back();
+            return;
+          }
           if (backToList) {
             vm.redirectList();
           } else {
