@@ -41,11 +41,8 @@
     methods: {
       reload() {
         const vm = this;
-        console.log(menus);
-        api('Menu').save({
-          action: 'get_menu_by_group',
-        }, {
-          user: vm.me.id,
+        api('AdminMenu').get({
+          action: 'get_user_menu',
         }).then(resp => {
           vm.menus = resp.data;
         });
