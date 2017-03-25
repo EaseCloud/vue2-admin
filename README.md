@@ -11,8 +11,8 @@ Ant Design 的 UI 框架构造的一套强大的数据驱动框架，目前主�
 * Django REST Framework
 
 
-1. 安装
--------
+1. Installation - 安装
+----------------------
 
 ### 1.1. 首先创建一个新的 vue 项目，然后创建 git 仓库
 
@@ -56,8 +56,8 @@ npm i
 npm run dev
 ```
 
-2. 配置项
----------
+2. Config - 配置项
+------------------
 
 创建项目后，在 `/src/config/` 目录下有基本的配置项，整个项目级别的配置可以在这里进行配置。
 
@@ -250,6 +250,113 @@ export default {
 };
 ```
 
+3. Components - 组件
+--------------------
+
+所有的页面组件文件 (ComponentName.vue) 都应当放在 `/src/components` 目录下面，
+并且注册对应的路由；对其余组件的组织本框架没有限制和建议，可以完全自由组织。
+
+理论上，组件内的编程可以完全自由组织，但是本框架为组件的编写提供了一系列便利，具体如下：
+
+* 整体按照 AntDesign 组件定义 UI 风格，集成 vue-beauty 作为组件库；
+* 对于模型的操作暂时提供了 ListView 和 EditView 两种页面整体架构；
+* 提供了各种字段类型的拾取，包括图片、日期、地图位置等；
+* 灵活的数据驱动以及多表现形式（弹窗、嵌套、对象拾取）的组合；
+
+### 3.1. Fields - 公共属性/公共数据
+
+#### 3.1.1. vm.me (computed)
+
+#### 3.1.2. vm.choices (computed)
+
+#### 3.1.3. vm.areaData (computed)
+
+#### 3.1.4. vm.config (computed)
+
+#### 3.1.5. vm.model (data)
+
+#### 3.1.6. vm.modelUnderscore (computed)
+
+
+### 3.2. Methods - 公共方法/接口约定方法
+
+#### 3.2.1. vm.reload() (interface)
+
+#### 3.2.2. vm.api(model=null) (public)
+
+#### 3.2.3. vm.authenticate(reload=false) (public)
+
+#### 3.2.4. vm.login(username, password) (public)
+
+#### 3.2.5. vm.logout() (public)
+
+#### 3.2.6. vm.updateModel() (public)
+
+#### 3.2.7. vm.deleteModel() (public)
+
+#### 3.2.8. vm.getDistrict(adcode=86) (public)
+
+#### 3.2.9. vm.getDistrictNameByCode(adcode) (public)
+
+#### 3.2.10. vm.getDistrictParentCode(adcode) (public)
+
+#### 3.2.10. vm.getUrlFromRoute(route, absolute=true) (public)
+
+#### 3.2.11. vm.trim(str) (public)
+
+#### 3.2.12. vm.toCamel(str) (public)
+
+#### 3.2.13. vm.toDash(str) (public)
+
+#### 3.2.14. vm.toUnderScore(str) (public)
+
+#### 3.2.15. vm.getColValue(col, item) (public)
+
+#### 3.2.16. vm.evaluate(self, field, item) (public)
+
+#### 3.2.17. vm.setQueryKey(key, value) (public)
+
+#### 3.2.18. vm.removeQueryKey(key) (public)
+
+
+### 3.3. Filters - 公共过滤器
+
+#### 3.3.1. currency(note='￥')
+
+
+### 3.4. Root App Data - 根组件数据（总线数据）
+
+#### 3.4.1. vm.$root.current_user
+
+TODO: 尚未撰写
+
+#### 3.4.2. vm.$root.loading
+
+TODO: 尚未撰写
+
+#### 3.4.3. vm.$root.pager
+
+TODO: 尚未撰写
+
+### 3.5. Global Components - 公共组件
+
+#### 3.5.1. Antd/vue-beauty 系列组件
+
+#### 3.5.2. Datepicker
+
+#### 3.5.3.
+
+
+4. Data Driven Pattern - 数据驱动模式
+-------------------------------------
+
+### 4.1. 列表数据
+
+### 4.2. 列表字段
+
+### 4.3. 表单数据
+
+### 4.4. 表单字段
 
 
 

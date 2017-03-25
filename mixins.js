@@ -72,13 +72,6 @@ export default {
         vm.$router.push({ name: 'passport_login' });
       });
     },
-    switchQueryBar() {
-      if (this.filter && ('show_query_bar' in this.filter)) {
-        this.filter.show_query_bar = !this.filter.show_query_bar ? 1 : '';
-
-        this.query();
-      }
-    },
     updateModel(model, id, field, value, notify = '操作成功', callback = null) {
       const vm = this;
       return api(model).patch({ id }, { [field]: value }).then(resp => {
@@ -97,32 +90,32 @@ export default {
         });
       });
     },
-    /**
-     * 这个方法会默认将当前 vm 的 this.filter 数据（对象）作为路由的 query
-     * 进行重定向。
-     */
-    query() {
-      // 为了让输出的 url 更简洁，默认选项不显示出来
-      const vm = this;
-      const filter = {};
-      if (!vm.filter) return;
-      Object.keys(vm.filter).forEach(key => {
-        if (vm.filter[key]) filter[key] = vm.filter[key];
-      });
-      vm.$router.replace({ query: filter });
+    // /**
+    //  * 这个方法会默认将当前 vm 的 this.filter 数据（对象）作为路由的 query
+    //  * 进行重定向。
+    //  */
+    // query() {
+    //   // 为了让输出的 url 更简洁，默认选项不显示出来
+    //   const vm = this;
+    //   const filter = {};
+    //   if (!vm.filter) return;
+    //   Object.keys(vm.filter).forEach(key => {
+    //     if (vm.filter[key]) filter[key] = vm.filter[key];
+    //   });
+    //   vm.$router.replace({ query: filter });
+    // },
+    getDistrict(adcode = 86) {
+      return this.$root.areaData[adcode] || [];
     },
-    getDistrict(zipCode = 86) {
-      return this.$root.areaData[zipCode] || [];
-    },
-    getDistrictNameByCode(zipCode) {
+    getDistrictNameByCode(adcode) {
       const data = this.$root.areaData;
-      const parentCode = this.getDistrictParentCode(zipCode);
-      return parentCode && data[parentCode][zipCode];
+      const parentCode = this.getDistrictParentCode(adcode);
+      return parentCode && data[parentCode][adcode];
     },
-    getDistrictParentCode(zipCode) {
-      if (zipCode % 10000 === 0) return 86;
-      if (zipCode % 100 === 0) return zipCode - zipCode % 10000;
-      return zipCode - zipCode % 100;
+    getDistrictParentCode(adcode) {
+      if (adcode % 10000 === 0) return 86;
+      if (adcode % 100 === 0) return adcode - adcode % 10000;
+      return adcode - adcode % 100;
     },
     getUrlFromRoute(route, absolute = true) {
       const vm = this;
