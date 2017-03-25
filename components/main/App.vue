@@ -3,10 +3,12 @@
     <header id="masthead" class="clearfix" v-if="me">
       <nav class="nav">
         <ul>
-          <li>
-            <a href="http://dizhutao.vps1.easecloud.cn/prototype" target="_blank">原型</a>
-          </li>
-          <li><span>&nbsp;&nbsp;|&nbsp;&nbsp;</span></li>
+          <template v-for="item in config.tooltip_menus">
+            <li>
+              <a :href="item.href" target="_blank">{{item.label}}</a>
+            </li>
+            <li><span>&nbsp;&nbsp;|&nbsp;&nbsp;</span></li>
+          </template>
           <li>
             <span class="anticon anticon-user"></span>
             <span>{{me.username}}</span>

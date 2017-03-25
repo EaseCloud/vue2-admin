@@ -8,6 +8,10 @@ export default {
   version: 'v0.1',
   // 初始路由
   init_route: { name: 'main_user_list' },
+  // 右上角的按钮链接
+  tooltip_menus: [
+    // { label: '原型', href: 'http://example.com/prototype/' },
+  ],
   // 权限菜单配置
   dynamic_menus: false,
   // dynamic_menus: {
