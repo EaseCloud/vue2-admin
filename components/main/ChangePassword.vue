@@ -5,9 +5,9 @@
       <h3 class="page-header-title">修改密码</h3>
       <h4 class="page-header-subtitle">修改当前用户的密码</h4>
       <div class="tooltips">
-        <!--<v-button v-if="me.is_superuser" type="dashed"-->
-                  <!--v-link="{query: {load_menu:1}}">重新加载菜单-->
-        <!--</v-button>-->
+        <v-button v-if="me.is_superuser && config.dynamic_menus" type="dashed"
+                  @click="syncMenus">同步菜单
+        </v-button>
       </div>
     </header>
 
@@ -58,6 +58,8 @@
 </template>
 
 <script lang="babel">
+  import menus from '../../../config/menus';
+
   export default {
     route: { canReuse: false },
     data() {
@@ -92,6 +94,17 @@
           });
         }
       },
+      syncMenus() {
+        const vm = this;
+        const menuModel = typeof vm.config.dynamic_menus === 'object'
+          && vm.config.dynamic_menus.model || 'Menu';
+        vm.api(menuModel).save({
+          action: 'sync',
+        }, { menus }).then(resp => {
+          console.log(resp);
+        });
+      },
     },
   };
 </script>
+

@@ -6,6 +6,8 @@ export default {
   platform_name: '地主淘',
   // 版本号
   version: 'v0.1',
+  // 初始路由
+  init_route: { name: 'main_user_list' },
   // 权限菜单配置
   dynamic_menus: false,
   // dynamic_menus: {

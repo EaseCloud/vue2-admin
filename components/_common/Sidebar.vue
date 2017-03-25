@@ -29,7 +29,6 @@
 </template>
 
 <script lang="babel">
-  import config from '../../../config/config';
   import menus from '../../../config/menus';
   import api from '../../resource/api';
 
@@ -42,8 +41,8 @@
     methods: {
       reload() {
         const vm = this;
+        const config = vm.config;
         // 默认情况下在 config.menus 下面配置菜单列表
-//        console.log(menus);
         if (config.dynamic_menus) {
           const menuConfig = {
             model: 'Menu',
