@@ -124,6 +124,9 @@
         type: Object,
         default: () => ({}),
       },
+      hooks: {
+        type: Object,
+      },
       size: {
         default: 'middle',
         validator(value) {
@@ -148,8 +151,22 @@
           page_size: vm.pager.page_size,
           ...vm.query,
         }).then(resp => {
-          vm.items = resp.data.results;
           vm.pager.page_count = Math.ceil(resp.data.count / vm.pager.page_size - 1e-5);
+          // 处理延迟计算
+          const items = resp.data.results;
+          if (vm.hooks && vm.hooks.item_before_render) {
+            const deferredPromises = [];
+            for(let i = 0; i < items.length; i += 1) {
+              deferredPromises.push(vm.hooks.item_before_render(items[i]).then(item => {
+                items[i] = item;
+              }));
+            }
+            Promise.all(deferredPromises).then(() => {
+              vm.items = items;
+            });
+          } else {
+            vm.items = items;
+          }
         });
       },
       doQuery(query) {

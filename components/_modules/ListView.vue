@@ -35,6 +35,7 @@
                          :pager="pager"
                          :actions="actions"
                          :filters="getFilters"
+                         :hooks="hooks"
                          @query="doQuery"></list-view-table>
 
         <slot name="after"></slot>
@@ -74,6 +75,9 @@
       filters: {
         type: Object,
         default: () => ({}),
+      },
+      hooks: {
+        type: Object,
       },
     },
     data() {
