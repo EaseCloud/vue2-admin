@@ -100,7 +100,10 @@
           && vm.config.dynamic_menus.model || 'Menu';
         vm.api(menuModel).save({
           action: 'sync',
-        }, { menus }).then(resp => {
+        }, {
+          project: vm.config.project || '',
+          menus,
+        }).then(resp => {
           console.log(resp);
         });
       },

@@ -66,6 +66,7 @@
           }
           api(menuConfig.model).get({
             action: menuConfig.action,
+            project: config.project || '',
           }).then(resp => {
             vm.menus = resp.data;
           });
