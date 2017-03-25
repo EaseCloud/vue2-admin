@@ -36,7 +36,7 @@
   export default {
     data() {
       return {
-        menus,
+        menus: [],
       };
     },
     methods: {
@@ -70,6 +70,8 @@
           }).then(resp => {
             vm.menus = resp.data;
           });
+        } else {
+          vm.menus = menus;
         }
       },
       toggle(menu, event) {
