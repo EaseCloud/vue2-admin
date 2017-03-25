@@ -8,15 +8,8 @@
       <div class="tooltips">
         <!-- 保存动作 -->
         <template v-if="options.can_edit">
-          <v-button @click="submit(false)">保存并继续编辑</v-button>
+          <v-button @click="save()">保存并继续编辑</v-button>
           <v-button type="primary" @click="submit()">保存</v-button>
-        </template>
-        <!-- run 保存动作-->
-        <template v-if="options.can_edit_run">
-          <v-button @click="submit(false)">保存并继续编辑</v-button>
-          <v-button type="primary" @click="submit(true, true)">保存</v-button>
-        <template v-if="options.can_edit_back">
-          <v-button type="primary" @click="submit(false)">保存</v-button>
         </template>
         <!-- 动态动作按钮 -->
         <template v-for="action in actions">
@@ -30,12 +23,11 @@
         <!-- 删除动作 -->
         <template v-if="options.can_delete">
           <v-button type="dashed" v-if="item[pk]"
-                    @click="deleteModel(model, item[pk], '确认删除【'+item.name+'】？',
-                  '', redirectList)">
+                    @click="erase()">
             删除
           </v-button>
         </template>
-        <v-button type="ghost" @click="$router.back()" v-if="!options.can_edit_back">返回</v-button>
+        <v-button type="ghost" @click="$router.back()">返回</v-button>
       </div>
     </header>
 
@@ -70,7 +62,27 @@
       actions: Array,
       options: {
         type: Object,
-        default: {},
+        default: {
+          can_create: true,
+          can_edit: true,
+          can_delete: true,
+          hooks: {
+            pre_delete(vm) {
+              // 如果返回 false，取消动作
+              return true;
+            },
+            post_delete(vm) {
+              // 删除之后执行
+            },
+            pre_save(vm) {
+              // 如果返回 false，取消动作
+              return true;
+            },
+            post_save(vm) {
+              // 保存之后执行，如果需要控制保存之后的跳转动作，可以在这里实现
+            },
+          },
+        },
       },
     },
     data() {
@@ -95,15 +107,14 @@
         const vm = this;
         // 获取主体信息
         if (Number(vm.$route.params.id)) {
-          vm.api().get({
+          return vm.api().get({
             id: vm.$route.params.id,
           }).then(resp => {
             vm.item = resp.data;
-            vm.render();
+            return vm.render();
           });
-        } else {
-          vm.render();
         }
+        return vm.render();
       },
       getField(path) {
         let result = this.item;
@@ -146,7 +157,7 @@
           promiseGetResult = Promise.resolve(vm.getField(field.key));
         }
         // 处理原始的字段值
-        promiseGetResult.then(rawResult => {
+        return promiseGetResult.then(rawResult => {
           let result = rawResult;
           // default
           if (result === undefined && field.default) {
@@ -167,37 +178,69 @@
       render() {
         const vm = this;
         // set default value
-        vm.fields.forEach(field => {
-          vm.renderField(field);
-        });
+        return Promise.all(vm.fields.map(field => vm.renderField(field)));
       },
       redirectList() {
-        this.$router.push({ name: `main_${this.modelUnderscore}_list` });
-      },
-      submit(backToList = true, back = false) {
         const vm = this;
+        // 检查路由是否存在，如果不存在就 router.back
+        try {
+          const route = { name: `main_${this.modelUnderscore}_list` };
+          // 检查路由是否存在，如果路由不合法，会抛错
+          vm.$router.resolve(route);
+          this.$router.push(route);
+        } catch (e) {
+          vm.$router.back();
+        }
+      },
+      save() {
+        const vm = this;
+        // 保存前置钩子
+        if (vm.options.hooks && vm.options.hooks.pre_save
+          && !vm.options.hooks.pre_save(vm)) {
+          return Promise.reject();
+        }
         const promise = Number(vm.$route.params.id)
           ? api(vm.model).patch({ id: vm.item[vm.pk] }, vm.item)
           : api(vm.model).save({ ...vm.item });
-        promise.then(resp => {
+        return promise.then(resp => {
           vm.notify('操作成功');
-          if (back) {
-            vm.$router.back();
-            return;
+          // 创建的情况
+          if (!vm.item[vm.pk]) {
+            vm.$router.replace({
+              params: {
+                id: resp.data[vm.pk],
+              },
+            });
           }
-          if (backToList) {
-            vm.redirectList();
-          } else {
-            // 创建的情况
-            if (!vm.item[vm.pk]) {
-              vm.$router.replace({
-                params: {
-                  id: resp.data[vm.pk],
-                },
-              });
-            }
-            vm.reload();
-          }
+          return vm.reload();
+        });
+      },
+      submit() {
+        const vm = this;
+        vm.save().then(() => {
+          // 保存后置钩子
+          const hookPostSave = vm.options.hooks && vm.options.hooks.post_save
+            || (() => vm.redirectList());
+          hookPostSave(vm);
+        });
+      },
+      erase() {
+        const vm = this;
+        // 删除前置钩子
+        if (vm.options.hooks && vm.options.hooks.pre_delete
+          && !vm.options.hooks.pre_delete(vm)) {
+          return Promise.reject();
+        }
+        const deleteName = vm.item.name ? `【${vm.item.name}】` : '这个对象';
+        vm.deleteModel(
+          vm.model,
+          vm.item[vm.pk],
+          `确认删除${deleteName}？`,
+        ).then(() => {
+          // 删除后置钩子
+          const hookPostDelete = vm.options.hooks
+            && vm.options.hooks.post_delete || (() => vm.redirectList());
+          hookPostDelete(vm);
         });
       },
       onUpdate(field) {

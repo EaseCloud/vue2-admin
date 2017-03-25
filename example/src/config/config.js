@@ -6,5 +6,11 @@ export default {
   platform_name: '地主淘',
   // 版本号
   version: 'v0.1',
+  // 权限菜单配置
+  dynamic_menus: true,
+  // dynamic_menus: {
+  //   model: 'Menu',
+  //   action: 'get_user_menu',
+  // }
 };
 

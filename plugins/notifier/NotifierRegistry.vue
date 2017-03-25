@@ -113,7 +113,7 @@
                 </div>
                 <!-- type: district -->
                 <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'district'">
-                  <district-picker :district.sync="field.value"></district-picker>
+                  <district-picker v-model="field.value"></district-picker>
                 </div>
                 <!-- type: select -->
                 <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'select'">

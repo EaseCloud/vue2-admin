@@ -167,8 +167,10 @@
       </v-col>
 
       <!-- type: district -->
-      <v-col :span="18" v-else-if="field.type == 'district'">
-        尚未实现
+      <v-col :span="12" v-else-if="field.type == 'district'">
+        <district-picker v-model="field.value"
+                         :readonly="field.readonly"
+                         @input="$emit('update', field)"></district-picker>
       </v-col>
 
       <!-- type: list-view -->
