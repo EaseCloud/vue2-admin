@@ -46,7 +46,7 @@
           isVisible: item => item.status === 'PENDING',
           buttonClass: 'primary',
           action(item) {
-            vm.api().patch({ id: item.id }, { status: 'SUCCESS' }).then(resp => {
+            vm.api().patch({ id: item.id }, { status: 'SUCCESS' }).then(() => {
               vm.notify('审批通过');
               vm.$refs.view.reload();
             });
@@ -55,7 +55,7 @@
           title: '驳回',
           isVisible: item => item.status === 'PENDING',
           action(item) {
-            vm.api().patch({ id: item.id }, { status: 'REJECTED' }).then(resp => {
+            vm.api().patch({ id: item.id }, { status: 'REJECTED' }).then(() => {
               vm.notify('审批驳回');
               vm.$refs.view.reload();
             });

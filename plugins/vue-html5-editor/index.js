@@ -22,7 +22,8 @@ import arrayFill from "./array-polyfill";
  * @param Vue   {Vue}
  * @param options {Object}
  */
-exports.install = (Vue, options) => {
+export default {
+  install(Vue, options) {
 
     arrayFill()
 
@@ -122,4 +123,5 @@ exports.install = (Vue, options) => {
     })
 
     Vue.component(options.name || "vue-html5-editor", component)
+  }
 }

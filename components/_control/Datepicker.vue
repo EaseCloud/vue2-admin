@@ -453,19 +453,13 @@
 <script lang="babel">
 
   /* eslint-disable */
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
   var _moment = require('moment');
 
   var _moment2 = _interopRequireDefault(_moment);
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-  exports.default = {
+  export default {
     props: {
       required: false,
       value: {
