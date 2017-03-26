@@ -352,10 +352,200 @@ TODO: 尚未撰写
 
 ### 4.1. 列表数据
 
+#### 4.1.1. ListView 和 ListViewTable 组件
+
+#### 4.1.2. 属性
+
+##### model
+
+##### pk
+
+##### title
+
+##### subtitle
+
+##### options
+
+##### cols **\[重要]**
+
+##### actions
+
+##### hooks
+
+###### hooks.item_before_render
+
 ### 4.2. 列表字段
+
+#### 4.2.1. 对象渲染过程
+
+1. 逐个字段处理 hooks.item_before_render
+1. 调用 `getColValue(col, item)`（具体参见 4.2.2 各字段方法的说明）
+  * 根据 key 来定位对象属性
+  * 将得到的对象属性使用 `col.filter` 过滤
+  * 将过滤后的属性使用 `col.mapper` 映射
+1. 将 `getColValue(col, item)` 最终的取值根据不同的字段类型渲染到列表元素中
+
+#### 4.2.2. 字段属性定义
+
+##### 【重要】动态求值说明
+
+所有的字段属性都支持动态求值，也就是说，假设这个属性 `col.prop` 正常使用可能是一个字符串或者字典等类型，
+但是我们可以将其设置成一个函数，那么这个属性具体使用的取值就采用 `col.prop(item)` 来使用。
+
+##### col.type
+
+字段的类型，默认为 readonly。
+
+支持的类型请参见 4.2.4 字段类型。
+
+##### col.key
+
+字段的键值，假设在列表中遍历的对象为 item，则实际渲染的值为 vm.getColValue(item)。
+
+**缺省**
+
+实际字段取值时直接返回 item 整个对象。
+
+**取值为字符串**
+
+首先会按照 `.` 字符分割 `col.key` 取值字符串，然后尝试对 item 的嵌套成员取值：
+
+例如：`col.key = 'a.b.c'`
+
+则实际取值为 `item['a']['b']['c']`，如果中途出现取值失败，最终会返回 null。
+
+**取值为函数（动态求值）**
+
+会直接返回 `col.key(item)` 的结果（应当为一个字符串）然后按照字符串的情况执行。
+
+举个例子，列表返回的模型格式如下：
+
+```
+{
+  id: 32,
+  name: '张三',
+  user_item: {
+    username: 'zhangsan',
+    email: 'zhangsan@example.com',
+    avatar: {
+      id: 66,
+      image: 'https://example.com/media/avatar-32.png',
+    },
+  },
+}
+```
+
+那么我们设定这样的 col 值就可以输出邮箱（注意 key 的取值）：
+
+```
+cols: [
+  // ...
+  { title: '邮箱', key: 'user_item.email' },
+],
+```
+
+##### col.mapper
+
+设置一个字典，在 getColValue 的 filter 之后进行查表过滤。
+
+一般用于一些选项的便捷输出，因为后台记录的是选项的值，需要输出选项的显示名称时很好用。
+
+可以设置一个特殊的 `__else__` 映射值，任何未查到的字段输出这个值。
+
+举个例子：
+
+`/src/config/choices.js`
+
+```
+export default {
+  // ...
+  order_status: {
+    PENDING: '等待付款',
+    PAID: '等待发货',
+    DELIVERED: '等待收货',
+    COMPLETE: '已完成',
+    __else__: '未知状态',
+  },
+};
+```
+
+```
+cols: [
+  // ...
+  { title: '状态', key: 'status', mapper: vm.choices.order_status },
+],
+```
+
+**支持动态求值：**也可以指定为一个方法，如果指定为方法，则上述查表的字典则使用 `col.mapper(item)` 的返回值。
+
+##### col.title
+
+显示在列表头部的标签名称。
+
+##### col.style
+
+在该列对应的 `<td>` 元素上应用的样式。
+
+##### col.thStyle
+
+在该列对应的表头 `<th>` 元素上应用的样式。
+
+#### 4.2.3. 字段通用方法
+
+##### col.filtering
+
+##### col.filter
+
+必须为一个
+
+##### col.ordering
+
+接受一个字符串，直接对应 api 调用的 QueryString `?ordering=xxx,xxx`。
+
+后台应按照传入的这个查询，对返回列表进行排序。
+
+按照 Django Rest Framework 惯例，直接开启对应的 OrderingFilter backend 即可直接支持。
+
+```
+# =========== REST Framework ==============
+REST_FRAMEWORK = {
+    # ...
+    'DEFAULT_FILTER_BACKENDS': (
+        # ...
+        'rest_framework.filters.OrderingFilter',
+    ),
+    # ...
+}
+```
+
+#### 4.2.4. 字段类型
+
+##### label \[ListView/EditView]
+
+直接输出字段内容，html 标签会被自动转移，例如 `<a href="http://somewhere.com">xxx</a>` 
+会变成文本渲染，而不会渲染成一个链接。
+
+如果需要输出 html 实体，请使用 html 类型输出。
+
+##### (deprecated) readonly \[ListView]
+
+label 的别名，已经废弃，仅 ListView 保留支持，请避免使用。
+
+##### html \[ListView]
+
+同样直接输出字段内容，但是支持 html 实体输出，暂时不支持组件实体，只支持原生 html 标签。
+
+##### link \[ListView]
+
+##### image \[ListView]
+
+##### switch \[ListView]
 
 ### 4.3. 表单数据
 
+#### 4.3.1. EditView 和 EmbedForm 组件
+
+#### 4.3.2. 属性
 ### 4.4. 表单字段
 
 

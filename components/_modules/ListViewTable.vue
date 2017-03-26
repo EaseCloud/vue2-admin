@@ -38,10 +38,13 @@
         <tbody class="ant-table-tbody">
         <tr class="ant-table" v-for="item in items">
           <td v-for="(col, i) in cols" :style="col.style || {}">
-            <template v-if="!col.type || col.type=='readonly'">{{getColValue(col, item)}}</template>
+            <!-- type: default/readonly/label -->
+            <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}</template>
+            <!-- type: html -->
             <template v-else-if="col.type=='html'">
               <div v-html="getColValue(col, item)"></div>
             </template>
+            <!-- type: link -->
             <template v-else-if="col.type=='link'">
               <router-link :to="col.route(item)"
                            v-if="col.route && col.route(item)">
@@ -49,10 +52,12 @@
               </router-link>
               <template v-else>{{col.text(item)}}</template>
             </template>
+            <!-- type: image -->
             <template v-else-if="col.type=='image'">
               <img :src="getColValue(col, item)"
                    :style="col.style || {maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
             </template>
+            <!-- type: switch -->
             <template v-else-if="col.type=='switch'">
               <v-switch v-model="item[col.key]"
                         @change="updateModel(

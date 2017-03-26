@@ -166,11 +166,14 @@ export default {
     },
     // View utils
     getColValue(col, item) {
+      // console.log(
+      //   'getColValue',
+      //   JSON.parse(JSON.stringify(col)),
+      //   JSON.parse(JSON.stringify(item)),
+      // );
       let value = item;
       if (col.key) {
-        col.key.split('.').forEach(key => {
-          value = value === 'undefined' ? null : (value && value[key]);
-        });
+        value = this.getProperty(item, this.evaluate(col.key, item));
       }
       if (col.filter) {
         value = col.filter(value, item);
@@ -180,11 +183,32 @@ export default {
       }
       return value;
     },
-    evaluate(self, field, item) {
-      if (self[field] instanceof Function) {
-        return self[field](item);
+    getProperty(item, keyStr) {
+      // 缺省 keyStr 的时候直接返回 item
+      if (!keyStr) return item;
+      // 执行 keyStr 级联求值
+      let value = item;
+      if (typeof (keyStr || '') !== 'string') {
+        console.warn('getProperty 属性的 key 取值不规范');
+        console.log('keyStr:', keyStr);
+        console.log('item:', item);
       }
-      return self[field];
+      keyStr.split('.').forEach(key => {
+        try {
+          value = value && value[key] || null;
+        } catch (e) {
+          console.error('getProperty 求值错误', e);
+        }
+      });
+      return value;
+    },
+    evaluate(self, keyStr, item) {
+      if (keyStr && typeof keyStr !== 'string') {
+        console.warn('evaluate 指定的 field 无效，应为一个字符串');
+        return this.evaluate(self, '', item);
+      }
+      const obj = keyStr ? this.getProperty(self, keyStr) : self;
+      return obj instanceof Function ? obj[item] : obj;
     },
     setQueryKey(key, value) {
       const vm = this;
