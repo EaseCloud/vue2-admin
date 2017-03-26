@@ -11,12 +11,13 @@
           <div>
             <a :href="value.image" target="_blank"
                rel="noopener noreferrer">
-              <i class="anticon anticon-eye-o"></i>
+              <i class="anticon anticon-eye-o"
+                 style="margin: -8px 0 0 -22px"></i>
             </a>
             <i v-if="!readonly"
                class="anticon anticon-delete"
                @click="$emit('input', null)"
-            ></i>
+               style="margin: -8px 0 0 6px"></i>
           </div>
         </div>
       </div>

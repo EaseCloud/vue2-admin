@@ -6,6 +6,7 @@
     <v-row :gutter="6"
            type="flex"
            :key="field.pk"
+           style="margin: 4px 0"
            v-for="field in fields">
 
       <v-col :span="6" class="ant-form-item-label">
@@ -53,14 +54,14 @@
       <!-- type: datepicker -->
       <v-col :span="8" class="ant-form-item-control"
              v-else-if="field.type == 'datepicker'">
-        <datepicker :placeholder="field.placeholder"
-                    v-model="field.value"
-                    :type="field.pick_time?'min':'day'"
-                    @input="$emit('update', field)"
-                    :format="field.format || (field.pick_time ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD')"
-                    :limit="[{type: 'fromto', to: field.to || '2999-01-01'},
-                    {type: 'fromto', from: field.from || '1900-01-01'}]"
-                    :input-class="{'ant-input': true}"></datepicker>
+        <!-- TODO: from/to 未实现 -->
+        <!-- TODO: 时间选择有问题，不能读取以及 emit 出去 -->
+        <v-date-picker v-model="field.value"
+                       clearable
+                       :show-time="field.show_time || field.pick_time"
+                       :format="field.format || 'yyyy-MM-dd'"
+                       @change="$emit('update', field)"
+        ></v-date-picker>
       </v-col>
 
       <!-- type: label -->

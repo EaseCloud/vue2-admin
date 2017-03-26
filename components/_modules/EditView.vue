@@ -258,6 +258,7 @@
         } else {
           vm.item[field.key] = field.value;
         }
+//        console.log(JSON.parse(JSON.stringify(field)));
         vm.renderField(field);
       },
     },

@@ -76,7 +76,7 @@
               </template>
               <v-button v-if="options.can_edit"
                         size="small" type="ghost"
-                        :to="{name:'main_'+modelUnderscore+'_edit', params: {id: item[pk]}}">
+                        @click="$router.push({name:'main_'+modelUnderscore+'_edit', params: {id: item[pk]}})">
                 编辑
               </v-button>
               <v-button v-if="options.can_delete"
