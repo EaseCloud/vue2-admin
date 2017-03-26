@@ -10,7 +10,8 @@
             <img :src="image.image" alt=""/>
           </a>
           <div>
-            <a :href="image.image" target="_blank"
+            <a href="javascript:"
+               @click="previewImages(value, i)"
                rel="noopener noreferrer">
               <i class="anticon anticon-eye-o"
                  style="margin: -8px 0 0 -22px"></i>

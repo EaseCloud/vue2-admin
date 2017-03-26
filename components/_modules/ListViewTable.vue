@@ -39,7 +39,8 @@
         <tr class="ant-table" v-for="item in items">
           <td v-for="(col, i) in cols" :style="col.style || {}">
             <!-- type: default/readonly/label -->
-            <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}</template>
+            <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}
+            </template>
             <!-- type: html -->
             <template v-else-if="col.type=='html'">
               <div v-html="getColValue(col, item)"></div>
@@ -54,7 +55,13 @@
             </template>
             <!-- type: image -->
             <template v-else-if="col.type=='image'">
-              <img :src="getColValue(col, item)"
+              <img v-if="getColValue(col, item)"
+                   :src="getColValue(col, item)"
+                   style="cursor: pointer;"
+                   @click="previewImages([getColValue(col, item)])"
+                   :style="col.style || {maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
+              <img v-else src="../../assets/images/no-image.png"
+                   style="background: #F4F4F4; cursor: not-allowed; object-fit: contain; -o-object-fit: contain"
                    :style="col.style || {maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
             </template>
             <!-- type: switch -->
@@ -161,7 +168,7 @@
           const items = resp.data.results;
           if (vm.hooks && vm.hooks.item_before_render) {
             const deferredPromises = [];
-            for(let i = 0; i < items.length; i += 1) {
+            for (let i = 0; i < items.length; i += 1) {
               deferredPromises.push(vm.hooks.item_before_render(items[i]).then(item => {
                 items[i] = item;
               }));
@@ -239,3 +246,4 @@
     opacity: 0;
   }
 </style>
+
