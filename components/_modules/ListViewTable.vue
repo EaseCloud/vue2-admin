@@ -19,17 +19,36 @@
             <template v-else>{{col.title}}</template>
             <!-- 筛选器 -->
             <template v-if="col.filtering">
-              <div v-if="query[col.filtering.search_field]"
-                   class="ant-tag"
-                   style="font-weight: normal; color: #AAA; background: white;">
+              <!-- type: keyword 按照关键词筛选 -->
+              <template v-if="(col.filtering.type||'keyword')=='keyword'">
+                <div v-if="query[col.filtering.search_field]"
+                     class="ant-tag"
+                     style="font-weight: normal; color: #AAA; background: white;">
                   <span class="ant-tag-text" @click="callFilter(col)">
                     {{query[col.filtering.search_field]}}
                     <i class="anticon anticon-cross"
                        @click.stop="doQuery({[col.filtering.search_field]: null})"></i>
                   </span>
-              </div>
-              <span v-else class="anticon anticon-filter"
-                    @click="callFilter(col)"></span>
+                </div>
+                <span v-else class="anticon anticon-filter"
+                      @click="callFilter(col)"></span>
+              </template>
+              <!-- type: select 按照选项筛选 -->
+              <template v-if="col.filtering.type=='select'">
+                <v-dropdown trigger="click" :options="getColFilteringChoices(col)">
+                  <div v-if="query[col.filtering.search_field]"
+                       class="ant-tag"
+                       style="font-weight: normal; color: #AAA; background: white;">
+                  <span class="ant-tag-text" @click="callFilter(col)">
+                    {{query[col.filtering.search_field]}}
+                    <i class="anticon anticon-cross"
+                       @click.stop="doQuery({[col.filtering.search_field]: null})"></i>
+                  </span>
+                  </div>
+                  <span v-else class="anticon anticon-filter"
+                        @click="callFilter(col)"></span>
+                </v-dropdown>
+              </template>
             </template>
           </th>
           <th v-if="options.show_actions !== false">操作</th>
@@ -67,8 +86,8 @@
             <!-- type: switch -->
             <template v-else-if="col.type=='switch'">
               <v-switch v-model="item[col.key]"
-                        @change="updateModel(
-                            model, item[pk], col.key, $event, '', reload)">
+                        @input="updateModel(
+                            model, item[pk], col.key, $event, '操作成功', reload)">
                 <span slot="checked">{{col.checked}}</span>
                 <span slot="unchecked">{{col.unchecked}}</span>
               </v-switch>
@@ -94,7 +113,7 @@
               <v-button v-if="options.can_delete"
                         size="small" type="dashed"
                         @click="deleteModel(
-                            model, item[pk], '确认删除【'+item.name+'】?', '', reload)">
+                            model, item[pk], '确认删除'+(item.name?'【'+item.name+'】':'这个对象')+'?', '操作成功', reload)">
                 删除
               </v-button>
             </slot>
@@ -200,6 +219,19 @@
         });
       },
       /**
+       * col.filtering.type == 'select' 专用
+       * 将选项倒腾成 vue-beauty 的 Dropdown.option 接受的格式
+       */
+      getColFilteringChoices(col) {
+        if (!(col.filtering && col.filtering.choices)) {
+          console.warn('select 筛选用的列没有指定选项：');
+          console.log(JSON.parse(JSON.stringify(col)));
+        }
+        return col.filtering.choices.map(item => {
+          content: item.text
+        });
+      },
+      /**
        * 按照某个字段进行排序
        * @param ordering
        */
@@ -231,6 +263,7 @@
               page: 1,  // 改变筛选条件，页码归零
             });
           });
+        } else if (col.filtering.type === 'select') {
         }
       },
       pageTo(page) {

@@ -52,26 +52,35 @@ export default {
         //   vm.itemsNotify.splice(index, 1);
         // },
         confirm(content, title = '操作确认', options = {}) {
-          const vm = this.vmNotifier;
-          const DEFAULTS = {
-            size: 'md',  // sm/lg/md
-          };
-          const deferred = new Deferred();
-          const item = Object.assign({
-            title,
-            content,
-            deferred,
-          }, options, DEFAULTS);
-          vm.itemsConfirm.unshift(item);
-          return deferred.promise;
+          // const vm = this.$root;
+          return new Promise((resolve, reject) => {
+            Vue.$modal.confirm({
+              title,
+              content,
+              onOk: resolve,
+              onCancel: reject,
+            });
+          });
+          // const vm = this.vmNotifier;
+          // const DEFAULTS = {
+          //   size: 'md',  // sm/lg/md
+          // };
+          // const deferred = new Deferred();
+          // const item = Object.assign({
+          //   title,
+          //   content,
+          //   deferred,
+          // }, options, DEFAULTS);
+          // vm.itemsConfirm.unshift(item);
+          // return deferred.promise;
         },
-        confirmAction(success = true, index = -1, params = {}) {
-          const vm = this.vmNotifier;
-          const pos = index === -1 ? vm.itemsConfirm.length - 1 : index;
-          const item = vm.itemsConfirm[pos];
-          vm.itemsConfirm.splice(pos, 1);
-          return item.deferred[success ? 'resolve' : 'reject'](params);
-        },
+        // confirmAction(success = true, index = -1, params = {}) {
+        //   const vm = this.vmNotifier;
+        //   const pos = index === -1 ? vm.itemsConfirm.length - 1 : index;
+        //   const item = vm.itemsConfirm[pos];
+        //   vm.itemsConfirm.splice(pos, 1);
+        //   return item.deferred[success ? 'resolve' : 'reject'](params);
+        // },
         modalForm(form) {
           const vm = this.vmNotifier;
           form.deferred = new Deferred();

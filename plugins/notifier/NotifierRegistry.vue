@@ -23,33 +23,33 @@
       <!--</div>-->
     <!--</div>-->
 
-    <div class="ant-modal-wrap block-modal-form"
-         v-for="(item, i) in itemsConfirm">
-      <div role="document" class="ant-modal" style="width: 520px;">
-        <div class="ant-modal-content">
-          <button class="ant-modal-close" @click="confirmAction(false, i)">
-            <span class="ant-modal-close-x"></span>
-          </button>
-          <div class="ant-modal-header">
-            <div class="ant-modal-title">{{item.title}}</div>
-          </div>
-          <div class="ant-modal-body" v-html="item.content"></div>
-          <div class="ant-modal-footer">
-            <button type="button"
-                    @click="confirmAction(false, i)"
-                    class="ant-btn ant-btn-ghost ant-btn-lg">
-              <span>取消</span>
-            </button>
-            <button type="button"
-                    @click="confirmAction(true, i)"
-                    class="ant-btn ant-btn-primary ant-btn-lg">
-              <span>确认</span>
-            </button>
-          </div>
-        </div>
-        <div tabindex="0" style="width: 0; height: 0; overflow: hidden;">sentinel</div>
-      </div>
-    </div>
+    <!--<div class="ant-modal-wrap block-modal-form"-->
+         <!--v-for="(item, i) in itemsConfirm">-->
+      <!--<div role="document" class="ant-modal" style="width: 520px;">-->
+        <!--<div class="ant-modal-content">-->
+          <!--<button class="ant-modal-close" @click="confirmAction(false, i)">-->
+            <!--<span class="ant-modal-close-x"></span>-->
+          <!--</button>-->
+          <!--<div class="ant-modal-header">-->
+            <!--<div class="ant-modal-title">{{item.title}}</div>-->
+          <!--</div>-->
+          <!--<div class="ant-modal-body" v-html="item.content"></div>-->
+          <!--<div class="ant-modal-footer">-->
+            <!--<button type="button"-->
+                    <!--@click="confirmAction(false, i)"-->
+                    <!--class="ant-btn ant-btn-ghost ant-btn-lg">-->
+              <!--<span>取消</span>-->
+            <!--</button>-->
+            <!--<button type="button"-->
+                    <!--@click="confirmAction(true, i)"-->
+                    <!--class="ant-btn ant-btn-primary ant-btn-lg">-->
+              <!--<span>确认</span>-->
+            <!--</button>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div tabindex="0" style="width: 0; height: 0; overflow: hidden;">sentinel</div>-->
+      <!--</div>-->
+    <!--</div>-->
 
     <div v-if="modalFormData"
          class="ant-modal-wrap block-modal-form">
@@ -165,7 +165,7 @@
     data() {
       return {
 //        itemsNotify: [],
-        itemsConfirm: [],
+//        itemsConfirm: [],
         itemsPrompt: [],
         modalFormData: null,
         imagepicker: {

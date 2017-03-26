@@ -76,7 +76,7 @@ export default {
       const vm = this;
       return api(model).patch({ id }, { [field]: value }).then(resp => {
         const item = resp.data;
-        if (notify) vm.notify(notify);
+        if (notify) vm.$message.success(notify);
         if (callback) callback(item);
       });
     },
@@ -85,7 +85,7 @@ export default {
       const promise = confirm ? this.confirm(confirm) : Promise.resolve();
       return promise.then(() => {
         api(model).delete({ id }).then(() => {
-          if (notify) vm.notify(notify);
+          if (notify) vm.$message.success(notify);
           if (callback) callback();
         });
       });
