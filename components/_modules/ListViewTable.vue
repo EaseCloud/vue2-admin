@@ -35,19 +35,20 @@
               </template>
               <!-- type: select 按照选项筛选 -->
               <template v-if="col.filtering.type=='select'">
-                <v-dropdown trigger="click" :options="getColFilteringChoices(col)">
-                  <div v-if="query[col.filtering.search_field]"
-                       class="ant-tag"
-                       style="font-weight: normal; color: #AAA; background: white;">
-                  <span class="ant-tag-text" @click="callFilter(col)">
-                    {{query[col.filtering.search_field]}}
-                    <i class="anticon anticon-cross"
-                       @click.stop="doQuery({[col.filtering.search_field]: null})"></i>
-                  </span>
-                  </div>
-                  <span v-else class="anticon anticon-filter"
-                        @click="callFilter(col)"></span>
-                </v-dropdown>
+                <!-- TODO: v-dropdown 在 vue-beauty 中未实现 -->
+                <!--<v-dropdown trigger="click" :options="getColFilteringChoices(col)">-->
+                  <!--<div v-if="query[col.filtering.search_field]"-->
+                       <!--class="ant-tag"-->
+                       <!--style="font-weight: normal; color: #AAA; background: white;">-->
+                  <!--<span class="ant-tag-text" @click="callFilter(col)">-->
+                    <!--{{query[col.filtering.search_field]}}-->
+                    <!--<i class="anticon anticon-cross"-->
+                       <!--@click.stop="doQuery({[col.filtering.search_field]: null})"></i>-->
+                  <!--</span>-->
+                  <!--</div>-->
+                  <!--<span v-else class="anticon anticon-filter"-->
+                        <!--@click="callFilter(col)"></span>-->
+                <!--</v-dropdown>-->
               </template>
             </template>
           </th>
