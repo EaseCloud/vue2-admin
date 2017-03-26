@@ -28,7 +28,6 @@ export default {
     // Vue Plugins
     // -------------------------
     Vue.use(VueAntd);
-
     Vue.use(Notifier);
     Vue.use(GeoPicker);
     Vue.use(VueHtml5Editor, {

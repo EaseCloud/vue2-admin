@@ -312,7 +312,7 @@ export default {
 
 #### 3.2.15. vm.getColValue(col, item) (public)
 
-#### 3.2.16. vm.evaluate(self, field, item) (public)
+#### 3.2.16. vm.evaluate(self, item, keyStr) (public)
 
 #### 3.2.17. vm.setQueryKey(key, value) (public)
 
@@ -365,6 +365,14 @@ TODO: 尚未撰写
 ##### subtitle
 
 ##### options
+
+###### options.can_create
+
+###### options.can_edit
+
+###### options.can_delete
+
+###### options.show_actions
 
 ##### cols **\[重要]**
 
@@ -520,6 +528,10 @@ REST_FRAMEWORK = {
 
 #### 4.2.4. 字段类型
 
+注意：ListView 默认类型为 label，EditView 默认类型为 input。
+
+##### input \[EditView]
+
 ##### label \[ListView/EditView]
 
 直接输出字段内容，html 标签会被自动转移，例如 `<a href="http://somewhere.com">xxx</a>` 
@@ -531,15 +543,37 @@ REST_FRAMEWORK = {
 
 label 的别名，已经废弃，仅 ListView 保留支持，请避免使用。
 
-##### html \[ListView]
+##### html \[ListView/EditView]
 
 同样直接输出字段内容，但是支持 html 实体输出，暂时不支持组件实体，只支持原生 html 标签。
 
 ##### link \[ListView]
 
-##### image \[ListView]
+##### image \[ListView/EditView]
 
-##### switch \[ListView]
+##### switch \[ListView/EditView]
+
+##### number \[EditView]
+
+##### datepicker \[EditView]
+
+##### select (尚未实现) \[EditView]
+
+##### radio \[EditView]
+
+##### radio-button \[EditView]
+
+##### qrcode \[EditView]
+
+##### gellery \[EditView]
+
+##### geo \[EditView]
+
+##### district \[EditView]
+
+##### list-view \[EditView]
+
+##### object \[EditView]
 
 ### 4.3. 表单数据
 

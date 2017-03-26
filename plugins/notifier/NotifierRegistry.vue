@@ -2,26 +2,26 @@
 
   <div class="notifiers">
 
-    <div class="block-notify">
-      <div class="ant-notification" v-for="(item, i) in itemsNotify">
-        <div class="ant-notification-notice ant-notification-notice-closable">
-          <div class="ant-notification-notice-content">
-            <div class="ant-notification-notice-content ">
-              <div class="ant-notification-notice-message">
-                {{ item.title }}
-              </div>
-              <div class="ant-notification-notice-description">
-                {{ item.content }}
-              </div>
-            </div>
-          </div>
-          <a tabindex="0" @click="dismissNotify(i);"
-             class="ant-notification-notice-close">
-            <span class="ant-notification-notice-close-x"></span>
-          </a>
-        </div>
-      </div>
-    </div>
+    <!--<div class="block-notify">-->
+      <!--<div class="ant-notification" v-for="(item, i) in itemsNotify">-->
+        <!--<div class="ant-notification-notice ant-notification-notice-closable">-->
+          <!--<div class="ant-notification-notice-content">-->
+            <!--<div class="ant-notification-notice-content ">-->
+              <!--<div class="ant-notification-notice-message">-->
+                <!--{{ item.title }}-->
+              <!--</div>-->
+              <!--<div class="ant-notification-notice-description">-->
+                <!--{{ item.content }}-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<a tabindex="0" @click="dismissNotify(i);"-->
+             <!--class="ant-notification-notice-close">-->
+            <!--<span class="ant-notification-notice-close-x"></span>-->
+          <!--</a>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
 
     <div class="ant-modal-wrap block-modal-form"
          v-for="(item, i) in itemsConfirm">
@@ -164,7 +164,7 @@
   export default {
     data() {
       return {
-        itemsNotify: [],
+//        itemsNotify: [],
         itemsConfirm: [],
         itemsPrompt: [],
         modalFormData: null,

@@ -76,7 +76,7 @@
                   size="small"
                   :type="action.buttonClass || 'ghost'"
                   @click="action.action(item)">
-                  {{evaluate(action, 'title', item)}}
+                  {{evaluate(action.title, item)}}
                 </v-button> <!--防止按钮之间粘住-->
               </template>
               <v-button v-if="options.can_edit"

@@ -8,15 +8,15 @@ export default {
     Vue.mixin({
       components: { GeoPicker, GeoPickerRegistry },
       mounted() {
-        if (this.$root === this && !this.vmGeoPicker) {
+        const vm = this;
+        if (vm.$root === vm && vm.$route && !vm.vmGeoPicker) {
           const msg = '请在路由根插件内置入 <geo-picker-registry ref="geopicker"/>';
           console.error(msg);
         }
       },
       computed: {
         vmGeoPicker() {
-          return this.$root.$refs.geopicker
-            || this.$root.$children[0].$refs.geopicker;
+          return this.$root.$refs.geopicker;
         },
       },
       methods: {

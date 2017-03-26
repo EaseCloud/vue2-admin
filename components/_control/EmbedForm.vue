@@ -32,7 +32,7 @@
         </div>
       </v-col>
 
-      <!-- type: input number -->
+      <!-- type: number -->
       <v-col :span="8" class="ant-form-item-control"
              v-else-if="field.type == 'number'">
         <v-input-number v-if="typeof field.value == 'number'"
@@ -68,6 +68,12 @@
       <v-col :span="8" class="ant-form-item-control"
              v-else-if="field.type == 'label'">
         <p class="ant-form-text">{{field.value}}</p>
+      </v-col>
+
+      <!-- type: html -->
+      <v-col :span="18" class="ant-form-item-control"
+             v-else-if="field.type == 'html'"
+             v-html="field.value">
       </v-col>
 
       <!--&lt;!&ndash; type: router-link &ndash;&gt;-->
@@ -142,7 +148,7 @@
       <!-- type: qrcode -->
       <v-col :span="18" class="ant-form-item-control"
              v-else-if="field.type == 'qrcode'">
-        <img :src="field.src" alt="二维码">
+        <img :src="field.src" alt="二维码"/>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -201,7 +207,6 @@
                   @click="field.value = null; $emit('update', field)">清除
         </v-button>
       </v-col>
-
 
       <!-- 尚未实现 -->
       <span v-else>字段类型{{field.type}}尚未实现</span>

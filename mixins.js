@@ -173,13 +173,16 @@ export default {
       // );
       let value = item;
       if (col.key) {
-        value = this.getProperty(item, this.evaluate(col.key, item));
+        const colKey = this.evaluate(col.key, item);
+        value = this.getProperty(item, colKey);
       }
       if (col.filter) {
         value = col.filter(value, item);
       }
       if (col.mapper) {
-        value = col.mapper[value];
+        const colMapper = this.evaluate(col.mapper, item);
+        value = ((value in colMapper) ? colMapper[value] :
+            colMapper.__else__) || null;
       }
       return value;
     },
@@ -202,13 +205,13 @@ export default {
       });
       return value;
     },
-    evaluate(self, keyStr, item) {
+    evaluate(self, item, keyStr) {
       if (keyStr && typeof keyStr !== 'string') {
         console.warn('evaluate 指定的 field 无效，应为一个字符串');
         return this.evaluate(self, '', item);
       }
       const obj = keyStr ? this.getProperty(self, keyStr) : self;
-      return obj instanceof Function ? obj[item] : obj;
+      return obj instanceof Function ? obj(item) : obj;
     },
     setQueryKey(key, value) {
       const vm = this;
@@ -226,4 +229,3 @@ export default {
     },
   },
 };
-

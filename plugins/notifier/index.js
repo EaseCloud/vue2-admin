@@ -8,34 +8,49 @@ export default {
       components: { NotifierRegistry },
       computed: {
         vmNotifier() {
-          return this.$root.$refs.notifier
-            || this.$root.$children[0].$refs.notifier;
+          return this.$root.$refs.notifier;
         },
       },
       mounted() {
-        if (this.$root === this && !this.vmNotifier) {
+        const vm = this;
+        if (vm.$root === vm && vm.$route && !vm.vmNotifier) {
           const msg = '请在路由根的插件内置入 <notifier-registry ref="notifier"/>';
           console.error(msg);
-          return false;
         }
       },
       methods: {
+        /**
+         * 弹出提示框，类似于 alert，具体参数参照 vue-beauty 文档
+         * @link https://fe-driver.github.io/vue-beauty/#!/components/notification
+         * @param content
+         * @param title
+         * @param options:
+         *   options.duration: 整数，自动关闭时间，0 为不自动关闭
+         *   options.type: 提示类型图标 success/error/info/warning
+         *   options.top: 离顶部的高度，默认 24
+         */
         notify(content, title = '系统消息', options = {}) {
-          const vm = this.vmNotifier;
-          const DEFAULTS = {
-            type: 'info',
-            duration: 3000,
-          };
-          const item = Object.assign({ title, content }, options, DEFAULTS);
-          vm.itemsNotify.unshift(item);
-          setTimeout(() => {
-            vm.itemsNotify.shift(item);
-          }, item.duration);
+          this.$notification[options && options.type || 'info']({
+            message: title,
+            description: content,
+            duration: options && options.duration || 4.5,
+            top: options && options.top || 24,
+          });
+          // const vm = this.vmNotifier;
+          // const DEFAULTS = {
+          //   type: 'info',
+          //   duration: 3000,
+          // };
+          // const item = Object.assign({ title, content }, options, DEFAULTS);
+          // vm.itemsNotify.unshift(item);
+          // setTimeout(() => {
+          //   vm.itemsNotify.shift(item);
+          // }, item.duration);
         },
-        dismissNotify(index) {
-          const vm = this.vmNotifier;
-          vm.itemsNotify.splice(index, 1);
-        },
+        // dismissNotify(index) {
+        //   const vm = this.vmNotifier;
+        //   vm.itemsNotify.splice(index, 1);
+        // },
         confirm(content, title = '操作确认', options = {}) {
           const vm = this.vmNotifier;
           const DEFAULTS = {
