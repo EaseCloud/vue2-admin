@@ -115,7 +115,8 @@
              v-else-if="field.type == 'radio'">
         <v-radio-group v-model="field.value"
                        @input="$emit('update', field)"
-                       :options="field.choices"></v-radio-group>
+                       :disabled="!!field.readonly"
+                       :data="getRadioChoices(field)"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -127,8 +128,8 @@
         <v-radio-group type="button"
                        v-model="field.value"
                        @input="$emit('update', field)"
-                       :readonly="!!field.readonly"
-                       :options="field.choices"></v-radio-group>
+                       :disabled="!!field.readonly"
+                       :data="getRadioChoices(field)"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -243,6 +244,20 @@
         vm.objectPickerField = null;
         field.value = id;
         vm.$emit('update', field);
+      },
+      getRadioChoices(field) {
+        // 格式参照 vue-beauty 的 :radios 属性
+        // https://fe-driver.github.io/vue-beauty/#!/components/radio
+        if (typeof field.choices === 'object') {
+          return Object.keys(field.choices).map(key => ({
+//              name: field.choices[key],
+              text: field.choices[key],
+              value: key,
+          }));
+        } else {
+          // 支持其他输入方式（例如直接输入数组）
+          return field.choices;
+        }
       },
     },
   };

@@ -37,17 +37,17 @@
               <template v-if="col.filtering.type=='select'">
                 <!-- TODO: v-dropdown 在 vue-beauty 中未实现 -->
                 <!--<v-dropdown trigger="click" :options="getColFilteringChoices(col)">-->
-                  <!--<div v-if="query[col.filtering.search_field]"-->
-                       <!--class="ant-tag"-->
-                       <!--style="font-weight: normal; color: #AAA; background: white;">-->
-                  <!--<span class="ant-tag-text" @click="callFilter(col)">-->
-                    <!--{{query[col.filtering.search_field]}}-->
-                    <!--<i class="anticon anticon-cross"-->
-                       <!--@click.stop="doQuery({[col.filtering.search_field]: null})"></i>-->
-                  <!--</span>-->
-                  <!--</div>-->
-                  <!--<span v-else class="anticon anticon-filter"-->
-                        <!--@click="callFilter(col)"></span>-->
+                <!--<div v-if="query[col.filtering.search_field]"-->
+                <!--class="ant-tag"-->
+                <!--style="font-weight: normal; color: #AAA; background: white;">-->
+                <!--<span class="ant-tag-text" @click="callFilter(col)">-->
+                <!--{{query[col.filtering.search_field]}}-->
+                <!--<i class="anticon anticon-cross"-->
+                <!--@click.stop="doQuery({[col.filtering.search_field]: null})"></i>-->
+                <!--</span>-->
+                <!--</div>-->
+                <!--<span v-else class="anticon anticon-filter"-->
+                <!--@click="callFilter(col)"></span>-->
                 <!--</v-dropdown>-->
               </template>
             </template>
@@ -57,7 +57,9 @@
         </thead>
         <tbody class="ant-table-tbody">
         <tr class="ant-table" v-for="item in items">
-          <td v-for="(col, i) in cols" :style="col.style || {}">
+          <td v-for="(col, i) in cols"
+              style="white-space: normal;"
+              :style="col.tdStyle || {}">
             <!-- type: default/readonly/label -->
             <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}
             </template>
@@ -83,6 +85,17 @@
               <img v-else src="../../assets/images/no-image.png"
                    style="background: #F4F4F4; cursor: not-allowed; object-fit: contain; -o-object-fit: contain"
                    :style="col.style || {maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
+            </template>
+            <!-- type: image-text -->
+            <template v-else-if="col.type=='image-text'">
+              <div style="white-space: normal;">{{getImageTextColValue(col, item).text}}</div>
+              <div class="clearfix">
+                <a v-for="(img, i) in getImageTextColValue(col, item).images"
+                   style="margin: 8px 8px 0 0; float: left;"
+                   @click="previewImages(getImageTextColValue(col, item).images, i)">
+                  <img :src="img" :style="{objectFit: 'cover', width: '45px', height: '45px'}"/>
+                </a>
+              </div>
             </template>
             <!-- type: switch -->
             <template v-else-if="col.type=='switch'">
@@ -129,7 +142,6 @@
                 :page="query.page"
                 :page_count="pager.page_count"
                 :page_size="pager.page_size"/>
-
   </div>
 
 </template>
@@ -222,15 +234,34 @@
       /**
        * col.filtering.type == 'select' 专用
        * 将选项倒腾成 vue-beauty 的 Dropdown.option 接受的格式
+       * TODO: vue-beauty 的 dropdown 插件尚未出炉
        */
       getColFilteringChoices(col) {
         if (!(col.filtering && col.filtering.choices)) {
           console.warn('select 筛选用的列没有指定选项：');
           console.log(JSON.parse(JSON.stringify(col)));
         }
-        return col.filtering.choices.map(item => {
-          content: item.text
-        });
+        return col.filtering.choices.map(item => ({ content: item.text }));
+      },
+      /**
+       * 归一化过滤 col.type = image-text 类型的输入
+       */
+      getImageTextColValue(col, item) {
+        const result = {
+          text: '',
+          images: [],
+        };
+        const keyText = col.key.text || null;
+        const keyImages = col.key.images || col.key || null;
+        if (keyText) result.text = this.getProperty(item, keyText);
+        if (keyImages) {
+          const obj = this.getProperty(item, keyImages);
+          const images = obj instanceof Array ? obj : [obj];
+          result.images = images.map(img => {
+            return typeof img === 'object' ? img.image : img;
+          });
+        }
+        return result;
       },
       /**
        * 按照某个字段进行排序
