@@ -161,8 +161,8 @@ import emitter from '../../mixins/emitter';
       },
       paddingSty(){
         return this.mode == 'inline'?{
-            paddingLeft: 24 * this.level + 'px' 
-          }:{}; 
+            paddingLeft: 24 * this.level + 'px'
+          }:{};
       }
     },
     watch: {
