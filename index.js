@@ -9,14 +9,15 @@ import VueRouter from 'vue-router';
 /** Relative Imports */
 import './assets/css/style.less';
 // import './lib/vue-beauty/package/style/vue-beauty.min.css';
-// import VueAntd from './lib/vue-beauty/vb';
+import VueAntd from './lib/vue-beauty';
+// import VueAntd from './lib/vue2-antd';
+// import VueAntd from 'vue-beauty';
 
-import VueAntd from './lib/vue2-antd';
 import VueHtml5Editor from './plugins/vue-html5-editor';
 import GeoPicker from './plugins/geo-picker';
 import Notifier from './plugins/notifier';
+import ImageViewer from './plugins/image-viewer';
 import mixins from './mixins';
-
 // 应用内配置文件
 import config from '../config/config';
 // Components routes and entrance
@@ -28,6 +29,7 @@ export default {
     // Vue Plugins
     // -------------------------
     Vue.use(VueAntd);
+    Vue.use(ImageViewer);
     Vue.use(Notifier);
     Vue.use(GeoPicker);
     Vue.use(VueHtml5Editor, {

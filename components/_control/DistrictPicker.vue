@@ -4,7 +4,7 @@
       <select v-model="zip_province"
               class="ant-input" title>
         <option value="">请选择...</option>
-        <option v-for="(zipCode, name) in districts.province"
+        <option v-for="(name, zipCode) in districts.province"
                 :value="zipCode">{{name}}
         </option>
       </select>
@@ -13,7 +13,7 @@
       <select v-model="zip_city"
               class="ant-input" title>
         <option value="">请选择...</option>
-        <option v-for="(zipCode, name) in districts.city"
+        <option v-for="(name, zipCode) in districts.city"
                 :value="zipCode">{{name}}
         </option>
       </select>
@@ -22,7 +22,7 @@
       <select v-model="zip_district"
               class="ant-input" title>
         <option value="">请选择...</option>
-        <option v-for="(zipCode, name) in districts.district"
+        <option v-for="(name, zipCode) in districts.district"
                 :value="zipCode">{{name}}
         </option>
       </select>
@@ -32,11 +32,11 @@
 
 <script lang="babel">
   export default {
-    props: ['district'],
+    props: ['value'],
     computed: {
       districts() {
         const vm = this;
-        const district = vm.district;
+        const district = vm.value;
         return {
           province: vm.$root.getDistrict(86),
           city: vm.$root.getDistrict(district - district % 10000) || [],
@@ -48,28 +48,28 @@
       zip_province: {
         get() {
           const vm = this;
-          const district = vm.district;
+          const district = vm.value;
           return district - district % 10000 || '';
         },
-        set(value) { this.district = value; },
+        set(value) { this.$emit('input', value); },
       },
       zip_city: {
         get() {
           const vm = this;
-          const district = vm.district;
+          const district = vm.value;
           if (district % 10000 === 0) return '';
           return district - district % 100 || '';
         },
-        set(value) { this.district = value; },
+        set(value) { this.$emit('input', value); },
       },
       zip_district: {
         get() {
           const vm = this;
-          const district = vm.district;
+          const district = vm.value;
           if (district % 100 === 0) return '';
           return district || '';
         },
-        set(value) { this.district = value; },
+        set(value) { this.$emit('input', value); },
       },
     },
     methods: {

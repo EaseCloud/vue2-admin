@@ -13,7 +13,7 @@
             导出
           </v-button>
           <v-button v-if="options.can_create"
-                    :to="{name: 'main_'+modelUnderscore+'_edit', params: {id: 0}}">
+                    @click="$router.push({name: 'main_'+modelUnderscore+'_edit', params: {id: 0}})">
             新增
           </v-button>
           <v-button type="ghost" @click="$router.back()">返回</v-button>
@@ -35,6 +35,7 @@
                          :pager="pager"
                          :actions="actions"
                          :filters="getFilters"
+                         :hooks="hooks"
                          @query="doQuery"></list-view-table>
 
         <slot name="after"></slot>
@@ -74,6 +75,9 @@
       filters: {
         type: Object,
         default: () => ({}),
+      },
+      hooks: {
+        type: Object,
       },
     },
     data() {

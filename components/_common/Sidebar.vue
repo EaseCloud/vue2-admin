@@ -1,6 +1,6 @@
 <template>
   <aside id="sidebar" class="aside-container">
-    <h1 class="site-title">{{config.platform_name}}管理后台{{config.version}}</h1>
+    <h1 class="site-title">{{config.platform_name}} {{config.version}}</h1>
     <ul class="menu">
       <li v-for="menu in menus"
           :class="{collapsed: menu.expanded===false, expanded: menu.expanded}">
@@ -35,17 +35,44 @@
   export default {
     data() {
       return {
-        menus,
+        menus: [],
       };
     },
     methods: {
       reload() {
         const vm = this;
-        api('AdminMenu').get({
-          action: 'get_user_menu',
-        }).then(resp => {
-          vm.menus = resp.data;
-        });
+        const config = vm.config;
+        // 默认情况下在 config.menus 下面配置菜单列表
+        if (config.dynamic_menus) {
+          const menuConfig = {
+            model: 'Menu',
+            action: 'get_user_menu',
+          };
+          if (typeof config.dynamic_menus === 'object') {
+            if (!config.dynamic_menus.model) {
+              console.warn(
+                '请在 config 下配置 dynamic_menus.model，缺省为 Menu'
+              );
+            } else {
+              menuConfig.model = config.dynamic_menus.model;
+            }
+            if (!config.dynamic_menus.action) {
+              console.warn(
+                '请在 config 下配置 dynamic_menus.action，缺省为 get_user_menu'
+              );
+            } else {
+              menuConfig.action = config.dynamic_menus.action;
+            }
+          }
+          api(menuConfig.model).get({
+            action: menuConfig.action,
+            project: config.project || '',
+          }).then(resp => {
+            vm.menus = resp.data;
+          });
+        } else {
+          vm.menus = menus;
+        }
       },
       toggle(menu, event) {
         const vm = this;

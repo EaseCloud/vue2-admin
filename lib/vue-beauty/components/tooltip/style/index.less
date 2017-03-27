@@ -1,0 +1,139 @@
+@import "../../../style/themes/default";
+@import "../../../style/mixins/index";
+
+@tooltip-prefix-cls: ~"@{ant-prefix}-tooltip";
+@tooltip-arrow: ~"@{tooltip-prefix-cls}-arrow";
+@tooltip-max-width: 250px;
+@tooltip-arrow-width: 5px;
+@tooltip-distance: @tooltip-arrow-width - 1 + 4;
+
+.@{tooltip-prefix-cls} {
+    display: inline-block;
+
+    &-rel{
+        display: inline-block;
+        position: relative;
+    }
+
+    &-popper{
+        .popper(@tooltip-arrow, @tooltip-arrow-width, @tooltip-distance, @tooltip-bg);
+    }
+
+    &-inner{
+        max-width: @tooltip-max-width;
+        min-height: 34px;
+        padding: 8px 12px;
+        color: @tooltip-color;
+        text-align: left;
+        text-decoration: none;
+        background-color: @tooltip-bg;
+        border-radius: @border-radius-base;
+        box-shadow: @box-shadow-base;
+        white-space: nowrap;
+    }
+
+    &-arrow{
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+    }
+}
+
+.popper(@arrow, @arrow-width, @arrow-distance, @bg){
+    display: block;
+    visibility: visible;
+    font-size: @font-size-base;
+    line-height: @line-height-base;
+    position: absolute;
+    z-index: @zindex-tooltip;
+
+    &[x-placement^="top"] {
+        padding: @arrow-width 0 @arrow-distance 0;
+    }
+    &[x-placement^="right"] {
+        padding: 0 @arrow-width 0 @arrow-distance;
+    }
+    &[x-placement^="bottom"] {
+        padding: @arrow-distance 0 @arrow-width 0;
+    }
+    &[x-placement^="left"] {
+        padding: 0 @arrow-distance 0 @arrow-width;
+    }
+
+    &[x-placement^="top"] .@{arrow} {
+        bottom: @arrow-distance - @arrow-width;
+        border-width: @arrow-width @arrow-width 0;
+        border-top-color: @bg;
+    }
+    &[x-placement="top"] .@{arrow} {
+        left: 50%;
+        margin-left: -@arrow-width;
+    }
+    &[x-placement="top-start"] .@{arrow} {
+        left: 16px;
+    }
+    &[x-placement="top-end"] .@{arrow} {
+        right: 16px;
+    }
+
+    &[x-placement^="right"] .@{arrow} {
+        left: @arrow-distance - @arrow-width;
+        border-width: @arrow-width @arrow-width @arrow-width 0;
+        border-right-color: @bg;
+    }
+    &[x-placement="right"] .@{arrow} {
+        top: 50%;
+        margin-top: -@arrow-width;
+    }
+    &[x-placement="right-start"] .@{arrow} {
+        top: 8px;
+    }
+    &[x-placement="right-end"] .@{arrow} {
+        bottom: 8px;
+    }
+
+    &[x-placement^="left"] .@{arrow} {
+        right: @arrow-distance - @arrow-width;
+        border-width: @arrow-width 0 @arrow-width @arrow-width;
+        border-left-color: @bg;
+    }
+    &[x-placement="left"] .@{arrow} {
+        top: 50%;
+        margin-top: -@arrow-width;
+    }
+    &[x-placement="left-start"] .@{arrow} {
+        top: 8px;
+    }
+    &[x-placement="left-end"] .@{arrow} {
+        bottom: 8px;
+    }
+
+    &[x-placement^="bottom"] .@{arrow} {
+        top: @arrow-distance - @arrow-width;
+        border-width: 0 @arrow-width @arrow-width;
+        border-bottom-color: @bg;
+    }
+    &[x-placement="bottom"] .@{arrow} {
+        left: 50%;
+        margin-left: -@arrow-width;
+    }
+    &[x-placement="bottom-start"] .@{arrow} {
+        left: 16px;
+    }
+    &[x-placement="bottom-end"] .@{arrow} {
+        right: 16px;
+    }
+}
+
+.fade-enter-active{animation-duration:.3s;animation-fill-mode:both;animation-play-state:paused}
+.fade-enter-active{animation-name:antFadeIn;animation-play-state:running}
+.fade-enter-active{opacity:0;animation-timing-function:linear}
+
+.fade-leave-active{animation-duration:.3s;animation-fill-mode:both;animation-play-state:paused}
+.fade-leave-active{animation-name:antFadeOut;animation-play-state:running}
+.fade-leave-active{animation-timing-function:linear}
+
+@keyframes antFadeIn{0%{opacity:0}100%{opacity:1}}
+@keyframes antFadeOut{0%{opacity:1}100%{opacity:0}}

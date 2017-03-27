@@ -1,4 +1,3 @@
 build/*.js
 config/*.js
-/src/vue2-admin/lib/
-/src/vue2-admin/plugins/
+/src/vue2-admin/
