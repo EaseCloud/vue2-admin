@@ -88,7 +88,8 @@
             </template>
             <!-- type: image-text -->
             <template v-else-if="col.type=='image-text'">
-              <div style="white-space: normal;">{{getImageTextColValue(col, item).text}}</div>
+              <div style="max-width: 100%; white-space: pre-wrap;">{{
+                getImageTextColValue(col, item).text}}</div>
               <div class="clearfix">
                 <a v-for="(img, i) in getImageTextColValue(col, item).images"
                    style="margin: 8px 8px 0 0; float: left;"
