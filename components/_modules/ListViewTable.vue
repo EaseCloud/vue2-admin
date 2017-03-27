@@ -57,7 +57,9 @@
         </thead>
         <tbody class="ant-table-tbody">
         <tr class="ant-table" v-for="item in items">
-          <td v-for="(col, i) in cols" :style="col.tdStyle || {}">
+          <td v-for="(col, i) in cols"
+              style="white-space: normal;"
+              :style="col.tdStyle || {}">
             <!-- type: default/readonly/label -->
             <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}
             </template>
@@ -86,7 +88,7 @@
             </template>
             <!-- type: image-text -->
             <template v-else-if="col.type=='image-text'">
-              <div>{{getImageTextColValue(col, item).text}}</div>
+              <div style="white-space: normal;">{{getImageTextColValue(col, item).text}}</div>
               <div class="clearfix">
                 <a v-for="(img, i) in getImageTextColValue(col, item).images"
                    style="margin: 8px 8px 0 0; float: left;"
@@ -251,10 +253,10 @@
         };
         const keyText = col.key.text || null;
         const keyImages = col.key.images || col.key || null;
-        if (keyText) result.text = item[keyText];
+        if (keyText) result.text = this.getProperty(item, keyText);
         if (keyImages) {
-          const images = item[keyImages] instanceof Array ?
-            item[keyImages] : [item[keyImages]];
+          const obj = this.getProperty(item, keyImages);
+          const images = obj instanceof Array ? obj : [obj];
           result.images = images.map(img => {
             return typeof img === 'object' ? img.image : img;
           });
