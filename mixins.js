@@ -72,18 +72,11 @@ export default {
         vm.$router.push({ name: 'passport_login' });
       });
     },
-    switchQueryBar() {
-      if (this.filter && ('show_query_bar' in this.filter)) {
-        this.filter.show_query_bar = !this.filter.show_query_bar ? 1 : '';
-
-        this.query();
-      }
-    },
     updateModel(model, id, field, value, notify = '操作成功', callback = null) {
       const vm = this;
       return api(model).patch({ id }, { [field]: value }).then(resp => {
         const item = resp.data;
-        if (notify) vm.notify(notify);
+        if (notify) vm.$message.success(notify);
         if (callback) callback(item);
       });
     },
@@ -92,37 +85,37 @@ export default {
       const promise = confirm ? this.confirm(confirm) : Promise.resolve();
       return promise.then(() => {
         api(model).delete({ id }).then(() => {
-          if (notify) vm.notify(notify);
+          if (notify) vm.$message.success(notify);
           if (callback) callback();
         });
       });
     },
-    /**
-     * 这个方法会默认将当前 vm 的 this.filter 数据（对象）作为路由的 query
-     * 进行重定向。
-     */
-    query() {
-      // 为了让输出的 url 更简洁，默认选项不显示出来
-      const vm = this;
-      const filter = {};
-      if (!vm.filter) return;
-      Object.keys(vm.filter).forEach(key => {
-        if (vm.filter[key]) filter[key] = vm.filter[key];
-      });
-      vm.$router.replace({ query: filter });
+    // /**
+    //  * 这个方法会默认将当前 vm 的 this.filter 数据（对象）作为路由的 query
+    //  * 进行重定向。
+    //  */
+    // query() {
+    //   // 为了让输出的 url 更简洁，默认选项不显示出来
+    //   const vm = this;
+    //   const filter = {};
+    //   if (!vm.filter) return;
+    //   Object.keys(vm.filter).forEach(key => {
+    //     if (vm.filter[key]) filter[key] = vm.filter[key];
+    //   });
+    //   vm.$router.replace({ query: filter });
+    // },
+    getDistrict(adcode = 86) {
+      return this.$root.areaData[adcode] || [];
     },
-    getDistrict(zipCode = 86) {
-      return this.$root.areaData[zipCode] || [];
-    },
-    getDistrictNameByCode(zipCode) {
+    getDistrictNameByCode(adcode) {
       const data = this.$root.areaData;
-      const parentCode = this.getDistrictParentCode(zipCode);
-      return parentCode && data[parentCode][zipCode];
+      const parentCode = this.getDistrictParentCode(adcode);
+      return parentCode && data[parentCode][adcode];
     },
-    getDistrictParentCode(zipCode) {
-      if (zipCode % 10000 === 0) return 86;
-      if (zipCode % 100 === 0) return zipCode - zipCode % 10000;
-      return zipCode - zipCode % 100;
+    getDistrictParentCode(adcode) {
+      if (adcode % 10000 === 0) return 86;
+      if (adcode % 100 === 0) return adcode - adcode % 10000;
+      return adcode - adcode % 100;
     },
     getUrlFromRoute(route, absolute = true) {
       const vm = this;
@@ -173,25 +166,52 @@ export default {
     },
     // View utils
     getColValue(col, item) {
+      // console.log(
+      //   'getColValue',
+      //   JSON.parse(JSON.stringify(col)),
+      //   JSON.parse(JSON.stringify(item)),
+      // );
       let value = item;
       if (col.key) {
-        col.key.split('.').forEach(key => {
-          value = value === 'undefined' ? null : (value && value[key]);
-        });
+        const colKey = this.evaluate(col.key, item);
+        value = this.getProperty(item, colKey);
       }
       if (col.filter) {
         value = col.filter(value, item);
       }
       if (col.mapper) {
-        value = col.mapper[value];
+        const colMapper = this.evaluate(col.mapper, item);
+        value = ((value in colMapper) ? colMapper[value] :
+            colMapper.__else__) || null;
       }
       return value;
     },
-    evaluate(self, field, item) {
-      if (self[field] instanceof Function) {
-        return self[field](item);
+    getProperty(item, keyStr) {
+      // 缺省 keyStr 的时候直接返回 item
+      if (!keyStr) return item;
+      // 执行 keyStr 级联求值
+      let value = item;
+      if (typeof (keyStr || '') !== 'string') {
+        console.warn('getProperty 属性的 key 取值不规范');
+        console.log('keyStr:', keyStr);
+        console.log('item:', item);
       }
-      return self[field];
+      keyStr.split('.').forEach(key => {
+        try {
+          value = value && value[key] || null;
+        } catch (e) {
+          console.error('getProperty 求值错误', e);
+        }
+      });
+      return value;
+    },
+    evaluate(self, item, keyStr) {
+      if (keyStr && typeof keyStr !== 'string') {
+        console.warn('evaluate 指定的 field 无效，应为一个字符串');
+        return this.evaluate(self, '', item);
+      }
+      const obj = keyStr ? this.getProperty(self, keyStr) : self;
+      return obj instanceof Function ? obj(item) : obj;
     },
     setQueryKey(key, value) {
       const vm = this;
@@ -209,4 +229,3 @@ export default {
     },
   },
 };
-

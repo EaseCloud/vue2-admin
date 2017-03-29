@@ -6,6 +6,7 @@
     <v-row :gutter="6"
            type="flex"
            :key="field.pk"
+           style="margin: 4px 0"
            v-for="field in fields">
 
       <v-col :span="6" class="ant-form-item-label">
@@ -31,7 +32,7 @@
         </div>
       </v-col>
 
-      <!-- type: input number -->
+      <!-- type: number -->
       <v-col :span="8" class="ant-form-item-control"
              v-else-if="field.type == 'number'">
         <v-input-number v-if="typeof field.value == 'number'"
@@ -53,20 +54,26 @@
       <!-- type: datepicker -->
       <v-col :span="8" class="ant-form-item-control"
              v-else-if="field.type == 'datepicker'">
-        <datepicker :placeholder="field.placeholder"
-                    v-model="field.value"
-                    :type="field.pick_time?'min':'day'"
-                    @input="$emit('update', field)"
-                    :format="field.format || (field.pick_time ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD')"
-                    :limit="[{type: 'fromto', to: field.to || '2999-01-01'},
-                    {type: 'fromto', from: field.from || '1900-01-01'}]"
-                    :input-class="{'ant-input': true}"></datepicker>
+        <!-- TODO: from/to 未实现 -->
+        <!-- TODO: 时间选择有问题，不能读取以及 emit 出去 -->
+        <v-date-picker v-model="field.value"
+                       clearable
+                       :show-time="field.show_time || field.pick_time"
+                       :format="field.format || 'yyyy-MM-dd'"
+                       @change="$emit('update', field)"
+        ></v-date-picker>
       </v-col>
 
       <!-- type: label -->
       <v-col :span="8" class="ant-form-item-control"
              v-else-if="field.type == 'label'">
         <p class="ant-form-text">{{field.value}}</p>
+      </v-col>
+
+      <!-- type: html -->
+      <v-col :span="18" class="ant-form-item-control"
+             v-else-if="field.type == 'html'"
+             v-html="field.value">
       </v-col>
 
       <!--&lt;!&ndash; type: router-link &ndash;&gt;-->
@@ -108,7 +115,8 @@
              v-else-if="field.type == 'radio'">
         <v-radio-group v-model="field.value"
                        @input="$emit('update', field)"
-                       :options="field.choices"></v-radio-group>
+                       :disabled="!!field.readonly"
+                       :data="getRadioChoices(field)"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -120,8 +128,8 @@
         <v-radio-group type="button"
                        v-model="field.value"
                        @input="$emit('update', field)"
-                       :readonly="!!field.readonly"
-                       :options="field.choices"></v-radio-group>
+                       :disabled="!!field.readonly"
+                       :data="getRadioChoices(field)"></v-radio-group>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -141,7 +149,7 @@
       <!-- type: qrcode -->
       <v-col :span="18" class="ant-form-item-control"
              v-else-if="field.type == 'qrcode'">
-        <img :src="field.src" alt="二维码">
+        <img :src="field.src" alt="二维码"/>
         <div v-if="field.description"
              class="ant-form-explain">{{field.description}}
         </div>
@@ -201,7 +209,6 @@
         </v-button>
       </v-col>
 
-
       <!-- 尚未实现 -->
       <span v-else>字段类型{{field.type}}尚未实现</span>
 
@@ -237,6 +244,20 @@
         vm.objectPickerField = null;
         field.value = id;
         vm.$emit('update', field);
+      },
+      getRadioChoices(field) {
+        // 格式参照 vue-beauty 的 :radios 属性
+        // https://fe-driver.github.io/vue-beauty/#!/components/radio
+        if (typeof field.choices === 'object') {
+          return Object.keys(field.choices).map(key => ({
+//              name: field.choices[key],
+              text: field.choices[key],
+              value: key,
+          }));
+        } else {
+          // 支持其他输入方式（例如直接输入数组）
+          return field.choices;
+        }
       },
     },
   };

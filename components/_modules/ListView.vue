@@ -13,7 +13,7 @@
             导出
           </v-button>
           <v-button v-if="options.can_create"
-                    :to="{name: 'main_'+modelUnderscore+'_edit', params: {id: 0}}">
+                    @click="$router.push({name: 'main_'+modelUnderscore+'_edit', params: {id: 0}})">
             新增
           </v-button>
           <v-button type="ghost" @click="$router.back()">返回</v-button>
@@ -98,6 +98,10 @@
           ...vm.filters,
           ...vm.$route.query,
         };
+      },
+      selectedItems() {
+        const vm = this;
+        return vm.$refs.table.selectedItems;
       },
     },
     methods: {
