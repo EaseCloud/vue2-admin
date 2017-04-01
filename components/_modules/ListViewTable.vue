@@ -96,7 +96,7 @@
             </template>
             <!-- type: image-text -->
             <template v-else-if="col.type=='image-text'">
-              <div style="max-width: 100%; white-space: pre-wrap;">{{
+              <div style="max-width: 100%; white-space: pre-line;">{{
                 getImageTextColValue(col, item).text}}
               </div>
               <div class="clearfix">

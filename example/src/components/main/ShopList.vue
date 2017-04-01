@@ -29,7 +29,7 @@
           { title: '用户昵称', key: 'user_item.customer_nickname' },
           { title: '登录账号', key: 'user_item.username' },
           { title: '注册日期', key: 'date_created', filter: x => x.substr(0, 16) },
-          { title: '店铺简介', key: 'description', style: { maxWidth: '300px', whiteSpace: 'pre-wrap' } },
+          { title: '店铺简介', key: 'description', style: { maxWidth: '300px', whiteSpace: 'pre-line' } },
           { title: '是否上架', key: 'is_active', type: 'switch' },
         ],
         actions: [{
