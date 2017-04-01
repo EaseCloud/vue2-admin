@@ -66,7 +66,7 @@
             <input type="checkbox" :value="item[pk]" v-model="selectedItems"/>
           </td>
           <td v-for="(col, i) in cols"
-              style="white-space: normal;"
+              style="white-space: normal; overflow: hidden;"
               :style="col.tdStyle || {}">
             <!-- type: default/readonly/label -->
             <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}
@@ -96,8 +96,9 @@
             </template>
             <!-- type: image-text -->
             <template v-else-if="col.type=='image-text'">
-              <div style="max-width: 100%; white-space: pre-line;">{{
-                getImageTextColValue(col, item).text}}
+              <div style="max-width: 100%; overflow: hidden;
+              text-overflow: ellipsis; white-space: pre-line;">
+                {{getImageTextColValue(col, item).text}}
               </div>
               <div class="clearfix">
                 <a v-for="(img, i) in getImageTextColValue(col, item).images"
