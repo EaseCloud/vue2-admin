@@ -405,6 +405,24 @@ TODO: 尚未撰写
 正常使用可能是一个字符串或者字典等类型，
 但是我们可以将其设置成一个函数，那么这个属性具体使用的取值就采用 `col.prop(item)` 来使用。
 
+##### col.id （可选)
+
+给这个字段设定一个可选的标识符(id)，目前已实现的作用如下，日后还会扩充：
+
+1. 在 EditView 或者 EmbedForm 中使用 `col.type == list-view` 字段的时候，
+   绑定后通过 `vm.fields[i].ref` 即可获取到该内部 ListViewTable 的组件对象。
+     
+##### col.display
+
+列的样式，有如下几种选项：
+
+* normal: 正常 `form-horizontal` 布局，列名占 `col-6`，内容占其余的 `col-18`
+* full: 列名独立 h 标签占一行（如果列名为空则忽略），内容另开一行，默认占满宽度 `col-24`
+
+##### col.span
+
+列内容的 `v-col` 的宽度比例 span 值，参照 vue-beauty 的 col 组件的 span 属性。
+
 ##### col.type
 
 字段的类型，默认为 readonly。
