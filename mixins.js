@@ -194,17 +194,21 @@ export default {
       //   JSON.parse(JSON.stringify(item)),
       // );
       let value = item;
-      if (col.key) {
-        const colKey = this.evaluate(col.key, item);
-        value = this.getProperty(item, colKey);
-      }
-      if (col.filter) {
-        value = col.filter(value, item);
-      }
-      if (col.mapper) {
-        const colMapper = this.evaluate(col.mapper, item);
-        value = ((value in colMapper) ? colMapper[value] :
-            colMapper.__else__) || null;
+      try {
+        if (col.key) {
+          const colKey = this.evaluate(col.key, item);
+          value = this.getProperty(item, colKey);
+        }
+        if (col.filter) {
+          value = col.filter(value, item);
+        }
+        if (col.mapper) {
+          const colMapper = this.evaluate(col.mapper, item);
+          value = ((value in colMapper) ? colMapper[value] :
+              colMapper.__else__) || null;
+        }
+      } catch (e) {
+        console.warn(e);
       }
       return value;
     },

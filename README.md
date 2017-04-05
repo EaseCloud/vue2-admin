@@ -6,7 +6,7 @@ Ant Design 的 UI 框架构造的一套强大的数据驱动框架，目前主�
 
 * Vue2 全家桶
 * ant-design
-* 
+*
 * Django
 * Django REST Framework
 
@@ -65,7 +65,7 @@ npm run dev
 
 这个变量输出一个字典，每一个项是一个配置值，可以根据环境变量等动态配置。
 
-config 对象放在了 mixins 的 computed 属性中，因此对于任意的组件对象调用 
+config 对象放在了 mixins 的 computed 属性中，因此对于任意的组件对象调用
 `vm.config` 可以获取到 config 对象（vm 就是组件的对象实例，相当于组件内部方法的 this）。
 
 #### 2.1.0. config.project - 项目名称
@@ -85,7 +85,7 @@ config 对象放在了 mixins 的 computed 属性中，因此对于任意的组�
 **范例配置：**
 
 ```
-api_root: (process.env.NODE_ENV === 'production') ? 
+api_root: (process.env.NODE_ENV === 'production') ?
   'http://example.com/api' : '/api',
 ```
 
@@ -198,7 +198,7 @@ export default [{
 
 **范例配置：**
 
-``` 
+```
 export default [
   { path: '/order_detail', name: 'main_order_detail_list', component: require('./OrderDetailList.vue') },
   { path: '/order_detail/:id', name: 'main_order_detail_edit', component: require('./OrderDetailEdit.vue') },
@@ -372,6 +372,10 @@ TODO: 尚未撰写
 
 ###### options.can_delete
 
+###### options.can_select
+
+###### options.show_pager
+
 ###### options.show_actions
 
 ##### cols **\[重要]**
@@ -397,8 +401,27 @@ TODO: 尚未撰写
 
 ##### 【重要】动态求值说明
 
-所有的字段属性都支持动态求值，也就是说，假设这个属性 `col.prop` 正常使用可能是一个字符串或者字典等类型，
+所有的字段属性都支持动态求值\ *（暂未完全实现）*，也就是说，假设这个属性 `col.prop`
+正常使用可能是一个字符串或者字典等类型，
 但是我们可以将其设置成一个函数，那么这个属性具体使用的取值就采用 `col.prop(item)` 来使用。
+
+##### col.id （可选)
+
+给这个字段设定一个可选的标识符(id)，目前已实现的作用如下，日后还会扩充：
+
+1. 在 EditView 或者 EmbedForm 中使用 `col.type == list-view` 字段的时候，
+   绑定后通过 `vm.fields[i].ref` 即可获取到该内部 ListViewTable 的组件对象。
+     
+##### col.display
+
+列的样式，有如下几种选项：
+
+* normal: 正常 `form-horizontal` 布局，列名占 `col-6`，内容占其余的 `col-18`
+* full: 列名独立 h 标签占一行（如果列名为空则忽略），内容另开一行，默认占满宽度 `col-24`
+
+##### col.span
+
+列内容的 `v-col` 的宽度比例 span 值，参照 vue-beauty 的 col 组件的 span 属性。
 
 ##### col.type
 
@@ -452,6 +475,8 @@ cols: [
 ],
 ```
 
+##### col.description
+
 ##### col.mapper
 
 设置一个字典，在 getColValue 的 filter 之后进行查表过滤。
@@ -491,6 +516,10 @@ cols: [
 显示在列表头部的标签名称。
 
 ##### col.style
+
+应用在该列主要元素上的样式。
+
+##### col.tdStyle
 
 在该列对应的 `<td>` 元素上应用的样式。
 
@@ -534,7 +563,7 @@ REST_FRAMEWORK = {
 
 ##### label \[ListView/EditView]
 
-直接输出字段内容，html 标签会被自动转移，例如 `<a href="http://somewhere.com">xxx</a>` 
+直接输出字段内容，html 标签会被自动转移，例如 `<a href="http://somewhere.com">xxx</a>`
 会变成文本渲染，而不会渲染成一个链接。
 
 如果需要输出 html 实体，请使用 html 类型输出。
@@ -546,6 +575,15 @@ label 的别名，已经废弃，仅 ListView 保留支持，请避免使用。
 ##### html \[ListView/EditView]
 
 同样直接输出字段内容，但是支持 html 实体输出，暂时不支持组件实体，只支持原生 html 标签。
+
+##### image-text \[ListView]
+
+图文消息，返回先是一段文本，后面是一系列图片，点击图片可以预览。
+
+**选项**
+
+* `key` 这里传入的 key 应当是这样的格式：{text, images}，text 为文本内容对应的字段名称，
+  images 为图集内容对应的字段名称，如果是一个字符串，则认为是仅传入 images。
 
 ##### link \[ListView]
 
