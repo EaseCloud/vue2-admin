@@ -32,7 +32,7 @@
           { title: '登录账号', key: 'customer_item.user_item.username' },
 //          { title: '提交时间', key: 'date_created' },
 //          { title: '最近登录', key: 'user_item.last_login' },
-//          { title: '可用', key: 'is_active', type: 'switch' },
+          { title: '可用', key: 'is_active', type: 'switch' },
           { title: '身份证正面', key: 'image_cert_front_item.image', type: 'image', width: 125, height: 75 },
           { title: '身份证背面', key: 'image_cert_back_item.image', type: 'image', width: 125, height: 75 },
           {

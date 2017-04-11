@@ -224,6 +224,7 @@
             vm.items = items;
           }
         });
+        vm.selectedItems = [];
       },
       doQuery(query) {
         const vm = this;
