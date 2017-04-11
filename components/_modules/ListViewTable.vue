@@ -122,13 +122,20 @@
           <td v-if="options.show_actions !== false">
             <slot name="row-action">
               <template v-for="action in actions">
-                <v-button
-                  v-show="action.isVisible === undefined || !action.isVisible || action.isVisible(item)"
-                  size="small"
-                  :type="action.buttonClass || 'ghost'"
-                  @click="action.action(item)">
-                  {{evaluate(action.title, item)}}
-                </v-button> <!--防止按钮之间粘住-->
+                <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible(item)">
+                  <!-- htmlType: button (默认) -->
+                  <v-button
+                    v-if="(action.htmlType||'button')==='button'"
+                    size="small"
+                    :type="action.buttonClass || 'ghost'"
+                    @click="action.action(item)">
+                    {{evaluate(action.title, item)}}
+                  </v-button> <!--防止按钮之间粘住-->
+                  <!-- htmlType: text -->
+                  <template v-else-if="action.htmlType==='text'">{{evaluate(action.title, item)}}</template>
+                  <!-- htmlType: not defined -->
+                  <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
+                </template>
               </template>
               <v-button v-if="options.can_edit"
                         size="small" type="ghost"
