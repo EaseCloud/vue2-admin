@@ -106,6 +106,8 @@
     },
     methods: {
       reload() {
+        const vm = this;
+        vm.$refs.table.reload();
       },
       doQuery(query) {
         const vm = this;
