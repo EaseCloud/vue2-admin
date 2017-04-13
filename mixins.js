@@ -2,7 +2,7 @@
 
 import areaData from 'china-area-data';
 import Loading from 'vue-spinner/src/ScaleLoader.vue';
-import dateformat from 'dateformat'
+import dateformat from 'dateformat';
 
 import * as common from './components/_common';
 import * as controls from './components/_control';

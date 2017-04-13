@@ -193,6 +193,7 @@
                            :options="field.options.options"
                            :actions="field.options.actions"
                            :filters="field.options.filters"
+                           :hooks="field.options.hooks"
                            :ref="field.id"></list-view-table>
           <!--:pager="pager"-->
         </v-col>
