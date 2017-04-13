@@ -39,8 +39,7 @@
         <!-- type: number -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
                v-else-if="field.type == 'number'">
-          <v-input-number v-if="typeof field.value == 'number'"
-                          v-model="field.value"
+          <v-input-number v-model="field.value"
                           @input="$emit('update', field)"
                           :min="field.min"
                           :max="field.max"
