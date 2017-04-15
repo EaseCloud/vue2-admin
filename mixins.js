@@ -2,6 +2,7 @@
 
 import areaData from 'china-area-data';
 import Loading from 'vue-spinner/src/ScaleLoader.vue';
+import dateformat from 'dateformat';
 
 import * as common from './components/_common';
 import * as controls from './components/_control';
@@ -40,6 +41,27 @@ export default {
   filters: {
     currency(value, note = '￥') {
       return `${note}${Number(value).toFixed(2)}`;
+    },
+    date(value, fmt = 'yyyy-mm-dd HH:MM:ss') {
+      try {
+        let val = value;
+        if (/^\d\d\d\d-\d\d-\d\d \d\d:\d\d(:\d\d)?$/.test(val)) {
+          // http://stackoverflow.com/q/13363673/2544762
+          const date = new Date(value.replace(' ', 'T'));
+          // timezone convert
+          val = new Date(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds(),
+          );
+        }
+        return dateformat(val, fmt);
+      } catch (e) {
+        return value;
+      }
     },
   },
   methods: {
@@ -172,17 +194,21 @@ export default {
       //   JSON.parse(JSON.stringify(item)),
       // );
       let value = item;
-      if (col.key) {
-        const colKey = this.evaluate(col.key, item);
-        value = this.getProperty(item, colKey);
-      }
-      if (col.filter) {
-        value = col.filter(value, item);
-      }
-      if (col.mapper) {
-        const colMapper = this.evaluate(col.mapper, item);
-        value = ((value in colMapper) ? colMapper[value] :
-            colMapper.__else__) || null;
+      try {
+        if (col.key) {
+          const colKey = this.evaluate(col.key, item);
+          value = this.getProperty(item, colKey);
+        }
+        if (col.filter) {
+          value = col.filter(value, item);
+        }
+        if (col.mapper) {
+          const colMapper = this.evaluate(col.mapper, item);
+          value = ((value in colMapper) ? colMapper[value] :
+              colMapper.__else__) || null;
+        }
+      } catch (e) {
+        console.warn(e);
       }
       return value;
     },

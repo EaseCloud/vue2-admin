@@ -99,9 +99,15 @@
           ...vm.$route.query,
         };
       },
+      selectedItems() {
+        const vm = this;
+        return vm.$refs.table.selectedItems;
+      },
     },
     methods: {
       reload() {
+        const vm = this;
+        vm.$refs.table.reload();
       },
       doQuery(query) {
         const vm = this;

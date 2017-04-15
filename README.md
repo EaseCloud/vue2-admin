@@ -6,7 +6,7 @@ Ant Design 的 UI 框架构造的一套强大的数据驱动框架，目前主�
 
 * Vue2 全家桶
 * ant-design
-* 
+*
 * Django
 * Django REST Framework
 
@@ -65,7 +65,7 @@ npm run dev
 
 这个变量输出一个字典，每一个项是一个配置值，可以根据环境变量等动态配置。
 
-config 对象放在了 mixins 的 computed 属性中，因此对于任意的组件对象调用 
+config 对象放在了 mixins 的 computed 属性中，因此对于任意的组件对象调用
 `vm.config` 可以获取到 config 对象（vm 就是组件的对象实例，相当于组件内部方法的 this）。
 
 #### 2.1.0. config.project - 项目名称
@@ -85,7 +85,7 @@ config 对象放在了 mixins 的 computed 属性中，因此对于任意的组�
 **范例配置：**
 
 ```
-api_root: (process.env.NODE_ENV === 'production') ? 
+api_root: (process.env.NODE_ENV === 'production') ?
   'http://example.com/api' : '/api',
 ```
 
@@ -198,7 +198,7 @@ export default [{
 
 **范例配置：**
 
-``` 
+```
 export default [
   { path: '/order_detail', name: 'main_order_detail_list', component: require('./OrderDetailList.vue') },
   { path: '/order_detail/:id', name: 'main_order_detail_edit', component: require('./OrderDetailEdit.vue') },
@@ -372,6 +372,10 @@ TODO: 尚未撰写
 
 ###### options.can_delete
 
+###### options.can_select
+
+###### options.show_pager
+
 ###### options.show_actions
 
 ##### cols **\[重要]**
@@ -397,9 +401,27 @@ TODO: 尚未撰写
 
 ##### 【重要】动态求值说明
 
-所有的字段属性都支持动态求值\ *（暂未完全实现）*，也就是说，假设这个属性 `col.prop` 
+所有的字段属性都支持动态求值\ *（暂未完全实现）*，也就是说，假设这个属性 `col.prop`
 正常使用可能是一个字符串或者字典等类型，
 但是我们可以将其设置成一个函数，那么这个属性具体使用的取值就采用 `col.prop(item)` 来使用。
+
+##### col.id （可选)
+
+给这个字段设定一个可选的标识符(id)，目前已实现的作用如下，日后还会扩充：
+
+1. 在 EditView 或者 EmbedForm 中使用 `col.type == list-view` 字段的时候，
+   绑定后通过 `vm.fields[i].ref` 即可获取到该内部 ListViewTable 的组件对象。
+     
+##### col.display
+
+列的样式，有如下几种选项：
+
+* normal: 正常 `form-horizontal` 布局，列名占 `col-6`，内容占其余的 `col-18`
+* full: 列名独立 h 标签占一行（如果列名为空则忽略），内容另开一行，默认占满宽度 `col-24`
+
+##### col.span
+
+列内容的 `v-col` 的宽度比例 span 值，参照 vue-beauty 的 col 组件的 span 属性。
 
 ##### col.type
 
@@ -541,7 +563,7 @@ REST_FRAMEWORK = {
 
 ##### label \[ListView/EditView]
 
-直接输出字段内容，html 标签会被自动转移，例如 `<a href="http://somewhere.com">xxx</a>` 
+直接输出字段内容，html 标签会被自动转移，例如 `<a href="http://somewhere.com">xxx</a>`
 会变成文本渲染，而不会渲染成一个链接。
 
 如果需要输出 html 实体，请使用 html 类型输出。

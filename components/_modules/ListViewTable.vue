@@ -7,6 +7,11 @@
       <table>
         <thead class="ant-table-thead">
         <tr>
+          <th v-if="options.can_select">
+            <input type="checkbox"
+                   :checked="items.length === selectedItems.length"
+                   @click="checkAll()"/>
+          </th>
           <th v-for="(col, i) in cols" :style="col.thStyle || {}">
             <!-- 普通标题以及排序器 -->
             <a v-if="col.ordering" @click="sort(col.ordering)">
@@ -57,8 +62,11 @@
         </thead>
         <tbody class="ant-table-tbody">
         <tr class="ant-table" v-for="item in items">
+          <td v-if="options.can_select">
+            <input type="checkbox" :value="item[pk]" v-model="selectedItems"/>
+          </td>
           <td v-for="(col, i) in cols"
-              style="white-space: normal;"
+              style="white-space: normal; overflow: hidden;"
               :style="col.tdStyle || {}">
             <!-- type: default/readonly/label -->
             <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}
@@ -88,8 +96,10 @@
             </template>
             <!-- type: image-text -->
             <template v-else-if="col.type=='image-text'">
-              <div style="max-width: 100%; white-space: pre-wrap;">{{
-                getImageTextColValue(col, item).text}}</div>
+              <div style="max-width: 100%; overflow: hidden;
+              text-overflow: ellipsis; white-space: pre-line;">
+                {{getImageTextColValue(col, item).text}}
+              </div>
               <div class="clearfix">
                 <a v-for="(img, i) in getImageTextColValue(col, item).images"
                    style="margin: 8px 8px 0 0; float: left;"
@@ -112,13 +122,20 @@
           <td v-if="options.show_actions !== false">
             <slot name="row-action">
               <template v-for="action in actions">
-                <v-button
-                  v-show="action.isVisible === undefined || !action.isVisible || action.isVisible(item)"
-                  size="small"
-                  :type="action.buttonClass || 'ghost'"
-                  @click="action.action(item)">
-                  {{evaluate(action.title, item)}}
-                </v-button> <!--防止按钮之间粘住-->
+                <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible(item)">
+                  <!-- htmlType: button (默认) -->
+                  <v-button
+                    v-if="(action.htmlType||'button')==='button'"
+                    size="small"
+                    :type="action.buttonClass || 'ghost'"
+                    @click="action.action(item)">
+                    {{evaluate(action.title, item)}}
+                  </v-button> <!--防止按钮之间粘住-->
+                  <!-- htmlType: text -->
+                  <template v-else-if="action.htmlType==='text'">{{evaluate(action.title, item)}}</template>
+                  <!-- htmlType: not defined -->
+                  <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
+                </template>
               </template>
               <v-button v-if="options.can_edit"
                         size="small" type="ghost"
@@ -183,6 +200,8 @@
       const vm = this;
       return {
         items: [],
+        // 选中的项目列表，主键 pk 的列表
+        selectedItems: [],
         query: { ...vm.filters },
       };
     },
@@ -213,6 +232,7 @@
             vm.items = items;
           }
         });
+        vm.selectedItems = [];
       },
       doQuery(query) {
         const vm = this;
@@ -297,6 +317,14 @@
             });
           });
         } else if (col.filtering.type === 'select') {
+        }
+      },
+      checkAll() {
+        const vm = this;
+        if (vm.items.length === vm.selectedItems.length) {
+          vm.selectedItems = [];
+        } else {
+          vm.selectedItems = vm.items.map(item => item[vm.pk]);
         }
       },
       pageTo(page) {
