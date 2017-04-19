@@ -36,6 +36,7 @@
       <section class="item-form ant-form ant-form-horizontal"
                style="max-width: 800px">
         <embed-form :fields="fields"
+                    v-if="initialized"
                     @update="onUpdate"></embed-form>
       </section>
       <slot name="after"></slot>
@@ -99,6 +100,7 @@
         defaultItem[field.key] = field.value || field.default;
       });
       return {
+        initialized: false,
         item: defaultItem,
       };
     },
@@ -178,7 +180,9 @@
       render() {
         const vm = this;
         // set default value
-        return Promise.all(vm.fields.map(field => vm.renderField(field)));
+        return Promise.all(vm.fields.map(field => vm.renderField(field))).then(() => {
+          vm.initialized = true;
+        });
       },
       redirectList() {
         const vm = this;
