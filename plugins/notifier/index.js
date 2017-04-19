@@ -124,6 +124,43 @@ export default {
             resp => deferred.resolve(resp.data)
           );
         },
+        /**
+         * 管理员密码验证
+         * @param needVerify
+         * @returns {*}
+         */
+        verifyPassword(needVerify = false) {
+          const vm = this;
+          if (!needVerify) return Promise.resolve();
+          return new Promise((resolve, reject) => {
+            vm.modalForm({
+              title: '请输入管理员密码',
+              fields: [{
+                type: 'password',
+                name: 'password',
+                label: '管理员密码',
+                value: '',
+              }],
+              validator(data) {
+                if (!data.password.length) {
+                  vm.notify('密码不能为空');
+                  return false;
+                }
+                return true;
+              },
+            }).then(data => {
+              vm.api('User').save({
+                action: 'verify_password',
+              }, {
+                password: data.password,
+              }).then(() => {
+                resolve();
+              }, () => {
+                reject('密码错误');
+              });
+            });
+          });
+        },
       },
     });
   },

@@ -6,7 +6,7 @@
       <h3 class="page-header-title">{{title}}</h3>
       <h4 class="page-header-subtitle">{{subtitle}}</h4>
       <!--<h4 class="page-header-subtitle"-->
-          <!--v-if="options.total">(总数：{{total}})</h4>-->
+      <!--v-if="options.total">(总数：{{total}})</h4>-->
       <div class="tooltips">
         <slot name="actions">
           <v-button v-if="options.can_download" @click="download">
@@ -157,38 +157,6 @@
             el.click();
           });
         }, () => {
-        });
-      },
-      verifyPassword(needVerify = false) {
-        const vm = this;
-        if (!needVerify) return Promise.resolve();
-        return new Promise((resolve, reject) => {
-          vm.modalForm({
-            title: '请输入管理员密码',
-            fields: [{
-              type: 'password',
-              name: 'password',
-              label: '管理员密码',
-              value: '',
-            }],
-            validator(data) {
-              if (!data.password.length) {
-                vm.notify('密码不能为空');
-                return false;
-              }
-              return true;
-            },
-          }).then(data => {
-            vm.api('User').save({
-              action: 'verify_password',
-            }, {
-              password: data.password,
-            }).then(() => {
-              resolve();
-            }, () => {
-              reject('密码错误');
-            });
-          });
         });
       },
       getDownloadData() {

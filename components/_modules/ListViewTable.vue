@@ -152,6 +152,12 @@
           </td>
         </tr>
         </tbody>
+        <tfoot class="ant-table-tfoot">
+        <tr v-if="options.show_total">
+          <td>总和</td>
+          <td>{{total}}</td>
+        </tr>
+        </tfoot>
       </table>
     </div>
 
@@ -203,6 +209,7 @@
         // 选中的项目列表，主键 pk 的列表
         selectedItems: [],
         query: { ...vm.filters },
+        total: 0,
       };
     },
     computed: {},
@@ -216,6 +223,7 @@
           ...vm.query,
         }).then(resp => {
           vm.pager.page_count = Math.ceil(resp.data.count / vm.pager.page_size - 1e-5);
+          vm.total = resp.data.count;
           // 处理延迟计算
           const items = resp.data.results;
           if (vm.hooks && vm.hooks.item_before_render) {
