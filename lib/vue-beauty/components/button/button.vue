@@ -8,13 +8,11 @@
 <script lang="babel">
     export default {
         name: 'Button',
-        data: () => {
-            return {
-                prefixCls: 'ant-btn',
-                clicked: false,
-                clickTimer: null
-            }
-        },
+        data: () => ({
+            prefixCls: 'ant-btn',
+            clicked: false,
+            clickTimer: null
+        }),
         props: {
             type: String,
             htmlType: {

@@ -1,10 +1,18 @@
 @import "../color/colors";
 
+// http://stackoverflow.com/a/13611748/3040605
+@font-face {
+  font-family: "Helvetica Neue For Number";
+  src: local("Helvetica Neue");
+  unicode-range: U+30-39;
+}
+
 // Prefix
 @ant-prefix             : ant;
 
 // Color
 @primary-color          : @blue-6;
+@info-color             : @blue-6;
 @success-color          : @green-6;
 @error-color            : @red-6;
 @highlight-color        : @red-6;
@@ -25,7 +33,7 @@
 // ------ Base & Require ------
 @body-background        : #fff;
 @component-background   : #fff;
-@font-family            : -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family            : "Helvetica Neue For Number", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
 @code-family            : Consolas, Menlo, Courier, monospace;
 @heading-color          : fade(#000, 85%);
 @text-color             : fade(#000, 65%);
@@ -43,7 +51,7 @@
 
 // ICONFONT
 @iconfont-css-prefix    : anticon;
-@icon-url               : "https://at.alicdn.com/t/font_k9s3hj21flqmpldi";
+@icon-url               : "https://at.alicdn.com/t/font_0qcp222wvwijm7vi";
 
 // LINK
 @link-color             : @primary-color;
@@ -107,14 +115,18 @@
 @btn-disable-bg         : @background-color-base;
 @btn-disable-border     : @border-color-base;
 
-@btn-padding-base       : 4px 15px;
+@btn-padding-base       : 0 15px;
 @btn-font-size-lg       : @font-size-lg;
-@btn-padding-lg         : 4px 15px 5px 15px;
-@btn-padding-sm         : 1px 7px;
+@btn-padding-lg         : @btn-padding-base;
+@btn-padding-sm         : 0 7px;
 
-@btn-circle-size        : 28px;
-@btn-circle-size-lg     : 32px;
-@btn-circle-size-sm     : 22px;
+@btn-height-base        : 28px;
+@btn-height-lg          : 32px;
+@btn-height-sm          : 22px;
+
+@btn-circle-size        : @btn-height-base;
+@btn-circle-size-lg     : @btn-height-lg;
+@btn-circle-size-sm     : @btn-height-sm;
 
 @btn-group-border       : @primary-7;
 
@@ -244,6 +256,11 @@
 @spin-dot-size: 20px;
 @spin-dot-size-lg: 32px;
 
+// Table
+// --
+@table-header-bg: @background-color-base;
+@table-row-hover-bg: @primary-1;
+
 // TimePicker
 // ---
 @time-picker-panel-column-width: 56px;
@@ -264,5 +281,11 @@
 // ---
 @rate-star-color: #f5a623;
 @rate-star-bg: #e9e9e9;
+
+// Card
+// ---
+@card-head-height: 48px;
+@card-head-color: @heading-color;
+@card-head-background: @component-background;
 
 @import "./default_vb";

@@ -122,10 +122,16 @@ import emitter from '../../mixins/emitter';
         default: 1
       }
     },
-    mounted(){
+    created(){
       if(this.expand) {
         for(const item of this.data){
            this.$set(item, 'expand', true);
+        }
+      }else{
+        for(const item of this.data){
+          if(item.expand === undefined) {
+           this.$set(item, 'expand', false);
+          }
         }
       }
       this.$on('nodeSelected',(ori,id,dataPath)=>{
@@ -161,14 +167,14 @@ import emitter from '../../mixins/emitter';
       },
       paddingSty(){
         return this.mode == 'inline'?{
-            paddingLeft: 24 * this.level + 'px'
-          }:{};
+            paddingLeft: 24 * this.level + 'px' 
+          }:{}; 
       }
     },
     watch: {
       mode(){
-        for(let i=0;i<this.data.length;i++){
-          this.$set(this.data[i], 'expand', false);
+        for(const item of this.data){
+           this.$set(item, 'expand', false);
         }
       }
     },
