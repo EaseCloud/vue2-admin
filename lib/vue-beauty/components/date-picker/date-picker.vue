@@ -103,7 +103,7 @@
         mixins: [ Locale, emitter],
         props: {
             placeholder: {
-                type: String,
+                type: String, 
                 default: ()=> _t('datePicker.placeholder')
             },
             //是否显示范围
@@ -120,7 +120,7 @@
             //输入的时间
             value: [String,Array],
             position: {
-                type:String,
+                type:String, 
                 default:'absolute'
             },
             popupContainer: {
@@ -128,7 +128,7 @@
                 default: ()=> document.body
             },
             showTime: {
-                type: Boolean,
+                type: Boolean, 
                 default: false
             },
             //选择最大范围限制,以天为单位（只有range为true的时候才起作用）
@@ -276,7 +276,7 @@
             },
             label(val) {
                 this.timeBtnEnable = val?true:false;
-
+                
                 if(this.range){
                     let time = val.split(' ~ ');
                     this.$emit('input',[time[0],time[1]]);
@@ -413,6 +413,7 @@
                     this[no === 1 ? 'startTime' : 'endTime'] = this.getOutTime(item.time);
                 }else{
                     this.$emit('input',this.getOutTime(item.time))
+
                     if(!this.showTime) this.closeDropdown();
                 }
             },
