@@ -1,7 +1,7 @@
 /** Absolute Imports */
 // Ant Design UI - 恶魔模式
 import 'antd/dist/antd.less';
-// import 'font-awesome/less/font-awesome.less';
+import 'font-awesome/less/font-awesome.less';
 
 import VueRouter from 'vue-router';
 // import Deferred from 'es6-deferred';
@@ -46,20 +46,45 @@ export default {
         'color',
         'font',
         'align',
-        'list',
+        //'list',
         'link',
         'unlink',
         'tabulation',
         'image',
         'hr',
-//      'eraser',
-//      'undo',
-//      'full-screen',
-//      'info',
+        'eraser',
+        //'undo',
+        'full-screen',
       ],
       // extended modules
       modules: {
         // omit,reference to source code of build-in modules
+      },
+      // config image module
+      image: {
+        // Url of the server-side,default null and convert image to base64
+        server: `${config.api_root}/image/`,
+        // the name for file field in multipart request
+        fieldName: 'image',
+        // max file size
+        sizeLimit: 512 * 1024,
+        // default true,if set to true,the image will resize by localResizeIMG (https://github.com/think2011/localResizeIMG)
+        compress: true,
+        // follows are options of localResizeIMG
+        width: 1600,
+        height: 1600,
+        quality: 80,
+        // handle response data，return image url
+        uploadHandler(responseText) {
+          // default accept json data like  {ok:false,msg:'unexpected'} or {ok:true,data:'image url'}
+          const json = JSON.parse(responseText);
+          return json.image;
+//        if (!json.ok) {
+//          console.error(json.msg);
+//        } else {
+//          return json.data;
+//        }
+        },
       },
     });
 
