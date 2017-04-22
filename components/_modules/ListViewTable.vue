@@ -97,7 +97,8 @@
             <!-- type: image-text -->
             <template v-else-if="col.type=='image-text'">
               <div style="max-width: 100%; overflow: hidden;
-              text-overflow: ellipsis; white-space: pre-line;">
+                   text-overflow: ellipsis; white-space: pre-line;"
+                   v-if="getImageTextColValue(col, item).text">
                 {{getImageTextColValue(col, item).text}}
               </div>
               <div class="clearfix">
@@ -152,12 +153,12 @@
           </td>
         </tr>
         </tbody>
-        <tfoot class="ant-table-tfoot">
-        <tr v-if="options.show_total">
-          <td>总和</td>
-          <td>{{total}}</td>
-        </tr>
-        </tfoot>
+        <tbody class="ant-table-tbody">
+          <tr v-if="options.show_total">
+            <td>总和</td>
+            <td>{{total}}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
