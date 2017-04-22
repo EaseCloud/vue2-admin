@@ -16,7 +16,6 @@
         </div>
         <div class="content" ref="content" contenteditable="true"
              @click="toggleDashboard(dashboard)"
-             v-html="content"
              @input="onInput"
              :style="contentStyle"></div>
     </div>
@@ -93,7 +92,6 @@
                     return this.value;
                 },
                 set(val) {
-                  console.log(val);
                     let content = this.$refs.content.innerHTML
                     if (val != content) {
                       this.$refs.content.innerHTML = val
@@ -142,7 +140,6 @@
             saveCurrentRange(){
                 let selection = window.getSelection ? window.getSelection() : document.getSelection()
                 let range = selection.rangeCount ? selection.getRangeAt(0) : null
-              console.log(range);
                 if (!range) {
                     return
                 }
@@ -188,10 +185,11 @@
           this.$nextTick(() => {
             let component = this
             let content = component.$refs.content
+            content.innerHTML = component.content
             content.addEventListener("mouseup", component.saveCurrentRange, false)
-          content.addEventListener("keyup", component.saveCurrentRange, false)
-          content.addEventListener("mouseout", component.saveCurrentRange, false)
-          content.addEventListener("keyup", function () {
+            content.addEventListener("keyup", component.saveCurrentRange, false)
+            content.addEventListener("mouseout", component.saveCurrentRange, false)
+            content.addEventListener("keyup", function () {
             component.content = component.$refs.content.innerHTML
           }, false)
           component.touchHandler = function (e) {
