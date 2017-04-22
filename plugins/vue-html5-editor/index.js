@@ -31,97 +31,98 @@ export default {
 
     //modules
     let modules = [
-        moduleText,
-        moduleColor,
-        moduleFont,
-        moduleAlign,
-        moduleList,
-        moduleLink,
-        moduleUnlink,
-        moduleTable,
-        moduleImage,
-        moduleHr,
-        moduleEraser,
-        moduleUndo,
-        moduleFullScreen,
-        moduleInfo
+      moduleText,
+      moduleColor,
+      moduleFont,
+      moduleAlign,
+      moduleList,
+      moduleLink,
+      moduleUnlink,
+      moduleTable,
+      moduleImage,
+      moduleHr,
+      moduleEraser,
+      moduleUndo,
+      moduleFullScreen,
+      moduleInfo
     ]
     //extended modules
     if (Array.isArray(options.modules)) {
-        let arr = []
-        options.modules.forEach(function (module) {
-            if (module.name) {
-                arr.push(module)
-            }
-        })
-        modules = modules.concat(arr)
+      let arr = []
+      options.modules.forEach(function (module) {
+        if (module.name) {
+          arr.push(module)
+        }
+      })
+      modules = modules.concat(arr)
     }
     //hidden modules
     if (Array.isArray(options.hiddenModules)) {
-        modules = (()=> {
-            let arr = []
-            modules.forEach(function (m) {
-                if (!options.hiddenModules.includes(m.name)) {
-                    arr.push(m)
-                }
-            })
-            return arr
-        })()
+      modules = (()=> {
+        let arr = []
+        modules.forEach(function (m) {
+          if (!options.hiddenModules.includes(m.name)) {
+            arr.push(m)
+          }
+        })
+        return arr
+      })()
     }
     //visible modules
     if (Array.isArray(options.visibleModules)) {
-        modules = (()=> {
-            let arr = []
-            options.visibleModules.forEach(function (name) {
-                modules.forEach(function (module) {
-                    if (module.name == name) {
-                        arr.push(module)
-                    }
-                })
-            })
-            return arr
-        })()
+      modules = (()=> {
+        let arr = []
+        options.visibleModules.forEach(function (name) {
+          modules.forEach(function (module) {
+            if (module.name == name) {
+              arr.push(module)
+            }
+          })
+        })
+        return arr
+      })()
     }
 
 
     let components = {}
     modules.forEach((module)=> {
 
-        //specify the config for each module in options by name
-        let config = options[module.name]
-        module.config = Vue.util.extend(module.config || {}, config || {})
+      //specify the config for each module in options by name
+      let config = options[module.name]
+      module.config = Vue.util.extend(module.config || {}, config || {})
 
-        if (module.dashboard) {
-            //$options.module
-            module.dashboard.module = module
-            components['dashboard-' + module.name] = module.dashboard
-        }
-        if (options.icons && options.icons[module.name]) {
-            module.icon = options.icons[module.name]
-        }
+      if (module.dashboard) {
+        //$options.module
+        module.dashboard.module = module
+        components['dashboard-' + module.name] = module.dashboard
+      }
+      if (options.icons && options.icons[module.name]) {
+        module.icon = options.icons[module.name]
+      }
 
-        module.hasDashboard = !!module.dashboard
-        //prevent vue sync
-        module.dashboard = null
+      module.hasDashboard = !!module.dashboard
+      //prevent vue sync
+      module.dashboard = null
     })
 
     //i18n
-    let i18n = {"zh-cn": i18nZhCn, "en-us": i18nEnUs}
+    let i18n = { "zh-cn": i18nZhCn, "en-us": i18nEnUs }
     let customI18n = options.i18n || {}
     Object.keys(customI18n).forEach((key)=> {
-        i18n[key] = i18n[key] ? Vue.util.extend(i18n[key], customI18n[key]) : customI18n[key]
+      i18n[key] = i18n[key] ? Vue.util.extend(i18n[key], customI18n[key]) : customI18n[key]
     })
     let language = options.language || "en-us"
     let locale = i18n[language] || i18n["en-us"]
 
 
     let component = Vue.extend(editor).extend({
-        data () {
-            return {modules, locale}
-        },
-        components
+      data () {
+        return { modules, locale }
+      },
+      components
     })
 
     Vue.component(options.name || "vue-html5-editor", component)
+
   }
 }

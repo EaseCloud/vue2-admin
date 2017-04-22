@@ -37,7 +37,8 @@
                style="max-width: 800px">
         <embed-form :fields="fields"
                     v-if="initialized"
-                    @update="onUpdate"></embed-form>
+                    @update="onUpdate"
+                    ref="form"></embed-form>
       </section>
       <slot name="after"></slot>
     </section>

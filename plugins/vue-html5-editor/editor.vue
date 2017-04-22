@@ -14,21 +14,17 @@
                 <div v-if="dashboard" :is="dashboard" keep-alive></div>
             </div>
         </div>
-        <div class="content" ref="content" contenteditable="true" @click="toggleDashboard(dashboard)"
-             :style="contentStyle">
-        </div>
+        <div class="content" ref="content" contenteditable="true"
+             @click="toggleDashboard(dashboard)"
+             v-html="content"
+             @input="onInput"
+             :style="contentStyle"></div>
     </div>
 </template>
 <script>
     export default {
         props: {
-            value: {
-                //no longer be required
-                //twoWay: true,
-                type: String,
-                required: true,
-                default: ""
-            },
+            value: String,
             height: {
                 type: Number,
                 default: 300,
@@ -54,13 +50,6 @@
             }
         },
         watch: {
-            content(val) {
-              debugger;
-                let content = this.$refs.content.innerHTML
-                if (val != content) {
-                    this.$refs.content.innerHTML = val
-                }
-            },
             dashboard(val){
                 if (val) {
                     this.computeDashboardStyle()
@@ -98,9 +87,37 @@
                 }
                 style["min-height"] = this.height + 'px'
                 return style
-            }
+            },
+            content: {
+                get() {
+                    return this.value;
+                },
+                set(val) {
+                  console.log(val);
+                    let content = this.$refs.content.innerHTML
+                    if (val != content) {
+                      this.$refs.content.innerHTML = val
+                    }
+                    this.$emit('input', val)
+                },
+            },
         },
+//        watch: {
+//            value(val, oldVal) {
+//                if (val !== oldVal) this.content = val;
+//            },
+//            content(val, oldVal) {
+//              if (val !== oldVal) this.$emit('input', val);
+//            }
+//        },
         methods: {
+            onInput(e) {
+              this.saveCurrentRange()
+              this.content = e.target.innerHTML
+              this.$nextTick(() => {
+                this.restoreSelection()
+              })
+            },
             computeDashboardStyle(){
                 this.dashboardStyle = {'max-height': this.$refs.content.clientHeight + 'px'}
             },
@@ -116,7 +133,7 @@
             execCommand(command, arg){
                 this.restoreSelection()
                 document.execCommand(command, false, arg)
-                this.$emit('input', this.$refs.content.innerHTML);
+                this.content = this.$refs.content.innerHTML
                 this.dashboard = null
             },
             getCurrentRange(){
@@ -125,6 +142,7 @@
             saveCurrentRange(){
                 let selection = window.getSelection ? window.getSelection() : document.getSelection()
                 let range = selection.rangeCount ? selection.getRangeAt(0) : null
+              console.log(range);
                 if (!range) {
                     return
                 }
@@ -158,32 +176,31 @@
                 }
             }
         },
-        mounted(){
+        compiled(){
             let editor = this
             editor.modules.forEach(function (module) {
                 if (typeof module.init == "function") {
                     module.init(editor)
                 }
             })
+        },
+        mounted() {
           this.$nextTick(() => {
             let component = this
             let content = component.$refs.content
-            content.innerHTML = component.value
             content.addEventListener("mouseup", component.saveCurrentRange, false)
-            content.addEventListener("keyup", component.saveCurrentRange, false)
-            content.addEventListener("mouseout", component.saveCurrentRange, false)
-            content.addEventListener("keyup", function () {
-                editor.$emit('input', editor.$refs.content.innerHTML);
-            }, false)
-
-            component.touchHandler = function (e) {
-                if (component.$refs.content.contains(e.target)) {
-                    component.saveCurrentRange()
-                }
+          content.addEventListener("keyup", component.saveCurrentRange, false)
+          content.addEventListener("mouseout", component.saveCurrentRange, false)
+          content.addEventListener("keyup", function () {
+            component.content = component.$refs.content.innerHTML
+          }, false)
+          component.touchHandler = function (e) {
+            if (component.$refs.content.contains(e.target)) {
+              component.saveCurrentRange()
             }
-
-            window.addEventListener("touchend", component.touchHandler, false)
-          });
+          }
+          window.addEventListener("touchend", component.touchHandler, false)
+          })
         },
         beforeDestroy(){
             let editor = this
