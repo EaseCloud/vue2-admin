@@ -42,7 +42,7 @@
   </div>
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   export default{
     methods: {
       reload() {

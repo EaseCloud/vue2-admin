@@ -170,7 +170,7 @@
 
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   export default {
     props: {
       model: String,
@@ -180,6 +180,7 @@
       },
       cols: Array,
       actions: Array,
+      listActions: Array,
       options: {
         type: Object,
         default: () => ({}),

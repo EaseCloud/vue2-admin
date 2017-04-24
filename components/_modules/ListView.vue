@@ -9,6 +9,22 @@
       <!--v-if="options.total">(总数：{{total}})</h4>-->
       <div class="tooltips">
         <slot name="actions">
+          <!-- TODO: 这部分实现是从 ListViewTable 内部行 actions 复制粘贴出来的，后期考虑合并成一个独立组件 -->
+          <template v-for="action in listActions">
+            <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible(item)">
+              <!-- htmlType: button (默认) -->
+              <v-button
+                v-if="(action.htmlType||'button')==='button'"
+                :type="action.buttonClass || 'ghost'"
+                @click="action.action(selectedItems)">
+                {{evaluate(action.title)}}
+              </v-button> <!--防止按钮之间粘住-->
+              <!-- htmlType: text -->
+              <template v-else-if="action.htmlType==='text'">{{evaluate(action.title)}}</template>
+              <!-- htmlType: not defined -->
+              <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
+            </template>
+          </template>
           <v-button v-if="options.can_download" @click="download">
             导出
           </v-button>
@@ -34,6 +50,7 @@
                          ref="table"
                          :pager="pager"
                          :actions="actions"
+                         :list-actions="listActions"
                          :filters="getFilters"
                          :hooks="hooks"
                          @query="doQuery"></list-view-table>
@@ -56,7 +73,7 @@
 
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   export default {
     props: {
       title: String,
@@ -68,6 +85,7 @@
       },
       cols: Array,
       actions: Array,
+      listActions: Array,
       options: {
         type: Object,
         default: () => ({}),
