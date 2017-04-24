@@ -126,6 +126,22 @@
                     </option>
                   </select>
                 </div>
+                <!-- type: multi-select -->
+                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'multi-select'">
+                  <v-checkbox-group :data="field.choices"
+                                    label="text"
+                                    v-model="field.value">
+                    <!--{{field.value.length}} xx-->
+                    <!--{{field.choices.length}}-->
+                    <!--:value="field.value.length===field.choices.length"-->
+                    <v-checkbox
+                      @input="(field.value=!$event?field.choices.map(x=>x.value):[])">
+                      <!--:on-change="field.value=[]">-->
+                      <!--<span v-if="!checked"></span>-->
+                      全选
+                    </v-checkbox>
+                  </v-checkbox-group>
+                </div>
                 <!--<div class="ant-col-16 ant-form-item-control" v-if="field.type == text">-->
                 <!--</div>-->
                 <!--<div class="ant-col-16 ant-form-item-control" v-if="field.type == text">-->
