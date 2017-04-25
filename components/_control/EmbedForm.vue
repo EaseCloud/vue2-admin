@@ -242,7 +242,7 @@
 
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   export default {
     props: {
       fields: Array,

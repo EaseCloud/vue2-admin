@@ -17,6 +17,7 @@ import VueHtml5Editor from './plugins/vue-html5-editor';
 import GeoPicker from './plugins/geo-picker';
 import Notifier from './plugins/notifier';
 import ImageViewer from './plugins/image-viewer';
+import ListViewDialog from './plugins/list-view-dialog';
 import mixins from './mixins';
 // 应用内配置文件
 import config from '../config/config';
@@ -28,10 +29,6 @@ export default {
     // -------------------------
     // Vue Plugins
     // -------------------------
-    Vue.use(VueAntd);
-    Vue.use(ImageViewer);
-    Vue.use(Notifier);
-    Vue.use(GeoPicker);
     Vue.use(VueHtml5Editor, {
       // global component name
       name: 'vue-html5-editor',
@@ -87,6 +84,11 @@ export default {
         },
       },
     });
+    Vue.use(VueAntd);
+    Vue.use(ImageViewer);
+    Vue.use(Notifier);
+    Vue.use(GeoPicker);
+    Vue.use(ListViewDialog);
 
     // -------------------------
     // Vue Mixin
