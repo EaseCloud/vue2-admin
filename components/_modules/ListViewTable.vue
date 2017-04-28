@@ -97,7 +97,8 @@
             <!-- type: image-text -->
             <template v-else-if="col.type=='image-text'">
               <div style="max-width: 100%; overflow: hidden;
-              text-overflow: ellipsis; white-space: pre-line;">
+                   text-overflow: ellipsis; white-space: pre-line;"
+                   v-if="getImageTextColValue(col, item).text">
                 {{getImageTextColValue(col, item).text}}
               </div>
               <div class="clearfix">
@@ -152,6 +153,12 @@
           </td>
         </tr>
         </tbody>
+        <tbody class="ant-table-tbody">
+          <tr v-if="options.show_total">
+            <td>总和</td>
+            <td>{{total}}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
@@ -164,7 +171,7 @@
 
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   export default {
     props: {
       model: String,
@@ -174,6 +181,7 @@
       },
       cols: Array,
       actions: Array,
+      listActions: Array,
       options: {
         type: Object,
         default: () => ({}),
@@ -203,6 +211,7 @@
         // 选中的项目列表，主键 pk 的列表
         selectedItems: [],
         query: { ...vm.filters },
+        total: 0,
       };
     },
     computed: {},
@@ -216,6 +225,7 @@
           ...vm.query,
         }).then(resp => {
           vm.pager.page_count = Math.ceil(resp.data.count / vm.pager.page_size - 1e-5);
+          vm.total = resp.data.count;
           // 处理延迟计算
           const items = resp.data.results;
           if (vm.hooks && vm.hooks.item_before_render) {

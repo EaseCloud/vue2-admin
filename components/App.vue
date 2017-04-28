@@ -12,20 +12,21 @@
 
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   // Mixins
 
   //  import Deferred from 'es6-deferred';
   //  import * as controls from '../components/_control';
   //  import * as modules from '../components/_modules';
   //  import * as api from '../resource/api';
+  import config from '../../config/config';
 
   // Root component
   export default {
 //    route: { canReuse: false },
     data() {
       return {
-        current_user: null,
+        current_user: config.current_user || null,
         loading: {
           counter: 0,
           color: '#545F71',

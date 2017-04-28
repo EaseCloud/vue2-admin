@@ -27,8 +27,8 @@
 </template>
 
 <script>
+    import lrz from 'lrz'
 
-    import lrz from './lrz.all.bundle'
     export default {
         data() {
             return {
@@ -38,7 +38,6 @@
                     progressComputable: false,
                     complete: 0
                 }
-
             }
         },
         methods: {
@@ -103,47 +102,51 @@
                 let config = component.$options.module.config
                 var formData = new FormData();
                 formData.append(config.fieldName, file)
-                var xhr = new XMLHttpRequest()
-                xhr.onprogress = function (e) {
-                    component.upload.status = "progress"
-                    if (e.lengthComputable) {
-                        component.upload.progressComputable = true
-                        var percentComplete = e.loaded / e.total;
-                        component.upload.complete = (percentComplete * 100).toFixed(2)
-                    } else {
-                        component.upload.progressComputable = false
-                    }
-                }
-                xhr.onload = function (e) {
-                    if (xhr.status != 200) {
-                        component.upload.status = "error"
-                        console.log("upload error", e)
-                        return
-                    }
-                    component.upload.status = "success"
-                    try {
-                        let url = config.uploadHandler(xhr.responseText)
-                        if (url) {
-                            component.$parent.execCommand("insertImage", url)
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    } finally {
-                        component.upload.status = "ready"
-                    }
-
-
-                }
-                xhr.onerror = function (e) {
-                    component.upload.status = "error"
-                    console.log("upload error", e)
-                }
-                xhr.onabort = function (e) {
-                    component.upload.status = "abort"
-                    console.log("upload abort", e)
-                }
-                xhr.open("POST", config.server)
-                xhr.send(formData)
+                this.$root.api('Image').save(formData).then(resp => {
+                  component.$parent.execCommand("insertImage", resp.data.image)
+                });
+//
+//                var xhr = new XMLHttpRequest()
+//                xhr.onprogress = function (e) {
+//                    component.upload.status = "progress"
+//                    if (e.lengthComputable) {
+//                        component.upload.progressComputable = true
+//                        var percentComplete = e.loaded / e.total;
+//                        component.upload.complete = (percentComplete * 100).toFixed(2)
+//                    } else {
+//                        component.upload.progressComputable = false
+//                    }
+//                }
+//                xhr.onload = function (e) {
+//                    if (xhr.status >= 300 ) {
+//                        component.upload.status = "error"
+//                        console.log("upload error", e)
+//                        return
+//                    }
+//                    component.upload.status = "success"
+//                    try {
+//                        let url = config.uploadHandler(xhr.responseText)
+//                        if (url) {
+//                            component.$parent.execCommand("insertImage", url)
+//                        }
+//                    } catch (e) {
+//                        console.error(e)
+//                    } finally {
+//                        component.upload.status = "ready"
+//                    }
+//
+//
+//                }
+//                xhr.onerror = function (e) {
+//                    component.upload.status = "error"
+//                    console.log("upload error", e)
+//                }
+//                xhr.onabort = function (e) {
+//                    component.upload.status = "abort"
+//                    console.log("upload abort", e)
+//                }
+//                xhr.open("POST", config.server)
+//                xhr.send(formData)
             }
         }
     }

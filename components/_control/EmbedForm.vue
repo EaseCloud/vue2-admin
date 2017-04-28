@@ -218,6 +218,16 @@
           </v-button>
         </v-col>
 
+        <!-- type: editor -->
+        <v-col :span="field.span || 18" class="ant-form-item-control"
+               v-else-if="field.type == 'editor'">
+          <vue-html5-editor v-model="field.value"
+                            @input="$emit('update', field)"></vue-html5-editor>
+          <div v-if="field.description"
+               class="ant-form-explain">{{field.description}}
+          </div>
+        </v-col>
+
         <!-- 尚未实现 -->
         <span v-else>字段类型{{field.type}}尚未实现</span>
 
@@ -234,7 +244,7 @@
 
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   export default {
     props: {
       fields: Array,
