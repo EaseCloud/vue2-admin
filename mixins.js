@@ -126,8 +126,23 @@ export default {
     //   });
     //   vm.$router.replace({ query: filter });
     // },
+    /**
+     * 返回区划号码的一个前缀
+     * @param district
+     * @param length
+     */
+    areaPrefix(district, length = 6) {
+      return Number((`${district.toString().substr(0, length)}000000`).substr(0, 6));
+    },
     getDistrict(adcode = 86) {
       return this.$root.areaData[adcode] || [];
+    },
+    getDistrictFullNameByCode(zipCode) {
+      const vm = this;
+      return zipCode ?
+        `${vm.getDistrictNameByCode(vm.areaPrefix(zipCode, 2))} ` +
+        `${vm.getDistrictNameByCode(vm.areaPrefix(zipCode, 4))} ` +
+        `${vm.getDistrictNameByCode(zipCode)}` : '';
     },
     getDistrictNameByCode(adcode) {
       const data = this.$root.areaData;
