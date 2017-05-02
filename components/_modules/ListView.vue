@@ -8,6 +8,7 @@
       <!--<h4 class="page-header-subtitle"-->
       <!--v-if="options.total">(总数：{{total}})</h4>-->
       <div class="tooltips">
+        <slot name="menu"></slot>
         <slot name="actions">
           <!-- TODO: 这部分实现是从 ListViewTable 内部行 actions 复制粘贴出来的，后期考虑合并成一个独立组件 -->
           <template v-for="action in listActions">
