@@ -54,7 +54,7 @@
   </div>
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   export default {
     data() {
       return {
@@ -65,7 +65,10 @@
     methods: {
       submit() {
         const vm = this;
-        vm.login(vm.username, vm.password).then(user => {
+        if(vm.config.action_login) {
+          return vm.config.action_login(vm.username, vm.password);
+        }
+        return vm.login(vm.username, vm.password).then(user => {
           if (!user.is_staff) {
             vm.notify('用户不具备管理员权限');
           } else {

@@ -65,8 +65,8 @@ export default {
     },
   },
   methods: {
-    api(model = null) {
-      return api(model || this.model);
+    api(model = this.model, api_root = this.api_root || config.api_root) {
+      return api(model, api_root);
     },
     authenticate(reload = false) {
       const vm = this.$root;
