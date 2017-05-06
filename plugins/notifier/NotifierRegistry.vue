@@ -76,7 +76,7 @@
                          @keypress.enter="modalFormAction(true)"/>
                 </div>
                 <!-- type: password -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'password'">
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'password'">
                   <input type="password"
                          class="ant-input"
                          :placeholder="field.placeholder"
@@ -84,7 +84,7 @@
                          @keypress.enter="modalFormAction(true)"/>
                 </div>
                 <!-- type: number -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'number'">
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'number'">
                   <input type="number"
                          class="ant-input"
                          :placeholder="field.placeholder"
@@ -92,34 +92,48 @@
                          @keypress.enter="modalFormAction(true)"/>
                 </div>
                 <!-- type: date -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'date'">
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'date'">
                   <datepicker :time.sync="field.value"
                               :placeholder="field.placeholder"
-                              :input-class="{'ant-input': true}"></datepicker>
+                              :input-class="{'qant-input': true}"></datepicker>
                 </div>
                 <!-- type: datetime -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'datetime'">
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'datetime'">
                   <datepicker :time.sync="field.value"
                               type="min"
                               format="YYYY-MM-DD HH:mm"
                               :input-class="{'ant-input': true}"></datepicker>
                 </div>
                 <!-- type: textarea -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'textarea'">
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'textarea'">
                 <textarea class="ant-input"
                           :placeholder="field.placeholder"
                           @keypress.enter="modalFormAction(true)"
                           v-model="field.value"></textarea>
                 </div>
                 <!-- type: district -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'district'">
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'district'">
                   <district-picker v-model="field.value"></district-picker>
                 </div>
+                <!-- type: object -->
+                <v-col :span="field.span || 18" class="ant-form-item-control"
+                       v-else-if="field.type == 'object'">
+                  <!--<router-link v-if="field.value && field.value[field.options.pk || 'id']"-->
+                               <!--style="margin-right: 10px;"-->
+                               <!--:to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',-->
+                  <!--params: {id: field.value[field.options.pk || 'id']}}">-->
+                  <template v-if="field.value">{{field.value[field.options.display_field || 'name']}}</template>
+                  <!--</router-link>-->
+                  <v-button size="small"
+                            @click="pickObject(field)">选择
+                  </v-button>
+                  <v-button size="small" v-if="field.value"
+                            @click="field.value = null">清除
+                  </v-button>
+                </v-col>
                 <!-- type: select -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'select'">
-                  <select v-model="field.value"
-                          class="ant-input"
-                          title>
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'select'">
+                  <select v-model="field.value" class="ant-input" title>
                     <option value="" v-if="field.placeholder">{{field.placeholder}}</option>
                     <option v-for="choice in field.choices" :value="choice.value">
                       {{choice.text}}
@@ -127,7 +141,7 @@
                   </select>
                 </div>
                 <!-- type: multi-select -->
-                <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'multi-select'">
+                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'multi-select'">
                   <v-checkbox-group :data="field.choices"
                                     label="text"
                                     v-model="field.value">
@@ -142,6 +156,7 @@
                     </v-checkbox>
                   </v-checkbox-group>
                 </div>
+
                 <!--<div class="ant-col-16 ant-form-item-control" v-if="field.type == text">-->
                 <!--</div>-->
                 <!--<div class="ant-col-16 ant-form-item-control" v-if="field.type == text">-->
@@ -172,6 +187,11 @@
              ref="uploader"/>
     </div>
 
+    <object-picker :options="objectPickerField.options"
+                   v-if="objectPickerField"
+                   @input="pickObjectAction($event)"
+                   @cancel="objectPickerField=null"></object-picker>
+
   </div>
 
 </template>
@@ -184,11 +204,27 @@
 //        itemsConfirm: [],
         itemsPrompt: [],
         modalFormData: null,
+        objectPickerField: null,
         imagepicker: {
           deferred: null,
         },
       };
     },
+    methods: {
+      pickObject(field) {
+        const vm = this;
+        vm.objectPickerField = field;
+      },
+      pickObjectAction(id) {
+        const vm = this;
+        const field = vm.objectPickerField;
+        vm.objectPickerField = null;
+//        field.value = id;
+        vm.api(field.options.model).get({id}).then(resp => {
+          field.value=resp.data;
+        });
+      },
+    }
   };
 </script>
 

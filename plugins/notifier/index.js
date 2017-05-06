@@ -24,7 +24,7 @@ export default {
          * @link https://fe-driver.github.io/vue-beauty/#!/components/notification
          * @param content
          * @param title
-         * @param options:
+         * @param options:2
          *   options.duration: 整数，自动关闭时间，0 为不自动关闭
          *   options.type: 提示类型图标 success/error/info/warning
          *   options.top: 离顶部的高度，默认 24
@@ -92,8 +92,13 @@ export default {
           const deferred = vm.modalFormData.deferred;
           const form = {};
           if (success) {
-            vm.modalFormData.fields.forEach(item => {
-              form[item.name] = item.value;
+            vm.modalFormData.fields.forEach(field => {
+              if(field.type === 'object' && typeof field === 'object') {
+                form[field.name] = field.value[field.options.pk || 'id'];
+              } else {
+                form[field.name] = field.value;
+              }
+
             });
             if ((vm.modalFormData.validator instanceof Function)
               && !vm.modalFormData.validator(form)) {

@@ -6,6 +6,7 @@
       <h3 class="page-header-title">{{title}}</h3>
       <h4 class="page-header-subtitle">{{subtitle}}</h4>
       <div class="tooltips">
+        <slot name="menu"></slot>
         <!-- 保存动作 -->
         <template v-if="options.can_edit">
           <v-button @click="save()">保存并继续编辑</v-button>
