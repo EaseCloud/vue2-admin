@@ -70,6 +70,10 @@ export default {
     },
     authenticate(reload = false) {
       const vm = this.$root;
+      // 可以从 config 函数钩出这个处理方法
+      if (typeof(vm.config.action_authenticate) === 'function') {
+        return vm.config.action_authenticate(reload);
+      }
       if (vm.me && !reload) return Promise.resolve(vm.me);
       // debugger; // eslint-disable-line
       return api('User').get({ action: 'current' }).then(resp => {
@@ -79,16 +83,28 @@ export default {
     },
     login(username, password) {
       const vm = this.$root;
+      if(vm.config.action_login) {
+        return vm.config.action_login(username, password);
+      }
       return api('User').save(
         { action: 'login' },
         { username, password }
       ).then(resp => {
         vm.current_user = resp.data;
+        if (!vm.me.is_staff) {
+          vm.notify('用户不具备管理员权限');
+        } else {
+          vm.$router.push({ name: 'main' });
+        }
         return vm.me;
       });
     },
     logout() {
       const vm = this.$root;
+      // 可以从 config 函数钩出这个处理方法
+      if (typeof(vm.config.action_logout) === 'function') {
+        return vm.config.action_logout();
+      }
       return api('User').get({ action: 'logout' }).then(() => {
         vm.current_user = null;
         vm.$router.push({ name: 'passport_login' });

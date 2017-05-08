@@ -65,16 +65,7 @@
     methods: {
       submit() {
         const vm = this;
-        if(vm.config.action_login) {
-          return vm.config.action_login(vm.username, vm.password);
-        }
-        return vm.login(vm.username, vm.password).then(user => {
-          if (!user.is_staff) {
-            vm.notify('用户不具备管理员权限');
-          } else {
-            vm.$router.push({ name: 'main' });
-          }
-        });
+        return vm.login(vm.username, vm.password);
       },
     },
   };
