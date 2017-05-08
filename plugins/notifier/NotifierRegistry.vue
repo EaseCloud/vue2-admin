@@ -65,7 +65,10 @@
             <div class="ant-form ant-form-horizontal">
               <div class="ant-row" v-for="field in modalFormData.fields">
                 <div class="ant-col-6 ant-form-item-label">
-                  <label>{{field.label}}</label>
+                  <label>
+                    <span v-if="field.required" style="color: red">*</span>
+                    {{field.label}}
+                  </label>
                 </div>
                 <!-- type: text -->
                 <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'text'">
