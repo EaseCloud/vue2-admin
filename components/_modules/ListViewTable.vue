@@ -154,10 +154,10 @@
         </tr>
         </tbody>
         <tbody class="ant-table-tbody">
-          <tr v-if="options.show_total">
-            <td>总和</td>
-            <td>{{total}}</td>
-          </tr>
+        <tr v-if="options.show_total">
+          <td>总和</td>
+          <td>{{total}}</td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -171,7 +171,7 @@
 
 </template>
 
-<script type="text/babel">
+<script type="text/babel" lang="babel">
   export default {
     props: {
       model: String,
