@@ -8,17 +8,14 @@
              target="_blank" rel="noopener noreferrer">
             <img :src="value.image"/>
           </a>
-          <div>
-            <a href="javascript:"
-               @click="previewImages([value.image])"
-               rel="noopener noreferrer">
-              <i class="anticon anticon-eye-o"
-                 style="margin: -8px 0 0 -22px"></i>
-            </a>
-            <i v-if="!readonly"
+          <div class="image-picker-actions">
+            <a class="anticon anticon-eye-o"
+               href="javascript:"
+               @click="previewImages([value.image])"></a>
+            <a v-if="!readonly"
                class="anticon anticon-delete"
-               @click="$emit('input', null)"
-               style="margin: -8px 0 0 6px"></i>
+               href="javascript:"
+               @click="$emit('input', null)"></a>
           </div>
         </div>
       </div>
@@ -56,3 +53,16 @@
   };
 </script>
 
+<style lang="less" type="text/less">
+  .image-picker-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    line-height: 78px;
+    text-align: center;
+    z-index: 1;
+    a.anticon {
+    }
+  }
+</style>
