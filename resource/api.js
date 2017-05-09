@@ -1,13 +1,16 @@
 import Vue from 'vue';
 import VueResource from '../lib/vue-resource';
+import config from '../../config/config';
 
 Vue.use(VueResource);
 
-export default function resource(model) {
+// TODO: 这里的第二个参数尚未调通，原因是 data() 方法的时机 vm 尚未加载完全
+export default function resource(model, api_root=config.api_root) {
   const modelUnderscore = model.replace(
     /([A-Z])/g,
     $1 => `_${$1.toLowerCase()}`
   ).replace(/^_/, '');
-  return Vue.resource(`${modelUnderscore}{/id}{/action}/`);
+  let resource = `${modelUnderscore}${config.api_format || '{/id}{/action}/'}`;
+  return Vue.resource(resource, {}, {}, { root: api_root });
 }
 

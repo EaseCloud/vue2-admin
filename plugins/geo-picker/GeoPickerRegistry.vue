@@ -75,7 +75,7 @@
   </div>
 </template>
 
-<script lang="babel">
+<script type="text/babel">
 
   let map = null;
   let centerMarker = null;

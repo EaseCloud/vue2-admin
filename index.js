@@ -99,8 +99,10 @@ export default {
     // Vue resource config
     // -------------------------
     Vue.http.options.root = config.api_root || '/api';
-    Vue.http.options.credentials = true;
-    Vue.http.options.xhr = { withCredentials: true };
+    if (config.cross_origin !== false) {
+      Vue.http.options.credentials = true;
+      Vue.http.options.xhr = { withCredentials: true };
+    }
 
     // -------------------------
     // Vue notify http error

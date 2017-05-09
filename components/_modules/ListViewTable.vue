@@ -66,7 +66,7 @@
             <input type="checkbox" :value="item[pk]" v-model="selectedItems"/>
           </td>
           <td v-for="(col, i) in cols"
-              style="white-space: normal; overflow: hidden;"
+              style="white-space: normal; overflow: hidden; position: relative;"
               :style="col.tdStyle || {}">
             <!-- type: default/readonly/label -->
             <template v-if="!col.type || col.type=='readonly' || col.type=='label'">{{getColValue(col, item)}}
@@ -87,6 +87,8 @@
             <template v-else-if="col.type=='image'">
               <img v-if="getColValue(col, item)"
                    :src="getColValue(col, item)"
+                   @mouseover="col.preview && showPreviewImage(getColValue(col, item), $event)"
+                   @mouseout="col.preview && showPreviewImage(null, $event)"
                    style="cursor: pointer;"
                    @click="previewImages([getColValue(col, item)])"
                    :style="col.style || {maxWidth: (col.width||75)+'px', maxHeight: (col.height||75)+'px'}"/>
@@ -167,6 +169,12 @@
                 :page="query.page"
                 :page_count="pager.page_count"
                 :page_size="pager.page_size"/>
+
+    <img ref="image_previewer"
+         class="image-previewer"
+         v-show="preview_image"
+         :src="preview_image"/>
+
   </div>
 
 </template>
@@ -212,6 +220,7 @@
         selectedItems: [],
         query: { ...vm.filters },
         total: 0,
+        preview_image: null,
       };
     },
     computed: {},
@@ -341,13 +350,34 @@
         const vm = this;
         vm.doQuery({ page });
       },
+      showPreviewImage(url, e) {
+        const vm = this;
+        vm.preview_image = url;
+        if (!url) return;
+        const img = vm.$refs.image_previewer;
+        img.onload = () => {
+          const left = Math.min(window.innerWidth-img.width, Math.max(0, e.clientX));
+          const top = Math.min(window.innerHeight-img.height, Math.max(0, e.clientY));
+          img.style.left = `${left}px`;
+          img.style.top = `${top}px`;
+        };
+      },
     },
   };
 </script>
 
-<style scoped>
+<style scoped rel="stylesheet/less" lang="less">
   .ant-table-thead:not(:hover) .anticon-filter {
     opacity: 0;
+  }
+
+  .image-previewer {
+    position: fixed;
+    left: -1000px;
+    top: -1000px;
+    max-width: 400px;
+    max-height: 400px;
+    z-index: 10;
   }
 </style>
 

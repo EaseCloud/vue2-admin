@@ -28,7 +28,7 @@
   </aside>
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   import menus from '../../../config/menus';
   import api from '../../resource/api';
 

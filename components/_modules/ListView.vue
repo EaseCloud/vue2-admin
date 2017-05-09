@@ -44,7 +44,8 @@
 
         <slot name="before"></slot>
 
-        <list-view-table :model="model"
+        <list-view-table class="list-view-main-table"
+                         :model="model"
                          :pk="pk"
                          :cols="cols"
                          :options="options"
@@ -189,3 +190,11 @@
   };
 </script>
 
+<style rel="stylesheet/less" type="text/less">
+  .list-view-main-table > .ant-table {
+    overflow-x: auto;
+    & > .ant-table {
+      /*min-width: 960px;*/
+    }
+  }
+</style>

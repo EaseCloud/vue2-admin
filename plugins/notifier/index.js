@@ -92,14 +92,19 @@ export default {
           const deferred = vm.modalFormData.deferred;
           const form = {};
           if (success) {
+            let checkRequiredOk = true;
             vm.modalFormData.fields.forEach(field => {
-              if(field.type === 'object' && typeof field === 'object') {
+              if (field.type === 'object' && typeof field === 'object') {
                 form[field.name] = field.value[field.options.pk || 'id'];
               } else {
                 form[field.name] = field.value;
               }
-
+              if (field.required && !form[field.name]) {
+                vm.$message.warning(`必须填写${field.title}`);
+                checkRequiredOk = false;
+              }
             });
+            if (!checkRequiredOk) return false;
             if ((vm.modalFormData.validator instanceof Function)
               && !vm.modalFormData.validator(form)) {
               return false;
