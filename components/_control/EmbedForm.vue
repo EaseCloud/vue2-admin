@@ -9,6 +9,7 @@
 
       <v-row :gutter="6"
              type="flex"
+             v-if="isVisible(field)"
              :key="field.pk"
              style="margin: 4px 0">
 
@@ -244,7 +245,7 @@
 
 </template>
 
-<script type="text/babel">
+<script type="text/babel" lang="babel">
   export default {
     props: {
       fields: Array,
@@ -286,6 +287,12 @@
           // 支持其他输入方式（例如直接输入数组）
           return field.choices;
         }
+      },
+      isVisible(field) {
+        if (typeof(field.visible) === 'function') {
+          return field.visible(field.context && field.context.item);
+        }
+        return typeof(field.visible) === 'undefined' || !!field;
       },
     },
   };

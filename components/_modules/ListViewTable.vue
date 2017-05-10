@@ -179,7 +179,7 @@
 
 </template>
 
-<script type="text/babel">
+<script type="text/babel" lang="babel">
   export default {
     props: {
       model: String,

@@ -182,7 +182,10 @@
       render() {
         const vm = this;
         // set default value
-        return Promise.all(vm.fields.map(field => vm.renderField(field))).then(() => {
+        return Promise.all(vm.fields.map(field => {
+          vm.$set(field, 'context', { item: vm.item });
+          return vm.renderField(field);
+        })).then(() => {
           vm.initialized = true;
         });
       },
