@@ -99,6 +99,18 @@ export default {
         return vm.me;
       });
     },
+    change_password(password_old, password_new) {
+      const vm = this.$root;
+      if(vm.config.action_change_password) {
+        return vm.config.action_change_password(password_old, password_new);
+      }
+      return api('User').save(
+        { action: 'change_password' },
+        { password_old, password_new }
+      ).then(resp => {
+        return vm.me;
+      });
+    },
     logout() {
       const vm = this.$root;
       // 可以从 config 函数钩出这个处理方法

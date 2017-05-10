@@ -57,7 +57,7 @@
 
 </template>
 
-<script lang="babel">
+<script type="text/babel">
   import menus from '../../../config/menus';
 
   export default {
@@ -82,12 +82,7 @@
         } else if (vm.new_password === vm.old_password) {
           this.notify('新密码与旧密码不能相同', '操作失败');
         } else {
-          vm.api().save({
-            action: 'change_password',
-          }, {
-            password_old: vm.old_password,
-            password_new: vm.new_password,
-          }).then(() => {
+        vm.change_password(vm.old_password, vm.new_password).then(() => {
             vm.old_password = '';
             vm.new_password = '';
             vm.confirm_password = '';

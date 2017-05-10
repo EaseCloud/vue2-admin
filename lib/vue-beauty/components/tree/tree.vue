@@ -1,15 +1,16 @@
 <template>
   <ul :class="treeCls">
-    <li v-for="(item, index) in data" :class="{[`${prefixCls}-treenode-disabled`]: item.disabled,[dropOverCls]: dragOverIndex === index}" @dragover="dragover" @drop="drop(index,$event)" @dragenter="dragenter(index,$event)" @dragleave="dragleave(index,$event)" ref="node">
+    <li v-for="(item, index) in data" :class="{[`${prefixCls}-treenode-disabled`]: item.disabled,[dropOverCls]: dragOverIndex === index,'filter-node': item.filter}" @dragover="dragover" @drop="drop(index,$event)" @dragenter="dragenter(index,$event)" @dragleave="dragleave(index,$event)" ref="node">
       <span :class="[`${prefixCls}-switcher`,{[`${prefixCls}-switcher-disabled`]: item.disabled,[`${prefixCls}-switcher-noop`]: item.isLeaf,[`${prefixCls}-noline_docu`]: item.isLeaf,[`${prefixCls}-noline_${item.expanded ? 'open' : 'close'}`]: !item.isLeaf}]" @click="setExpand(item.disabled, index)"></span>
       <span v-if="checkable" :class="checkboxCls(item)" @click.prevent="setCheck(item.disabled || item.disableCheckbox, index)">
         <span :class="prefixCls + '-checkbox-inner'"></span>
       </span>
       <a :title="item.title" :class="selectHandleCls(item)" @click.prevent="setSelect(item.disabled, index)" :draggable="draggable" @dragstart="dragstart(index,$event)" @dragend="dragend">
+        <span class="ant-tree-iconEle ant-tree-icon_loading ant-tree-icon__open" v-if="item.loading"></span>
         <span :class="prefixCls + '-title'" v-html="item.title"></span>
       </a>
       <transition name="slide-up">
-        <tree v-if="!item.isLeaf" :data="item.children" :clue="`${clue}-${index}`" :multiple="multiple" :checkable="checkable" :class="`${prefixCls}-child-tree-open`" v-show="item.expanded" :draggable="draggable"></tree>
+        <tree v-if="!item.isLeaf" :prefix-cls="prefixCls" :data="item.children" :clue="`${clue}-${index}`" :multiple="multiple" :checkable="checkable" :class="`${prefixCls}-child-tree-open`" v-show="item.expanded" :draggable="draggable"></tree>
       </transition>
     </li>
   </ul>
@@ -22,6 +23,10 @@ export default {
     name: 'Tree',
     mixins: [emitter],
     props: {
+        prefixCls: {
+            type: String,
+            default: 'ant-tree',
+        },
         clue: {
             type: String,
             default: '0',
@@ -42,9 +47,17 @@ export default {
             type: Boolean,
             default: false,
         },
+        canDrop: {
+            type: Function,
+            default: () => true,
+        },
+        showLine: {
+            type: Boolean,
+            default: false,
+        },
+        async: Function,
     },
     data: () => ({
-        prefixCls: 'ant-tree',
         dragIndex: -1,
         dragOverIndex: -1,
         dropPosition: 0,
@@ -52,7 +65,16 @@ export default {
     }),
     computed: {
         treeCls() {
-            return this.clue === '0' ? this.prefixCls : `${this.prefixCls}-child-tree`;
+            if (this.clue === '0') {
+                return [
+                    this.prefixCls,
+                    { [`${this.prefixCls}-show-line`]: this.showLine },
+                ];
+            }
+            return [
+                `${this.prefixCls}-child-tree`,
+                { [`${this.prefixCls}-line`]: this.showLine },
+            ];
         },
         dropOverCls() {
             let res;
@@ -141,8 +163,10 @@ export default {
         });
         this.$on('dragdrop', (sourceClue, targetClue, dropPosition) => {
             if (this.clue !== '0') return this.dispatch('Tree', 'dragdrop', [sourceClue, targetClue, dropPosition]);
+            // 直接父级是否是同一个
+            const sameTree = sourceClue.substr(0, sourceClue.length - 1) === targetClue.substr(0, targetClue.length - 1);
             sourceClue = sourceClue.split('-');
-            let sourceData = this.data, _sourceData, lastSourceIndex = sourceClue[sourceClue.length - 1];
+            let sourceData = this.data, _sourceData, lastSourceIndex = sourceClue[sourceClue.length - 1] * 1;
             for (let i = 1; i < sourceClue.length - 1; i++) {
                 const index = sourceClue[i];
                 if (i === 1) {
@@ -159,7 +183,7 @@ export default {
 
             targetClue = targetClue.split('-');
             let targetData = this.data;
-            let targetIndex = targetClue[targetClue.length-1];
+            let targetIndex = targetClue[targetClue.length-1] * 1;
 
             for(let i = 1;i< targetClue.length - 1;i++){
               const index = targetClue[i];
@@ -169,6 +193,15 @@ export default {
                 targetData = targetData.children[index];
               }
             }
+            let canDrop;
+            if (targetClue.length > 2) {
+              canDrop = this.canDrop(sourceData, targetData.children[targetIndex], dropPosition);
+            } else {
+              canDrop = this.canDrop(sourceData, targetData[targetIndex], dropPosition);
+            }
+            if (!canDrop) return;
+
+            let sourcePositionChange = false;
             switch(dropPosition) {
               case 0:
                 if(targetClue.length > 2){
@@ -184,14 +217,17 @@ export default {
                 break;
               case -1:
               case 1:
+                const p = targetIndex + (dropPosition === -1 ? 0 : dropPosition);
                 if(targetClue.length > 2){
-                  targetData.children.splice(targetIndex + dropPosition, 0, _sourceData);
+                  targetData.children.splice(p, 0, _sourceData);
                 }else{
-                  targetData.splice(targetIndex + dropPosition, 0, _sourceData);
+                  targetData.splice(p, 0, _sourceData);
                 }
+                sourcePositionChange = sameTree && p <= lastSourceIndex;
                 break;
             }
 
+            if(sourcePositionChange) lastSourceIndex++;
             if (sourceClue.length > 2) {
                 if (sourceData.children.length === 1) {
                     this.$delete(sourceData, 'children');
@@ -291,47 +327,54 @@ export default {
         ];
       },
       selectHandleCls(item) {
-        const wrap = `${this.prefixCls}-node-content-wrapper`;
+          const wrap = `${this.prefixCls}-node-content-wrapper`;
 
-        return [
-          wrap,
-          `${wrap}-normal`,
-          {
-            [`${this.prefixCls}-node-selected`]: !item.disable && item.selected,
-            draggable: this.draggable
-          }
-        ];
+          return [
+              wrap,
+              `${wrap}-normal`,
+              {
+                  [`${this.prefixCls}-node-selected`]: !item.disable && item.selected,
+                  draggable: this.draggable,
+              },
+          ];
       },
       setKey() {
-        for (let i = 0; i < this.data.length; i++) {
-          this.data[i].clue = `${this.clue}-${i}`;
-        }
+          for (let i = 0; i < this.data.length; i++) {
+              this.data[i].clue = `${this.clue}-${i}`;
+          }
       },
       preHandle() {
-        for (let [i, item] of this.data.entries()) {
-          if (!item.children || !item.children.length) {
-            this.$set(this.data[i], 'isLeaf', true);
-            this.$set(this.data[i], 'childrenCheckedStatus', 2);
-            continue;
-          }
+          for (const [i, item] of this.data.entries()) {
+              if (!item.children) {
+                  this.$set(item, 'isLeaf', true);
+                  this.$set(item, 'childrenCheckedStatus', 2);
+                  continue;
+              }
 
-          this.$set(this.data[i], 'isLeaf', false);
-          if (item.checked && !item.childrenCheckedStatus) {
-            this.$set(this.data[i], 'childrenCheckedStatus', 2);
-            this.broadcast('Tree', 'parentChecked', { status: true, clue: `${this.clue}-${i}` });
-          } else {
-            let status = this.getChildrenCheckedStatus(item.children);
-            this.$set(this.data[i], 'childrenCheckedStatus', status);
-            
-            if (status !== 0) {
-              this.$set(this.data[i] ,'checked', true);
-            }
+              this.$set(item, 'isLeaf', false);
+              if (item.checked && !item.childrenCheckedStatus) {
+                  this.$set(item, 'childrenCheckedStatus', 2);
+                  this.broadcast('Tree', 'parentChecked', { status: true, clue: `${this.clue}-${i}` });
+              } else {
+                  const status = this.getChildrenCheckedStatus(item.children);
+                  this.$set(item, 'childrenCheckedStatus', status);
+
+                  if (status !== 0) {
+                      this.$set(item, 'checked', true);
+                  }
+              }
           }
-        }
       },
-      setExpand(disabled, index) {
+      async setExpand(disabled, index) {
         if (!disabled) {
-          this.$set(this.data[index], 'expanded', !this.data[index].expanded);
+          const expanded = !this.data[index].expanded;
+          this.$set(this.data[index], 'expanded', expanded);
+          if(expanded && !this.data[index].children.length && this.async) {
+            this.$set(this.data[index], 'loading', true);
+            const data = await this.async(this.data[index]);
+            this.data[index].children = data;
+            this.$set(this.data[index], 'loading', false);
+          }
         }
       },
       setSelect(disabled, index) {
@@ -423,6 +466,58 @@ export default {
         } else {
           return 0;
         }
+      },
+      edit(path, action, data) {
+        path = path.split('-');
+        const isTopNode = path.length === 2;
+
+        let node = this.data;
+        const lastIndex = path.pop();
+
+        if(!isTopNode) node = node[path[1]];
+        path.splice(0,2);
+
+        for( let i of path) {
+          node = node.children[i];
+        }
+        switch (action) {
+          case 'delete':
+            if(isTopNode) {
+              node.splice(lastIndex,1);
+            }else{
+              node.children.splice(lastIndex,1);
+            }
+            break;
+          case 'add':
+            let child;
+            if(isTopNode) {
+              child = node[lastIndex];
+            }else{
+              child = node.children[lastIndex];
+            }
+            if(child.children){
+              child.children.push(data);
+            }else{
+              this.$set(child, 'children', [data]);
+            }
+            break;
+          case 'edit':
+            node = isTopNode ? node[lastIndex] : node.children[lastIndex];
+
+            for(const [key, val] of Object.entries(data)) {
+              node[key] = val;
+            }
+        }
+      },
+      editNode(path, data) {
+        this.edit(path, 'edit', data);
+      },
+      addNode(path, data) {
+        if(path === '0') return this.data.push(data);
+        this.edit(path, 'add', data);
+      },
+      delNode(path) {
+        this.edit(path, 'delete');
       }
     }
 }

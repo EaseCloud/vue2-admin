@@ -50,10 +50,10 @@
         computed: {
             checkboxCls() {
                 return [
-                    this.prefixCls,
+                    this.prefixCls, 
                     {
-                        [this.prefixCls + '-checked']: !this.indeterminate && (this.innerValue === this.trueValue),
-                        [this.prefixCls + '-indeterminate']: this.indeterminate,
+                        [this.prefixCls + '-checked']: !this.indeterminate && (this.innerValue === this.trueValue),  
+                        [this.prefixCls + '-indeterminate']: this.indeterminate, 
                         [this.prefixCls + '-group-item']: this.parentIsGroup,
                         [this.prefixCls + '-disabled']: this.disabled
                     }
