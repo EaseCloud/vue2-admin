@@ -54,6 +54,17 @@
                 <!--<span v-else class="anticon anticon-filter"-->
                 <!--@click="callFilter(col)"></span>-->
                 <!--</v-dropdown>-->
+                <div v-if="query[col.filtering.search_field]"
+                     class="ant-tag"
+                     style="font-weight: normal; color: #AAA; background: white;">
+                  <span class="ant-tag-text" @click="callFilter(col)">
+                    {{col.displayValue}}
+                    <i class="anticon anticon-cross"
+                       @click.stop="doQuery({[col.filtering.search_field]: null})"></i>
+                  </span>
+                </div>
+                <span v-else class="anticon anticon-bars"
+                      @click="callFilter(col)"></span>
               </template>
               <!-- type: date_range 按照日期范围筛选 -->
               <template v-else-if="col.filtering.type=='date_range'">
@@ -291,11 +302,24 @@
        * TODO: vue-beauty 的 dropdown 插件尚未出炉
        */
       getColFilteringChoices(col) {
-        if (!(col.filtering && col.filtering.choices)) {
-          console.warn('select 筛选用的列没有指定选项：');
-          console.log(JSON.parse(JSON.stringify(col)));
-        }
-        return col.filtering.choices.map(item => ({ content: item.text }));
+        const vm = this;
+        return Promise.resolve().then(() => {
+          if (!(col.filtering && col.filtering.choices)) {
+            console.warn('select 筛选用的列没有指定选项：');
+            console.log(JSON.parse(JSON.stringify(col)));
+          }
+          if (col.filtering.choices instanceof Array) {
+            return col.filtering.choices;
+          } else if (col.filtering.choices instanceof Function) {
+            return col.filtering.choices(vm);
+          } else {
+            // Expected format: {val1: text1, val2, text2}
+            return Object.keys(col.filtering.choices).map(key => ({
+              value: key,
+              text: col.filtering.choices[key],
+            }));
+          }
+        });
       },
       /**
        * 归一化过滤 col.type = image-text 类型的输入
@@ -350,7 +374,27 @@
             });
           });
         } else if (col.filtering.type === 'select') {
-          vm.$message.warning('尚未实现');
+          vm.getColFilteringChoices(col).then(choices => {
+            vm.modalForm({
+              title: '按类别筛选',
+              fields: [{
+                type: 'select',
+                name: 'value',
+                label: '选项',
+                value: vm.query[col.filtering.search_field],
+                choices,
+              }],
+            }).then(data => {
+              let result = '';
+              choices.forEach(choice => {
+                if(choice.value === data.value) result = choice.text;
+              });
+              vm.$set(col, 'displayValue', result);
+              vm.doQuery({
+                [col.filtering.search_field]: data.value,
+              });
+            });
+          });
         } else if (col.filtering.type === 'date') {
           vm.$message.warning('尚未实现');
         } else if (col.filtering.type === 'date_range') {
@@ -403,7 +447,7 @@
 
 <style scoped rel="stylesheet/less" lang="less">
   .ant-table-thead {
-    .anticon-filter, .anticon-calendar {
+    .anticon-filter, .anticon-calendar, .anticon-bars {
       cursor: pointer;
       color: #AAA;
       -webkit-transition-duration: 0.3s;
@@ -412,7 +456,7 @@
       transition-duration: 0.3s;
     }
     &:not(:hover) {
-      .anticon-filter, .anticon-calendar {
+      .anticon-filter, .anticon-calendar, .anticon-bars {
         opacity: 0;
       }
     }
