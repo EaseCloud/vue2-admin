@@ -1,5 +1,5 @@
 <template>
-  <aside id="sidebar" class="aside-container">
+  <div id="sidebar" class="aside-container" style="overflow-x: visible;">
     <h1 class="site-title">{{config.platform_name}} {{config.version}}</h1>
     <ul class="menu">
       <li v-for="menu in menus"
@@ -25,7 +25,7 @@
         </ul>
       </li>
     </ul>
-  </aside>
+  </div>
 </template>
 
 <script type="text/babel">
