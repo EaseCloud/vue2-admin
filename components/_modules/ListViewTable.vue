@@ -39,7 +39,7 @@
                       @click="callFilter(col)"></span>
               </template>
               <!-- type: select 按照选项筛选 -->
-              <template v-else-if="col.filtering.type=='select'">
+              <template v-if="col.filtering.type=='select'">
                 <!-- TODO: v-dropdown 在 vue-beauty 中未实现 -->
                 <!--<v-dropdown trigger="click" :options="getColFilteringChoices(col)">-->
                 <!--<div v-if="query[col.filtering.search_field]"-->
@@ -54,31 +54,6 @@
                 <!--<span v-else class="anticon anticon-filter"-->
                 <!--@click="callFilter(col)"></span>-->
                 <!--</v-dropdown>-->
-                <div v-if="query[col.filtering.search_field]"
-                     class="ant-tag"
-                     style="font-weight: normal; color: #AAA; background: white;">
-                  <span class="ant-tag-text" @click="callFilter(col)">
-                    {{col.displayValue}}
-                    <i class="anticon anticon-cross"
-                       @click.stop="doQuery({[col.filtering.search_field]: null})"></i>
-                  </span>
-                </div>
-                <span v-else class="anticon anticon-bars"
-                      @click="callFilter(col)"></span>
-              </template>
-              <!-- type: date_range 按照日期范围筛选 -->
-              <template v-else-if="col.filtering.type=='date_range'">
-                <div v-if="query[col.filtering.from_field] || query[col.filtering.to_field]"
-                     class="ant-tag"
-                     style="font-weight: normal; color: #AAA; background: white;">
-                  <span class="ant-tag-text" @click="callFilter(col)">
-                    {{query[col.filtering.from_field]}}~{{query[col.filtering.to_field]}}
-                    <i class="anticon anticon-cross"
-                       @click.stop="doQuery({[col.filtering.from_field]: null, [col.filtering.to_field]: null})"></i>
-                  </span>
-                </div>
-                <span v-else class="anticon anticon-calendar"
-                      @click="callFilter(col)"></span>
               </template>
             </template>
           </th>
@@ -302,24 +277,11 @@
        * TODO: vue-beauty 的 dropdown 插件尚未出炉
        */
       getColFilteringChoices(col) {
-        const vm = this;
-        return Promise.resolve().then(() => {
-          if (!(col.filtering && col.filtering.choices)) {
-            console.warn('select 筛选用的列没有指定选项：');
-            console.log(JSON.parse(JSON.stringify(col)));
-          }
-          if (col.filtering.choices instanceof Array) {
-            return col.filtering.choices;
-          } else if (col.filtering.choices instanceof Function) {
-            return col.filtering.choices(vm);
-          } else {
-            // Expected format: {val1: text1, val2, text2}
-            return Object.keys(col.filtering.choices).map(key => ({
-              value: key,
-              text: col.filtering.choices[key],
-            }));
-          }
-        });
+        if (!(col.filtering && col.filtering.choices)) {
+          console.warn('select 筛选用的列没有指定选项：');
+          console.log(JSON.parse(JSON.stringify(col)));
+        }
+        return col.filtering.choices.map(item => ({ content: item.text }));
       },
       /**
        * 归一化过滤 col.type = image-text 类型的输入
@@ -374,47 +336,6 @@
             });
           });
         } else if (col.filtering.type === 'select') {
-          vm.getColFilteringChoices(col).then(choices => {
-            vm.modalForm({
-              title: '按类别筛选',
-              fields: [{
-                type: 'select',
-                name: 'value',
-                label: '选项',
-                value: vm.query[col.filtering.search_field],
-                choices,
-              }],
-            }).then(data => {
-              let result = '';
-              choices.forEach(choice => {
-                if(choice.value === data.value) result = choice.text;
-              });
-              vm.$set(col, 'displayValue', result);
-              vm.doQuery({
-                [col.filtering.search_field]: data.value,
-              });
-            });
-          });
-        } else if (col.filtering.type === 'date') {
-          vm.$message.warning('尚未实现');
-        } else if (col.filtering.type === 'date_range') {
-          vm.modalForm({
-            title: '选择时间范围',
-            fields: [{
-              type: 'date_range',
-              name: 'range',
-              label: '日期范围',
-              value: [
-                vm.query[col.filtering.from_field],
-                vm.query[col.filtering.to_field],
-              ],
-            }],
-          }).then(data => {
-            vm.doQuery({
-              [col.filtering.from_field]: data.range[0],
-              [col.filtering.to_field]: data.range[1],
-            })
-          });
         }
       },
       checkAll() {
@@ -435,8 +356,8 @@
         if (!url) return;
         const img = vm.$refs.image_previewer;
         img.onload = () => {
-          const left = Math.min(window.innerWidth - img.width, Math.max(0, e.clientX));
-          const top = Math.min(window.innerHeight - img.height, Math.max(0, e.clientY));
+          const left = Math.min(window.innerWidth-img.width, Math.max(0, e.clientX));
+          const top = Math.min(window.innerHeight-img.height, Math.max(0, e.clientY));
           img.style.left = `${left}px`;
           img.style.top = `${top}px`;
         };
@@ -446,20 +367,8 @@
 </script>
 
 <style scoped rel="stylesheet/less" lang="less">
-  .ant-table-thead {
-    .anticon-filter, .anticon-calendar, .anticon-bars {
-      cursor: pointer;
-      color: #AAA;
-      -webkit-transition-duration: 0.3s;
-      -moz-transition-duration: 0.3s;
-      -o-transition-duration: 0.3s;
-      transition-duration: 0.3s;
-    }
-    &:not(:hover) {
-      .anticon-filter, .anticon-calendar, .anticon-bars {
-        opacity: 0;
-      }
-    }
+  .ant-table-thead:not(:hover) .anticon-filter {
+    opacity: 0;
   }
 
   .image-previewer {

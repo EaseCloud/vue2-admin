@@ -3,52 +3,52 @@
   <div class="notifiers">
 
     <!--<div class="block-notify">-->
-    <!--<div class="ant-notification" v-for="(item, i) in itemsNotify">-->
-    <!--<div class="ant-notification-notice ant-notification-notice-closable">-->
-    <!--<div class="ant-notification-notice-content">-->
-    <!--<div class="ant-notification-notice-content ">-->
-    <!--<div class="ant-notification-notice-message">-->
-    <!--{{ item.title }}-->
-    <!--</div>-->
-    <!--<div class="ant-notification-notice-description">-->
-    <!--{{ item.content }}-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<a tabindex="0" @click="dismissNotify(i);"-->
-    <!--class="ant-notification-notice-close">-->
-    <!--<span class="ant-notification-notice-close-x"></span>-->
-    <!--</a>-->
-    <!--</div>-->
-    <!--</div>-->
+      <!--<div class="ant-notification" v-for="(item, i) in itemsNotify">-->
+        <!--<div class="ant-notification-notice ant-notification-notice-closable">-->
+          <!--<div class="ant-notification-notice-content">-->
+            <!--<div class="ant-notification-notice-content ">-->
+              <!--<div class="ant-notification-notice-message">-->
+                <!--{{ item.title }}-->
+              <!--</div>-->
+              <!--<div class="ant-notification-notice-description">-->
+                <!--{{ item.content }}-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<a tabindex="0" @click="dismissNotify(i);"-->
+             <!--class="ant-notification-notice-close">-->
+            <!--<span class="ant-notification-notice-close-x"></span>-->
+          <!--</a>-->
+        <!--</div>-->
+      <!--</div>-->
     <!--</div>-->
 
     <!--<div class="ant-modal-wrap block-modal-form"-->
-    <!--v-for="(item, i) in itemsConfirm">-->
-    <!--<div role="document" class="ant-modal" style="width: 520px;">-->
-    <!--<div class="ant-modal-content">-->
-    <!--<button class="ant-modal-close" @click="confirmAction(false, i)">-->
-    <!--<span class="ant-modal-close-x"></span>-->
-    <!--</button>-->
-    <!--<div class="ant-modal-header">-->
-    <!--<div class="ant-modal-title">{{item.title}}</div>-->
-    <!--</div>-->
-    <!--<div class="ant-modal-body" v-html="item.content"></div>-->
-    <!--<div class="ant-modal-footer">-->
-    <!--<button type="button"-->
-    <!--@click="confirmAction(false, i)"-->
-    <!--class="ant-btn ant-btn-ghost ant-btn-lg">-->
-    <!--<span>取消</span>-->
-    <!--</button>-->
-    <!--<button type="button"-->
-    <!--@click="confirmAction(true, i)"-->
-    <!--class="ant-btn ant-btn-primary ant-btn-lg">-->
-    <!--<span>确认</span>-->
-    <!--</button>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div tabindex="0" style="width: 0; height: 0; overflow: hidden;">sentinel</div>-->
-    <!--</div>-->
+         <!--v-for="(item, i) in itemsConfirm">-->
+      <!--<div role="document" class="ant-modal" style="width: 520px;">-->
+        <!--<div class="ant-modal-content">-->
+          <!--<button class="ant-modal-close" @click="confirmAction(false, i)">-->
+            <!--<span class="ant-modal-close-x"></span>-->
+          <!--</button>-->
+          <!--<div class="ant-modal-header">-->
+            <!--<div class="ant-modal-title">{{item.title}}</div>-->
+          <!--</div>-->
+          <!--<div class="ant-modal-body" v-html="item.content"></div>-->
+          <!--<div class="ant-modal-footer">-->
+            <!--<button type="button"-->
+                    <!--@click="confirmAction(false, i)"-->
+                    <!--class="ant-btn ant-btn-ghost ant-btn-lg">-->
+              <!--<span>取消</span>-->
+            <!--</button>-->
+            <!--<button type="button"-->
+                    <!--@click="confirmAction(true, i)"-->
+                    <!--class="ant-btn ant-btn-primary ant-btn-lg">-->
+              <!--<span>确认</span>-->
+            <!--</button>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div tabindex="0" style="width: 0; height: 0; overflow: hidden;">sentinel</div>-->
+      <!--</div>-->
     <!--</div>-->
 
     <div v-if="modalFormData"
@@ -107,16 +107,6 @@
                               format="YYYY-MM-DD HH:mm"
                               :input-class="{'ant-input': true}"></datepicker>
                 </div>
-                <!-- type: date_range -->
-                <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'date_range'">
-                  <v-date-picker :range="true"
-                                 :clearable="true"
-                                 format="yyyy-MM-dd"
-                                 value="field.value"
-                                 v-model="field.value"></v-date-picker>
-                  <!--:startTime="field.value && field.value.[0] || '1900-01-01'"-->
-                  <!--:endTime="field.value && field.value.split('~')[1] || '2999-12-31'"-->
-                </div>
                 <!-- type: textarea -->
                 <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'textarea'">
                 <textarea class="ant-input"
@@ -132,8 +122,8 @@
                 <v-col :span="field.span || 18" class="ant-form-item-control"
                        v-else-if="field.type == 'object'">
                   <!--<router-link v-if="field.value && field.value[field.options.pk || 'id']"-->
-                  <!--style="margin-right: 10px;"-->
-                  <!--:to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',-->
+                               <!--style="margin-right: 10px;"-->
+                               <!--:to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',-->
                   <!--params: {id: field.value[field.options.pk || 'id']}}">-->
                   <template v-if="field.value">{{field.value[field.options.display_field || 'name']}}</template>
                   <!--</router-link>-->
@@ -209,7 +199,7 @@
 
 </template>
 
-<script type="text/babel" lang="babel">
+<script type="text/babel">
   export default {
     data() {
       return {
@@ -233,8 +223,8 @@
         const field = vm.objectPickerField;
         vm.objectPickerField = null;
 //        field.value = id;
-        vm.api(field.options.model).get({ id }).then(resp => {
-          field.value = resp.data;
+        vm.api(field.options.model).get({id}).then(resp => {
+          field.value=resp.data;
         });
       },
     }
