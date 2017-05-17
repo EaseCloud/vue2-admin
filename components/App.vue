@@ -27,6 +27,7 @@
     data() {
       return {
         current_user: config.current_user || null,
+        hide_sidebar: !!localStorage.getItem('hide_sidebar'),
         loading: {
           counter: 0,
           color: '#545F71',
@@ -38,6 +39,13 @@
           page_size: 10,
         },
       };
+    },
+    methods: {
+      toggleSidebar() {
+        const vm = this;
+        vm.hide_sidebar = !vm.hide_sidebar;
+        localStorage.setItem('hide_sidebar', vm.hide_sidebar ? '1': '');
+      },
     },
   };
 </script>

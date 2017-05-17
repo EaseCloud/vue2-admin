@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueResource from '../lib/vue-resource';
+import VueResource from 'vue-resource';
 import config from '../../config/config';
 
 Vue.use(VueResource);
@@ -17,6 +17,14 @@ export default function resource(model, api_root = config.api_root) {
     // pass
   }
   let resource = `${modelUrl}${config.api_format || '{/id}{/action}/'}`;
-  return Vue.resource(resource, {}, {}, { root: api_root });
+  return Vue.resource(
+    resource,  // url
+    {},  // params
+    {
+      patch: { method: 'PATCH' },
+      post: { method: 'POST' },
+    },  // actions
+    { root: api_root },  // TODO: options$$1
+  );
 }
 

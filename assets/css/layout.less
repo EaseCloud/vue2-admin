@@ -2,6 +2,7 @@
 
 @sidebar-width: 224px;
 @header-height: 64px;
+@sidebar-color: #3F3F3F;
 
 html {
   font-size: 14px;
@@ -137,7 +138,7 @@ body {
 }
 
 #sidebar {
-  background: #3F3F3F;
+  background: @sidebar-color;
   //padding-top: 10px;
   //padding-bottom: 50px;
   //padding-top: @header-height;
@@ -149,6 +150,10 @@ body {
   overflow-y: auto;
   font-size: 12px;
   line-height: 42px;
+  .transition-duration(0.3s);
+  &.no-sidebar {
+    width: 0;
+  }
   h1.site-title {
     //text-align: center;
     color: white;
@@ -161,6 +166,7 @@ body {
   ul.menu {
     & > li {
       overflow: hidden;
+      .nowrap();
       &.expanded > a {
         color: white;
       }
@@ -169,8 +175,11 @@ body {
       }
       & > a {
         padding: 0 16px 0 24px;
+        position: relative;
         .tip {
-          float: right;
+          position: absolute;
+          right: 16px;
+          top: 0;
           line-height: inherit;
         }
       }
@@ -186,6 +195,7 @@ body {
   }
   li {
     a {
+      .nowrap();
       display: block;
       padding: 0 16px 0 48px;
       color: #999;
@@ -212,6 +222,30 @@ body {
   }
 }
 
+.btn-toggle-sidebar {
+  display: block;
+  position: fixed;
+  top: 50%;
+  margin-top: -30px;
+  height: 60px;
+  left: @sidebar-width;
+  width: 8px;
+  background: @sidebar-color;
+  color: white;
+  line-height: 60px;
+  z-index: 1;
+  .border-radius(0 8px 8px 0);
+  opacity: 0.7;
+  //.transition-duration(0.4s);
+  transition: all 0.3s ease;
+  &.no-sidebar {
+    left: 0;
+  }
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
 section.main-container {
   position: fixed;
   left: @sidebar-width;
@@ -219,7 +253,10 @@ section.main-container {
   right: 0;
   bottom: 0;
   background: #ececec;
-
+  transition: all 0.3s ease;
+  &.no-sidebar {
+    left: 0;
+  }
   .main-container-panel {
     background: white;
     position: absolute;
@@ -273,7 +310,11 @@ section.main-container {
     &.has-footer {
       bottom: 48px;
     }
-    h2 { font-weight: normal; font-size: 16px; margin: 16px 0 8px 0; }
+    h2 {
+      font-weight: normal;
+      font-size: 16px;
+      margin: 16px 0 8px 0;
+    }
   }
 
   .page-footer {

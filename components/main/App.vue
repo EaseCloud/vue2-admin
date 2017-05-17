@@ -32,17 +32,25 @@
     </header>
 
     <div v-if="me">
-      <sidebar></sidebar>
-      <section class="main-container">
+      i
+      <sidebar :class="{'no-sidebar': $root.hide_sidebar}"></sidebar>
+
+      <a class="btn-toggle-sidebar"
+         :class="{'no-sidebar': $root.hide_sidebar}"
+         @click="$root.toggleSidebar()">&gt;</a>
+
+      <section class="main-container"
+               :class="{'no-sidebar': $root.hide_sidebar}">
         <div class="main-container-panel">
           <router-view></router-view>
         </div>
       </section>
+
     </div>
   </div>
 </template>
 
-<script type="text/babel">
+<script type="text/babel" lang="babel">
   export default{
     methods: {
       reload() {
