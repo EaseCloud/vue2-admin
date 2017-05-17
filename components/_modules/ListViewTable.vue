@@ -66,20 +66,20 @@
                 <span v-else class="anticon anticon-bars"
                       @click="callFilter(col)"></span>
               </template>
-            </template>
-            <!-- type: date_range 按照日期范围筛选 -->
-            <template v-else-if="col.filtering.type=='date_range'">
-              <div v-if="query[col.filtering.from_field] || query[col.filtering.to_field]"
-                   class="ant-tag"
-                   style="font-weight: normal; color: #AAA; background: white;">
+              <!-- type: date_range 按照日期范围筛选 -->
+              <template v-else-if="col.filtering.type=='date_range'">
+                <div v-if="query[col.filtering.from_field] || query[col.filtering.to_field]"
+                     class="ant-tag"
+                     style="font-weight: normal; color: #AAA; background: white;">
                               <span class="ant-tag-text" @click="callFilter(col)">
                      {{query[col.filtering.from_field]}}~{{query[col.filtering.to_field]}}
                      <i class="anticon anticon-cross"
                         @click.stop="doQuery({[col.filtering.from_field]: null, [col.filtering.to_field]: null})"></i>
                    </span>
-              </div>
-              <span v-else class="anticon anticon-calendar"
-                    @click="callFilter(col)"></span>
+                </div>
+                <span v-else class="anticon anticon-calendar"
+                      @click="callFilter(col)"></span>
+              </template>
             </template>
           </th>
           <th v-if="options.show_actions !== false">操作</th>
@@ -387,7 +387,7 @@
             }).then(data => {
               let result = '';
               choices.forEach(choice => {
-                if(choice.value === data.value) result = choice.text;
+                if (choice.value === data.value) result = choice.text;
               });
               vm.$set(col, 'displayValue', result);
               vm.doQuery({
