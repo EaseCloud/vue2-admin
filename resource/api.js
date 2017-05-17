@@ -5,12 +5,18 @@ import config from '../../config/config';
 Vue.use(VueResource);
 
 // TODO: 这里的第二个参数尚未调通，原因是 data() 方法的时机 vm 尚未加载完全
-export default function resource(model, api_root=config.api_root) {
-  const modelUnderscore = model.replace(
-    /([A-Z])/g,
-    $1 => `_${$1.toLowerCase()}`
-  ).replace(/^_/, '');
-  let resource = `${modelUnderscore}${config.api_format || '{/id}{/action}/'}`;
+export default function resource(model, api_root = config.api_root) {
+  const modelAdjust = config.model_adjust || 'underscore';
+  let modelUrl = model;
+  if (modelAdjust === 'underscore') {
+    modelUrl = model.replace(
+      /([A-Z])/g,
+      $1 => `_${$1.toLowerCase()}`
+    ).replace(/^_/, '');
+  } else if (modelAdjust === 'off') {
+    // pass
+  }
+  let resource = `${modelUrl}${config.api_format || '{/id}{/action}/'}`;
   return Vue.resource(resource, {}, {}, { root: api_root });
 }
 

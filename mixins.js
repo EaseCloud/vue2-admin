@@ -72,7 +72,7 @@ export default {
       const vm = this.$root;
       // 可以从 config 函数钩出这个处理方法
       if (typeof(vm.config.action_authenticate) === 'function') {
-        return vm.config.action_authenticate(reload);
+        return vm.config.action_authenticate.apply(vm, [reload]);
       }
       if (vm.me && !reload) return Promise.resolve(vm.me);
       // debugger; // eslint-disable-line
@@ -84,7 +84,7 @@ export default {
     login(username, password) {
       const vm = this.$root;
       if(vm.config.action_login) {
-        return vm.config.action_login(username, password);
+        return vm.config.action_login.apply(vm, [username, password]);
       }
       return api('User').save(
         { action: 'login' },
@@ -102,7 +102,7 @@ export default {
     change_password(password_old, password_new) {
       const vm = this.$root;
       if(vm.config.action_change_password) {
-        return vm.config.action_change_password(password_old, password_new);
+        return vm.config.action_change_password.apply(vm, [password_old, password_new]);
       }
       return api('User').save(
         { action: 'change_password' },
@@ -115,7 +115,7 @@ export default {
       const vm = this.$root;
       // 可以从 config 函数钩出这个处理方法
       if (typeof(vm.config.action_logout) === 'function') {
-        return vm.config.action_logout();
+        return vm.config.action_logout.apply(vm, []);
       }
       return api('User').get({ action: 'logout' }).then(() => {
         vm.current_user = null;
