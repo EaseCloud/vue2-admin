@@ -6,7 +6,7 @@ Vue.use(VueResource);
 
 // TODO: 这里的第二个参数尚未调通，原因是 data() 方法的时机 vm 尚未加载完全
 export default function resource(model, api_root = config.api_root) {
-  const modelAdjust = config.model_adjust || 'underscore';
+  const modelAdjust = config.api_model_adjust || 'underscore';
   let modelUrl = model;
   if (modelAdjust === 'underscore') {
     modelUrl = model.replace(
