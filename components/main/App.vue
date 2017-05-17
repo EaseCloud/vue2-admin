@@ -32,12 +32,12 @@
     </header>
 
     <div v-if="me">
-      i
+
       <sidebar :class="{'no-sidebar': $root.hide_sidebar}"></sidebar>
 
       <a class="btn-toggle-sidebar"
          :class="{'no-sidebar': $root.hide_sidebar}"
-         @click="$root.toggleSidebar()">&gt;</a>
+         @click="$root.toggleSidebar()"></a>
 
       <section class="main-container"
                :class="{'no-sidebar': $root.hide_sidebar}">
