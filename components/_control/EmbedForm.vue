@@ -22,7 +22,7 @@
         <v-col :span="field.span || 8" class="ant-form-item-control"
                v-if="field.type == 'input' || field.type === undefined">
           <v-input v-model="field.value"
-                   @input="$emit('update', field)"
+                   @input="updateField(field)"
                    :type="field.htmlType || 'text'"
                    :min="field.min"
                    :disabled="field.disabled"
@@ -42,7 +42,7 @@
         <v-col :span="field.span || 8" class="ant-form-item-control"
                v-else-if="field.type == 'number'">
           <v-input-number v-model="field.value"
-                          @input="$emit('update', field)"
+                          @input="updateField(field)"
                           :min="field.min"
                           :max="field.max"
                           :step="field.step"
@@ -67,7 +67,7 @@
                          :time="field.value"
                          clearable
                          :show-time="field.show_time || field.pick_time"
-                         @input="$emit('update', field)"
+                         @input="updateField(field)"
           ></v-date-picker>
           <!--:format="field.format || (field.show_time || field.pick_time ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')"-->
         </v-col>
@@ -106,7 +106,7 @@
         <v-col :span="field.span || 8" class="ant-form-item-control"
                v-else-if="field.type == 'switch'">
           <v-switch v-model="field.value"
-                    @input="$emit('update', field)">
+                    @input="updateField(field)">
             <template slot="checked">{{field.checked}}</template>
             <template slot="unchecked">{{field.unchecked}}</template>
           </v-switch>
@@ -122,7 +122,7 @@
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'radio'">
           <v-radio-group v-model="field.value"
-                         @input="$emit('update', field)"
+                         @input="updateField(field)"
                          :disabled="!!field.readonly"
                          :data="getRadioChoices(field)"></v-radio-group>
           <div v-if="field.description"
@@ -135,7 +135,7 @@
                v-else-if="field.type == 'radio-button'">
           <v-radio-group type="button"
                          v-model="field.value"
-                         @input="$emit('update', field)"
+                         @input="updateField(field)"
                          :disabled="!!field.readonly"
                          :data="getRadioChoices(field)"></v-radio-group>
           <div v-if="field.description"
@@ -148,7 +148,7 @@
                v-else-if="field.type == 'image'">
           <image-picker v-model="field.value"
                         :readonly="!!field.readonly"
-                        @input="$emit('update', field)"></image-picker>
+                        @input="updateField(field)"></image-picker>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
           </div>
@@ -168,7 +168,7 @@
                v-else-if="field.type == 'gallery'">
           <gallery-picker v-model="field.value"
                           :readonly="!!field.readonly"
-                          @input="$emit('update', field)"></gallery-picker>
+                          @input="updateField(field)"></gallery-picker>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
           </div>
@@ -179,14 +179,14 @@
           <geo-picker v-model="field.value"
                       :max="field.max"
                       :readonly="field.readonly"
-                      @input="$emit('update', field)"></geo-picker>
+                      @input="updateField(field)"></geo-picker>
         </v-col>
 
         <!-- type: district -->
         <v-col :span="field.span || 12" v-else-if="field.type == 'district'">
           <district-picker v-model="field.value"
                            :readonly="field.readonly"
-                           @input="$emit('update', field)"></district-picker>
+                           @input="updateField(field)"></district-picker>
         </v-col>
 
         <!-- type: list-view -->
@@ -215,7 +215,7 @@
                     @click="pickObject(field)">选择
           </v-button>
           <v-button size="small" v-if="field.value"
-                    @click="field.value = null; $emit('update', field)">清除
+                    @click="field.value = null; updateField(field)">清除
           </v-button>
         </v-col>
 
@@ -223,7 +223,7 @@
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'editor'">
           <vue-html5-editor v-model="field.value"
-                            @input="$emit('update', field)"></vue-html5-editor>
+                            @input="updateField(field)"></vue-html5-editor>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
           </div>
@@ -272,6 +272,13 @@
         const field = vm.objectPickerField;
         vm.objectPickerField = null;
         field.value = id;
+        vm.$emit('update', field);
+      },
+      updateField(field) {
+        const vm = this;
+        if (field.onUpdate) {
+          field.onUpdate(field);
+        }
         vm.$emit('update', field);
       },
       getRadioChoices(field) {

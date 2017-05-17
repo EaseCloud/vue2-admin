@@ -1,5 +1,5 @@
 <template>
-  <div id="sidebar" class="aside-container" style="overflow-x: visible;">
+  <div id="sidebar" class="aside-container">
     <h1 class="site-title">{{config.platform_name}} {{config.version}}</h1>
     <ul class="menu">
       <li v-for="menu in menus"
