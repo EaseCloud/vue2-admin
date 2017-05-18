@@ -229,7 +229,7 @@ body {
   margin-top: -30px;
   height: 60px;
   left: @sidebar-width;
-  width: 8px;
+  width: 7px;
   background: @sidebar-color;
   color: white;
   line-height: 60px;
@@ -238,11 +238,21 @@ body {
   opacity: 0.7;
   //.transition-duration(0.4s);
   transition: all 0.3s ease;
+  .border-box();
   &.no-sidebar {
     left: 0;
   }
   &:hover {
     opacity: 0.8;
+  }
+  &::after {
+    content: "";
+    display: block;
+    margin: 18px 2px;
+    border-width: 0 1px;
+    border-color: rgba(255,255,255,0.5);
+    border-style: dotted;
+    height: 23px;
   }
 }
 
