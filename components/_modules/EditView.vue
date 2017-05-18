@@ -5,6 +5,7 @@
     <header class="page-header">
       <h3 class="page-header-title">{{title}}</h3>
       <h4 class="page-header-subtitle">{{subtitle}}</h4>
+      <slot name="page-header-menu"></slot>
       <div class="tooltips">
         <slot name="menu"></slot>
         <!-- 保存动作 -->

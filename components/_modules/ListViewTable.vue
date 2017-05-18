@@ -271,9 +271,11 @@
             }
             Promise.all(deferredPromises).then(() => {
               vm.items = items;
+              vm.$emit('loaded');
             });
           } else {
             vm.items = items;
+            vm.$emit('loaded');
           }
         });
         vm.selectedItems = [];

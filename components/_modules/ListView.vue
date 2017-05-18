@@ -5,6 +5,7 @@
     <header class="page-header">
       <h3 class="page-header-title">{{title}}</h3>
       <h4 class="page-header-subtitle">{{subtitle}}</h4>
+      <slot name="page-header-menu"></slot>
       <!--<h4 class="page-header-subtitle"-->
       <!--v-if="options.total">(总数：{{total}})</h4>-->
       <div class="tooltips">
@@ -55,8 +56,8 @@
                          :list-actions="listActions"
                          :filters="getFilters"
                          :hooks="hooks"
+                         @loaded="$emit('loaded')"
                          @query="doQuery"></list-view-table>
-
         <slot name="after"></slot>
 
       </section>
