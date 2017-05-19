@@ -40,6 +40,7 @@
         <embed-form :fields="fields"
                     v-if="initialized"
                     @update="onUpdate"
+                    @loaded="$emit('loaded', $event)"
                     ref="form"></embed-form>
       </section>
       <slot name="after"></slot>

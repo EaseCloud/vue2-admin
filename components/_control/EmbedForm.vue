@@ -198,6 +198,7 @@
                            :actions="field.options.actions"
                            :filters="field.options.filters"
                            :hooks="field.options.hooks"
+                           @loaded="$emit('loaded', field)"
                            :ref="field.id"></list-view-table>
           <!--:pager="pager"-->
         </v-col>

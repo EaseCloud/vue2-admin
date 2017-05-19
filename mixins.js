@@ -26,7 +26,7 @@ export default {
       return choices;
     },
     areaData() {
-      return areaData;
+      return config.area_data || areaData;
     },
     me() {
       return this.$root.current_user;
