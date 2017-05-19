@@ -24,10 +24,12 @@
   // Root component
   export default {
 //    route: { canReuse: false },
+    name: 'vue2-admin',
     data() {
       return {
         current_user: config.current_user || null,
         hide_sidebar: !!localStorage.getItem('hide_sidebar'),
+        context: {},
         loading: {
           counter: 0,
           color: '#545F71',
