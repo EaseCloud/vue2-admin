@@ -21,6 +21,10 @@ export default {
   version: '1.0',
   // 初始路由
   init_route: { name: 'main_user_list' },
+  // 初始登录的处理 function(vm)
+  on_login(vm) {
+    vm.$router.replace(this.init_route);
+  },
   // 右上角的按钮链接
   tooltip_menus: [
     // { label: '原型', href: 'http://example.com/prototype/' },

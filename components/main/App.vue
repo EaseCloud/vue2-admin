@@ -59,7 +59,13 @@
         vm.authenticate().then(() => {
           // 已经登陆，如果是直接访问，跳转到功能页
           if (vm.$route.name === 'main') {
-            vm.$router.push(vm.config.init_route || { name: 'main_user_list' });
+            if(vm.config.on_login) {
+              vm.config.on_login(vm);
+            } else if(vm.config.init_route) {
+              vm.$router.push(vm.config.init_route || { name: 'main_user_list' });
+            } else {
+              vm.notify('请在配置中配置 on_login(vm) 事件 或 init_route 初始路由');
+            }
           }
         }, () => {
           // 尚未登录，跳转回登录页面
