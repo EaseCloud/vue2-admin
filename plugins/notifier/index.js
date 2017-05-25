@@ -113,6 +113,19 @@ export default {
           vm.modalFormData = null;
           return deferred[success ? 'resolve' : 'reject'](form);
         },
+        pickFile() {
+          const vm = this.vmNotifier;
+          const deferred = new Deferred();
+          vm.filepicker.deferred = deferred;
+          vm.$refs.uploader_file.click();
+          return deferred.promise;
+        },
+        pickFileAction() {
+          const vm = this.vmNotifier;
+          const deferred = vm.filepicker.deferred;
+          vm.filepicker.deferred = null;
+          return deferred.resolve(vm.$refs.uploader_file.files);
+        },
         pickImage() {
           const vm = this.vmNotifier;
           const deferred = new Deferred();

@@ -198,6 +198,9 @@
       <input type="file" accept="image/*"
              @change="pickImageAction()"
              ref="uploader"/>
+      <input type="file"
+             @change="pickFileAction()"
+             ref="uploader_file"/>
     </div>
 
     <object-picker :options="objectPickerField.options"
@@ -219,6 +222,9 @@
         modalFormData: null,
         objectPickerField: null,
         imagepicker: {
+          deferred: null,
+        },
+        filepicker: {
           deferred: null,
         },
       };
