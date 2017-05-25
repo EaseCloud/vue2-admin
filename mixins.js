@@ -83,7 +83,7 @@ export default {
     },
     login(username, password) {
       const vm = this.$root;
-      if(vm.config.action_login) {
+      if (vm.config.action_login) {
         return vm.config.action_login.apply(vm, [username, password]);
       }
       return api('User').save(
@@ -101,7 +101,7 @@ export default {
     },
     change_password(password_old, password_new) {
       const vm = this.$root;
-      if(vm.config.action_change_password) {
+      if (vm.config.action_change_password) {
         return vm.config.action_change_password.apply(vm, [password_old, password_new]);
       }
       return api('User').save(
@@ -228,6 +228,17 @@ export default {
         /([A-Z])/g,
         $1 => `_${$1.toLowerCase()}`
       ).replace(/^_/, '');
+    },
+    getChoiceText(choice, value, fieldText='text', fieldValue='value') {
+      let result = null;
+      choice.some(opt => {
+        if (opt[fieldValue] === value) {
+          result = opt[fieldText];
+          return true;
+        }
+        return false;
+      });
+      return result;
     },
     // View utils
     getColValue(col, item) {
