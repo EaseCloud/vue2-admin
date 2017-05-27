@@ -112,7 +112,8 @@ export default {
       request.headers = request.headers || {};
       // 对响应结果的业务处理
       next(response => {
-        if (window.app && window.app.notify) {
+        if (window.app && window.app.notify &&
+          ((typeof config.report_http_error === 'undefined') || !!config.report_http_error)) {
           if (response.data && response.data.msg) {
             // console.log(response);
             if (response.data.ok) {
