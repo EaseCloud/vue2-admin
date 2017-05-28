@@ -232,7 +232,7 @@ export default {
     getChoiceText(choice, value, fieldText='text', fieldValue='value') {
       let result = null;
       choice.some(opt => {
-        if (opt[fieldValue] === value) {
+        if (opt[fieldValue].toString() === value.toString()) {
           result = opt[fieldText];
           return true;
         }
