@@ -75,6 +75,8 @@
                   <input type="text"
                          class="ant-input"
                          :placeholder="field.placeholder"
+                         :disabled="field.disabled"
+                         :readonly="field.readonly"
                          v-model="field.value"
                          @keypress.enter="modalFormAction(true)"/>
                 </div>
@@ -83,6 +85,8 @@
                   <input type="password"
                          class="ant-input"
                          :placeholder="field.placeholder"
+                         :disabled="field.disabled"
+                         :readonly="field.readonly"
                          v-model="field.value"
                          @keypress.enter="modalFormAction(true)"/>
                 </div>
@@ -91,6 +95,8 @@
                   <input type="number"
                          class="ant-input"
                          :placeholder="field.placeholder"
+                         :disabled="field.disabled"
+                         :readonly="field.readonly"
                          v-model="field.value"
                          @keypress.enter="modalFormAction(true)"/>
                 </div>
@@ -122,6 +128,8 @@
                 <textarea class="ant-input"
                           :placeholder="field.placeholder"
                           @keypress.enter="modalFormAction(true)"
+                          :disabled="field.disabled"
+                          :readonly="field.readonly"
                           v-model="field.value"></textarea>
                 </div>
                 <!-- type: district -->

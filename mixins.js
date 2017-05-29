@@ -229,16 +229,13 @@ export default {
         $1 => `_${$1.toLowerCase()}`
       ).replace(/^_/, '');
     },
-    getChoiceText(choice, value, fieldText='text', fieldValue='value') {
+    getChoiceText(choice, value, fieldText = 'text', fieldValue = 'value') {
+      const vm = this;
       let result = null;
-      choice.some(opt => {
-        if (opt[fieldValue].toString() === value.toString()) {
-          result = opt[fieldText];
-          return true;
-        }
-        return false;
-      });
-      return result;
+      const obj = choice.filter(
+        opt => (vm.getProperty(opt, fieldValue) || '').toString() === (value || '').toString()
+      )[0];
+      return obj ? vm.getProperty(obj, fieldText) : null;
     },
     // View utils
     getColValue(col, item) {
@@ -306,6 +303,12 @@ export default {
       delete query[key];
       vm.$router.replace({ query });
       vm.reload();
+    },
+    dateformat(date, format='yyyy-mm-dd') {
+      return dateformat(date, format);
+    },
+    echo(obj) {
+      console.log(obj);
     },
   },
 };

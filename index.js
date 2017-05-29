@@ -9,9 +9,9 @@ import VueRouter from 'vue-router';
 /** Relative Imports */
 import './assets/css/style.less';
 // import './lib/vue-beauty/package/style/vue-beauty.min.css';
-import VueAntd from 'vue-beauty';
+// import VueAntd from './lib/vue-beauty';
 // import VueAntd from './lib/vue2-antd';
-// import VueAntd from 'vue-beauty';
+import VueAntd from 'vue-beauty';
 
 import VueHtml5Editor from './plugins/vue-html5-editor';
 import GeoPicker from './plugins/geo-picker';
