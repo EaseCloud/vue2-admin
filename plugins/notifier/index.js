@@ -100,7 +100,7 @@ export default {
                 form[field.name] = field.value;
               }
               if (field.required && !form[field.name]) {
-                vm.$message.warning(`必须填写${field.title}`);
+                vm.$message.warning(`必须填写${field.title||field.label}`);
                 checkRequiredOk = false;
               }
             });
