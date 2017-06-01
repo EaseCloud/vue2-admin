@@ -93,6 +93,7 @@ export default {
           const form = {};
           if (success) {
             let checkRequiredOk = true;
+            let isNumberOk =true;
             vm.modalFormData.fields.forEach(field => {
               if (field.type === 'object' && typeof field === 'object') {
                 form[field.name] = field.value[field.options.pk || 'id'];
@@ -103,8 +104,13 @@ export default {
                 vm.$message.warning(`必须填写${field.title}`);
                 checkRequiredOk = false;
               }
+              if (field.isDigit && !Number.isInteger(Number(field.value))) {
+                vm.$message.warning(`必须填写数字${field.title}`);
+                isNumberOk = false;
+              }
             });
             if (!checkRequiredOk) return false;
+            if (!isNumberOk) return false;
             if ((vm.modalFormData.validator instanceof Function)
               && !vm.modalFormData.validator(form)) {
               return false;
