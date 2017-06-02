@@ -40,4 +40,4 @@ jspm_packages
 
 
 /.idea
-/lib/vue-beauty
+#/lib/vue-beauty
