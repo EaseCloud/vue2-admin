@@ -27,6 +27,9 @@
               <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
             </template>
           </template>
+          <v-button @click="refresh">
+            刷新
+          </v-button>
           <v-button v-if="options.can_download" @click="download">
             导出
           </v-button>
@@ -186,6 +189,10 @@
           page_size: 1000000,
           ...vm.filters,
         });
+      },
+      refresh() {
+        const vm = this;
+        vm.$refs.table.reload();
       },
     },
   };
