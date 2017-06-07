@@ -154,7 +154,8 @@
                 </v-col>
                 <!-- type: select -->
                 <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'select'">
-                  <select v-model="field.value" class="ant-input" title>
+                  <select v-model="field.value" class="ant-input" title
+                          :disabled="field.disabled">
                     <option value="" v-if="field.placeholder">{{field.placeholder}}</option>
                     <option v-for="choice in field.choices" :value="choice.value">
                       {{choice.text}}
