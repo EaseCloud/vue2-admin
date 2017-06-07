@@ -156,7 +156,7 @@
                     v-if="(action.htmlType||'button')==='button'"
                     size="small"
                     :type="action.buttonClass || 'ghost'"
-                    @click="action.action(item)">
+                    @click="doAction(action.action, [item])">
                     {{evaluate(action.title, item)}}
                   </v-button> <!--防止按钮之间粘住-->
                   <!-- htmlType: text -->

@@ -358,7 +358,6 @@
             left: `${p.left}px`,
           };
         }
-        console.log(this.containerStyle);
       },
       // 转换输入的时间
       parse(time, isLast) {
