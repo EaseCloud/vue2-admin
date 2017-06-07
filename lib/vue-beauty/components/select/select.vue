@@ -71,7 +71,7 @@
     import { getOffset } from '../../utils/fn';
     import emitter from '../../mixins/emitter';
     import clickoutside from '../../directives/clickoutside';
-    
+
     export default {
         name: 'Select',
         mixins: [emitter],
@@ -358,7 +358,7 @@
                             this.$set(this.ori_data[i],key,val);
                         }
                     }
-                }) 
+                })
             },
             setPosition() {
                 this.getDropdownHeight();
