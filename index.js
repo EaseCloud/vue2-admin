@@ -84,7 +84,8 @@ export default {
         },
       },
     });
-    Vue.use(VueAntd);
+    // 如果传入 config.skip_vue_beauty = true，不加载 VueBeauty 库
+    if (!config.skip_vue_beauty) Vue.use(VueAntd);
     Vue.use(ImageViewer);
     Vue.use(Notifier);
     Vue.use(GeoPicker);
