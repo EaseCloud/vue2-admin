@@ -310,12 +310,17 @@ export default {
     echo(obj) {
       console.log(obj);
     },
-    waitFor(obj, prop) {
+    waitFor(obj, prop, timeout = 5000) {
       const vm = this;
+      let timedOut = false;
       return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          timedOut = true;
+          reject();
+        }, timeout);
         const func = () => {
           if (vm.getProperty(obj, prop)) resolve();
-          setTimeout(func, 200);
+          if (!timedOut) setTimeout(func, 200);
         };
         func();
       });
