@@ -48,7 +48,15 @@
             model: 'Menu',
             action: 'get_user_menu',
           };
-          if (typeof config.dynamic_menus === 'object') {
+          if(typeof config.dynamic_menus === 'function') {
+            // 如果指定了自行计算 menu 的处理函数，直接使用处理结果
+            // 代入 menus
+            config.dynamic_menus.apply(vm, []).then(menus => {
+              vm.menus = menus;
+            });
+            return;
+          } else if (typeof config.dynamic_menus === 'object') {
+            // 否则如果指定了其他的菜单获取 model，异步获取菜单
             if (!config.dynamic_menus.model) {
               console.warn(
                 '请在 config 下配置 dynamic_menus.model，缺省为 Menu'

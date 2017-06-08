@@ -304,11 +304,21 @@ export default {
       vm.$router.replace({ query });
       vm.reload();
     },
-    dateformat(date, format='yyyy-mm-dd') {
+    dateformat(date, format = 'yyyy-mm-dd') {
       return dateformat(date, format);
     },
     echo(obj) {
       console.log(obj);
+    },
+    waitFor(obj, prop) {
+      const vm = this;
+      return new Promise((resolve, reject) => {
+        const func = () => {
+          if (vm.getProperty(obj, prop)) resolve();
+          setTimeout(func, 200);
+        };
+        func();
+      });
     },
   },
 };
