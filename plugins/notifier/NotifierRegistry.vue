@@ -102,9 +102,8 @@
                 </div>
                 <!-- type: date -->
                 <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'date'">
-                  <datepicker :time.sync="field.value"
-                              :placeholder="field.placeholder"
-                              :input-class="{'qant-input': true}"></datepicker>
+                  <v-date-picker v-model="field.value"
+                                 format="yyyy-MM-dd"></v-date-picker>
                 </div>
                 <!-- type: datetime -->
                 <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'datetime'">
@@ -118,7 +117,6 @@
                   <v-date-picker :range="true"
                                  :clearable="true"
                                  format="yyyy-MM-dd"
-                                 value="field.value"
                                  v-model="field.value"></v-date-picker>
                   <!--:startTime="field.value && field.value.[0] || '1900-01-01'"-->
                   <!--:endTime="field.value && field.value.split('~')[1] || '2999-12-31'"-->
