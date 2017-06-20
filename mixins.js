@@ -127,7 +127,7 @@ export default {
       }
       return api('User').get({ action: 'logout' }).then(() => {
         vm.current_user = null;
-        vm.$router.push({ name: 'passport_login' });
+        vm.$router.push(vm.config.login_route || { name: 'passport_login' });
       });
     },
     updateModel(model, id, field, value, notify = '操作成功', callback = null) {

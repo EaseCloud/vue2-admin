@@ -60,15 +60,15 @@ export default {
           const form = {};
           if (success) {
             let checkRequiredOk = true;
-            let isNumberOk =true;
+            let isNumberOk = true;
             vm.modalFormData.fields.forEach(field => {
               if (field.type === 'object' && typeof field === 'object') {
                 form[field.name] = field.value[field.options.pk || 'id'];
               } else {
                 form[field.name] = field.value;
               }
-              if (field.required && !form[field.name]) {
-                vm.$message.warning(`必须填写${field.title||field.label}`);
+              if (field.required && (!form[field.name] && form[field.name] !== 0)) {
+                vm.$message.warning(`必须填写${field.title || field.label}`);
                 checkRequiredOk = false;
               }
               if (field.isDigit && !Number.isInteger(Number(field.value))) {
