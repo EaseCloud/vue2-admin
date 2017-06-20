@@ -69,7 +69,7 @@
           }
         }, () => {
           // 尚未登录，跳转回登录页面
-          vm.$router.push(vm.config.login_route || { name: 'passport_login' });
+          vm.$router.push({ name: 'passport_login' });
         });
       },
     },
