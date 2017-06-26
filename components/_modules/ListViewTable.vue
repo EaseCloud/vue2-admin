@@ -400,6 +400,7 @@
               vm.$set(col, 'displayValue', result);
               vm.doQuery({
                 [col.filtering.search_field]: data.value,
+                page: 1,  // 改变筛选条件，页码归零
               });
             });
           });
@@ -421,6 +422,7 @@
             vm.doQuery({
               [col.filtering.from_field]: data.range[0],
               [col.filtering.to_field]: data.range[1],
+              page: 1,  // 改变筛选条件，页码归零
             })
           });
         }
