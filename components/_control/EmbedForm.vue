@@ -1,7 +1,6 @@
 <template>
 
-  <section class="item-form ant-form ant-form-horizontal"
-           style="max-width: 800px">
+  <section class="item-form ant-form ant-form-horizontal">
 
     <template v-for="field in fields">
 
@@ -198,6 +197,7 @@
                            :actions="field.options.actions"
                            :filters="field.options.filters"
                            :hooks="field.options.hooks"
+                           :pageSize="field.options.pageSize"
                            @loaded="$emit('loaded', field)"
                            :ref="field.id"></list-view-table>
           <!--:pager="pager"-->

@@ -193,7 +193,7 @@
                 @change="pageTo"
                 :page="query.page"
                 :page_count="pager.page_count"
-                :page_size="pager.page_size"/>
+                :page_size="pageSize || pager.page_size"/>
 
     <img ref="image_previewer"
          class="image-previewer"
@@ -238,6 +238,7 @@
           return ['large', 'middle', 'small'].indexOf(value) > -1;
         },
       },
+      pageSize: Number,
     },
     data() {
       const vm = this;
@@ -260,11 +261,11 @@
         vm.$http.get(apiUtils.getModelUrlRaw(vm.model), {
           params: {
             page: vm.pager.page || 1,
-            page_size: vm.pager.page_size,
+            page_size: vm.pageSize || vm.pager.page_size,
             ...vm.query,
           },
         }).then(resp => {
-          vm.pager.page_count = Math.ceil(resp.data.count / vm.pager.page_size - 1e-5);
+          vm.pager.page_count = Math.ceil(resp.data.count / (vm.pageSize || vm.pager.page_size) - 1e-5);
           vm.total = resp.data.count;
           // 处理延迟计算
           const items = resp.data.results;

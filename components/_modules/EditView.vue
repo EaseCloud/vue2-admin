@@ -35,8 +35,7 @@
 
     <section class="page-body">
       <slot name="before"></slot>
-      <section class="item-form ant-form ant-form-horizontal"
-               style="max-width: 800px">
+      <section class="item-form ant-form ant-form-horizontal">
         <embed-form :fields="fields"
                     v-if="initialized"
                     @update="onUpdate"

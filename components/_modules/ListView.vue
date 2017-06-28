@@ -100,6 +100,7 @@
       hooks: {
         type: Object,
       },
+      pageSize: Number,
     },
     data() {
       const vm = this;
@@ -107,7 +108,7 @@
         items: [],
         pager: {
           page: Number(vm.$route.query.page) || 1,
-          page_size: 10,
+          page_size: vm.pageSize || 10,
           page_count: 0,
         },
       };
