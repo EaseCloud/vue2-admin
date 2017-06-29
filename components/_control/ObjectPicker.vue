@@ -1,6 +1,7 @@
 <template>
   <div class="ant-modal-wrap block-modal-form"
-       :class="{invisible: false}">
+       :class="{invisible: false}"
+       style="z-index: 1">
     <div role="document" class="ant-modal" style="width: 840px;">
       <div class="ant-modal-content">
         <button class="ant-modal-close" @click="$emit('cancel')">

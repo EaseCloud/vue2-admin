@@ -237,19 +237,6 @@
       };
     },
     methods: {
-      pickObject(field) {
-        const vm = this;
-        vm.objectPickerField = field;
-      },
-      pickObjectAction(id) {
-        const vm = this;
-        const field = vm.objectPickerField;
-        vm.objectPickerField = null;
-//        field.value = id;
-        vm.api(field.options.model).get({ id }).then(resp => {
-          field.value = resp.data;
-        });
-      },
     }
   };
 </script>

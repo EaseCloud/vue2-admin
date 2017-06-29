@@ -86,6 +86,19 @@ export default {
           vm.modalFormData = null;
           return deferred[success ? 'resolve' : 'reject'](form);
         },
+        pickObject(field) {
+          const vm = this.vmNotifier;
+          vm.objectPickerField = field;
+        },
+        pickObjectAction(id) {
+          const vm = this;
+          const field = vm.objectPickerField;
+          vm.objectPickerField = null;
+//        field.value = id;
+          vm.api(field.options.model).get({ id }).then(resp => {
+            field.value = resp.data;
+          });
+        },
         pickFile() {
           const vm = this.vmNotifier;
           const deferred = new Deferred();

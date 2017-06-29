@@ -237,10 +237,10 @@
 
     </template>
 
-    <object-picker :options="objectPickerField.options"
-                   v-if="objectPickerField"
-                   @input="pickObjectAction($event)"
-                   @cancel="objectPickerField=null"></object-picker>
+    <!--<object-picker :options="objectPickerField.options"-->
+                   <!--v-if="objectPickerField"-->
+                   <!--@input="pickObjectAction($event)"-->
+                   <!--@cancel="objectPickerField=null"></object-picker>-->
 
   </section>
 
@@ -264,17 +264,20 @@
       });
     },
     methods: {
-      pickObject(field) {
-        const vm = this;
-        vm.objectPickerField = field;
-      },
-      pickObjectAction(id) {
-        const vm = this;
-        const field = vm.objectPickerField;
-        vm.objectPickerField = null;
-        field.value = id;
-        vm.$emit('update', field);
-      },
+//      fieldPickObject(field) {
+//        const vm = this;
+//        vm.pickObject(field).then(field => {
+//
+//        });
+//        vm.objectPickerField = field;
+//      },
+//      pickObjectAction(id) {;
+//        const vm = this;
+//        const field = vm.objectPickerField;
+//        vm.objectPickerField = null;
+//        field.value = id;
+//        vm.$emit('update', field);
+//      },
       updateField(field) {
         const vm = this;
         if (field.onUpdate) {
