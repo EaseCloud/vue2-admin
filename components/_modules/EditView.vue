@@ -116,7 +116,9 @@
             id: vm.$route.params.id,
           }).then(resp => {
             vm.item = resp.data;
-            return vm.render();
+            return vm.render().then(() => {
+              vm.$emit('loaded');
+            });
           });
         }
         return vm.render();

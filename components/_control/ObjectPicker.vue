@@ -14,7 +14,7 @@
           <list-view-table :model="options.model"
                            :pk="options.pk"
                            :cols="options.cols"
-                           :options="options"
+                           :options="{show_pager: true}"
                            :actions="actions"
                            :pager="pager"
                            :filters="options.filters"
