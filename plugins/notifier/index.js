@@ -89,15 +89,20 @@ export default {
         pickObject(field) {
           const vm = this.vmNotifier;
           vm.objectPickerField = field;
+          vm.objectPickerDeferred = new Deferred();
+          return vm.objectPickerDeferred;
         },
         pickObjectAction(id) {
-          const vm = this;
+          const vm = this.vmNotifier;
           const field = vm.objectPickerField;
+          const deferred = vm.objectPickerDeferred;
           vm.objectPickerField = null;
-//        field.value = id;
-          vm.api(field.options.model).get({ id }).then(resp => {
-            field.value = resp.data;
-          });
+          vm.objectPickerDeferred = null;
+          field.value = id;
+          deferred.resolve(field);
+          // vm.api(field.options.model).get({ id }).then(resp => {
+          //   field.value = resp.data;
+          // });
         },
         pickFile() {
           const vm = this.vmNotifier;

@@ -228,6 +228,7 @@
         itemsPrompt: [],
         modalFormData: null,
         objectPickerField: null,
+        objectPickerDeferred: null,
         imagepicker: {
           deferred: null,
         },

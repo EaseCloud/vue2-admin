@@ -213,7 +213,7 @@
             {{field.value[field.options.display_field || 'name']}}
           </router-link>
           <v-button size="small"
-                    @click="pickObject(field)">选择
+                    @click="pickFieldObject(field)">选择
           </v-button>
           <v-button size="small" v-if="field.value"
                     @click="field.value = null; updateField(field)">清除
@@ -238,9 +238,9 @@
     </template>
 
     <!--<object-picker :options="objectPickerField.options"-->
-                   <!--v-if="objectPickerField"-->
-                   <!--@input="pickObjectAction($event)"-->
-                   <!--@cancel="objectPickerField=null"></object-picker>-->
+    <!--v-if="objectPickerField"-->
+    <!--@input="pickObjectAction($event)"-->
+    <!--@cancel="objectPickerField=null"></object-picker>-->
 
   </section>
 
@@ -304,6 +304,12 @@
           return field.visible(field.context && field.context.item);
         }
         return typeof(field.visible) === 'undefined' || !!field;
+      },
+      pickFieldObject(field) {
+        const vm = this;
+        vm.pickObject(field).then(() => {
+          vm.updateField(field);
+        });
       },
     },
   };
