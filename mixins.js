@@ -16,7 +16,7 @@ import config from '../config/config';
 export default {
   mounted() {
     // Auto reload
-    if (this.reload) {
+    if (this.reload && !this.no_reload_on_mount) {
       // console.log('mounted Reload', this.$route.name);
       this.reload();
     }

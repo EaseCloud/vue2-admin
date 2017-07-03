@@ -111,6 +111,7 @@
           page_size: vm.pageSize || 10,
           page_count: 0,
         },
+        no_reload_on_mount: true,
       };
     },
     computed: {
