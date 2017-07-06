@@ -42,13 +42,14 @@
       reload() {
         const vm = this;
         const config = vm.config;
+        let promiseLoadMenus = Promise.resolve(menus);
         // 默认情况下在 config.menus 下面配置菜单列表
         if (config.dynamic_menus) {
           const menuConfig = {
             model: 'Menu',
             action: 'get_user_menu',
           };
-          if(typeof config.dynamic_menus === 'function') {
+          if (typeof config.dynamic_menus === 'function') {
             // 如果指定了自行计算 menu 的处理函数，直接使用处理结果
             // 代入 menus
             config.dynamic_menus.apply(vm, []).then(menus => {
@@ -72,15 +73,30 @@
               menuConfig.action = config.dynamic_menus.action;
             }
           }
-          api(menuConfig.model).get({
+          promiseLoadMenus = api(menuConfig.model).get({
             action: menuConfig.action,
             project: config.project || '',
           }).then(resp => {
-            vm.menus = resp.data;
+            return resp.data;
           });
-        } else {
-          vm.menus = menus;
         }
+        promiseLoadMenus.then(menus => {
+          let anyExpanded = false;
+          menus.forEach(menu => {
+            if (menu.sub_menus && menu.sub_menus.length) {
+              menu.expanded = false;
+              if (!anyExpanded) {
+                menu.sub_menus.forEach(subMenu => {
+                  if (subMenu.link && subMenu.link.name === vm.$route.name) {
+                    menu.expanded = true;
+                    anyExpanded = true;
+                  }
+                });
+              }
+            }
+          });
+          vm.menus = menus;
+        });
       },
       toggle(menu, event) {
         const vm = this;
@@ -93,7 +109,7 @@
         if (!('expanded' in menu)) return;
         // 折叠其他所有的
         vm.menus.forEach(m => {
-          if (m !== menu) m.expanded = false;
+          if (m !== menu && ('expanded' in menu)) m.expanded = false;
         });
         menu.expanded = !menu.expanded;
         if (event) event.preventDefault();
