@@ -171,7 +171,7 @@
                 编辑
               </v-button>
               <v-button v-if="options.can_delete"
-                        size="small" type="dashed"
+                        size="small" type="danger"
                         @click="deleteModel(
                             model, item[pk], '确认删除'+(item.name?'【'+item.name+'】':'这个对象')+'?', '操作成功', reload)">
                 删除

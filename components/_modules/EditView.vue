@@ -207,6 +207,7 @@
       validate() {
         const vm = this;
         return new Promise((resolve, reject) => {
+          const promises = [];
           vm.fields.some(field => {
             if (field.required && !field.value) {
               reject(`字段【${field.title}】不能为空`);
@@ -218,12 +219,16 @@
                 reject(`字段【${field.title}】校验失败`);
                 return true;
               } else if (typeof(result.then) === 'function') {
-                result.then(() => resolve(), () => reject());
+                promises.push(result.then(
+                  () => resolve(),
+                  () => reject(`字段【${field.title}】校验失败`),
+                ));
                 return false;
               }
             }
             return false;
           });
+          Promise.all(promises).then(() => resolve(), () => reject());
         });
       },
       save() {
@@ -250,6 +255,7 @@
             return vm.reload();
           });
         }, msg => {
+          console.log(msg);
           vm.$message.error(msg);
         });
       },

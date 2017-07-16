@@ -284,7 +284,8 @@ export default {
       }
       keyStr.split('.').forEach(key => {
         try {
-          value = value && value[key] || null;
+          value = value && value[key];
+          if (typeof value === 'undefined') value = null;
         } catch (e) {
           console.error('getProperty 求值错误', e);
         }
