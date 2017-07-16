@@ -204,27 +204,53 @@
           vm.$router.back();
         }
       },
+      validate() {
+        const vm = this;
+        return new Promise((resolve, reject) => {
+          vm.fields.some(field => {
+            if (field.required && !field.value) {
+              reject(`字段【${field.title}】不能为空`);
+              return true;
+            } else if (field.validator) {
+              if (typeof(field.validator) !== 'function') return false;
+              const result = field.validator(item);
+              if (!result) {
+                reject(`字段【${field.title}】校验失败`);
+                return true;
+              } else if (typeof(result.then) === 'function') {
+                result.then(() => resolve(), () => reject());
+                return false;
+              }
+            }
+            return false;
+          });
+        });
+      },
       save() {
         const vm = this;
-        // 保存前置钩子
-        if (vm.options.hooks && vm.options.hooks.pre_save
-          && !vm.options.hooks.pre_save(vm)) {
-          return Promise.reject();
-        }
-        const promise = Number(vm.$route.params.id)
-          ? api(vm.model).patch({ id: vm.item[vm.pk] }, vm.item)
-          : api(vm.model).save({ ...vm.item });
-        return promise.then(resp => {
-          vm.notify('操作成功');
-          // 创建的情况
-          if (!vm.item[vm.pk]) {
-            vm.$router.replace({
-              params: {
-                id: resp.data[vm.pk],
-              },
-            });
+        return vm.validate().then(() => {
+          // 保存前置钩子
+          if (vm.options.hooks && vm.options.hooks.pre_save
+            && !vm.options.hooks.pre_save(vm)) {
+            return Promise.reject();
           }
-          return vm.reload();
+          const promise = Number(vm.$route.params.id)
+            ? api(vm.model).patch({ id: vm.item[vm.pk] }, vm.item)
+            : api(vm.model).save({ ...vm.item });
+          return promise.then(resp => {
+            vm.notify('操作成功');
+            // 创建的情况
+            if (!vm.item[vm.pk]) {
+              vm.$router.replace({
+                params: {
+                  id: resp.data[vm.pk],
+                },
+              });
+            }
+            return vm.reload();
+          });
+        }, msg => {
+          vm.$message.error(msg);
         });
       },
       submit() {
