@@ -99,15 +99,16 @@ export default {
           const vm = this.vmNotifier;
           vm.modalForms.splice(vm.modalForms.indexOf(field), 1);
           field.value = id;
-          if (field.options.model) {
-            vm.api(field.options.model).get({ id }).then(resp => {
-              field.value = resp.data;
-            }, () => {
-              field.deferred.resolve(field);
-            });
-          } else {
-            field.deferred.resolve(field);
-          }
+          //if (field.options.model) {
+          //  vm.api(field.options.model).get({ id }).then(resp => {
+          //    field.value = resp.data;
+          //    field.deferred.resolve(field);
+          //  }, () => {
+          //    field.deferred.resolve(field);
+          //  });
+          //} else {
+          field.deferred.resolve(field);
+          //}
         },
         pickFile() {
           const vm = this.vmNotifier;

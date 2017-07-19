@@ -96,11 +96,12 @@
                     <!--:to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',-->
                     <!--params: {id: field.value[field.options.pk || 'id']}}">-->
                     <template v-if="field.value && typeof(field.value) === 'object'">
-                      {{field.value[field.options.display_field || 'name']}}</template>
+                      {{field.value[field.options.display_field || 'name']}}
+                    </template>
                     <template v-else-if="field.value">#{{field.value}}</template>
                     <!--</router-link>-->
                     <v-button size="small"
-                              @click="pickObject(field)">选择
+                              @click="pickObjectField(field)">选择
                     </v-button>
                     <v-button size="small" v-if="field.value"
                               @click="field.value = null">清除
@@ -190,7 +191,14 @@
         },
       };
     },
-    methods: {}
+    methods: {
+      pickObjectField(field) {
+        const vm = this;
+        vm.pickObject(field).then(field => {
+          vm.api(field.options.model).get({ id: field.value }).then(resp => field.value = resp.data);
+        });
+      },
+    },
   };
 </script>
 
