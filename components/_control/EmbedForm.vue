@@ -12,7 +12,7 @@
              :key="field.pk"
              style="margin: 4px 0">
 
-        <v-col :span="6" class="ant-form-item-label" style="padding: 0"
+        <v-col :span="field.titleSpan || 6" class="ant-form-item-label" style="padding: 0"
                v-if="(field.display || 'normal') == 'normal'">
           <label>{{field.title}}</label>
         </v-col>
