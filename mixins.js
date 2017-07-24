@@ -8,6 +8,7 @@ import * as common from './components/_common';
 import * as controls from './components/_control';
 import * as modules from './components/_modules';
 import api from './resource/api';
+import utils from './utils';
 
 import choices from '../config/choices';
 import config from '../config/config';
@@ -15,13 +16,16 @@ import config from '../config/config';
 export default {
   mounted() {
     // Auto reload
-    if (this.reload) {
+    if (this.reload && !this.no_reload_on_mount) {
       // console.log('mounted Reload', this.$route.name);
       this.reload();
     }
   },
   components: { Loading, ...common, ...controls, ...modules },
   computed: {
+    utils() {
+      return utils;
+    },
     choices() {
       return choices;
     },
@@ -81,6 +85,10 @@ export default {
         return vm.me;
       });
     },
+    doAction(func, params) {
+      const vm = this;
+      func.apply(vm, params);
+    },
     login(username, password) {
       const vm = this.$root;
       if (vm.config.action_login) {
@@ -119,7 +127,7 @@ export default {
       }
       return api('User').get({ action: 'logout' }).then(() => {
         vm.current_user = null;
-        vm.$router.push({ name: 'passport_login' });
+        vm.$router.push(vm.config.login_route || { name: 'passport_login' });
       });
     },
     updateModel(model, id, field, value, notify = '操作成功', callback = null) {
@@ -244,17 +252,18 @@ export default {
       //   JSON.parse(JSON.stringify(col)),
       //   JSON.parse(JSON.stringify(item)),
       // );
+      const vm = this;
       let value = item;
       try {
         if (col.key) {
-          const colKey = this.evaluate(col.key, item);
-          value = this.getProperty(item, colKey);
+          const colKey = vm.evaluate(col.key, item);
+          value = vm.getProperty(item, colKey);
         }
         if (col.filter) {
-          value = col.filter(value, item);
+          value = col.filter.apply(vm, [value, item]);
         }
         if (col.mapper) {
-          const colMapper = this.evaluate(col.mapper, item);
+          const colMapper = vm.evaluate(col.mapper, item);
           value = ((value in colMapper) ? colMapper[value] :
               colMapper.__else__) || null;
         }
@@ -275,19 +284,33 @@ export default {
       }
       keyStr.split('.').forEach(key => {
         try {
-          value = value && value[key] || null;
+          value = value && value[key];
+          if (typeof value === 'undefined') value = null;
         } catch (e) {
           console.error('getProperty 求值错误', e);
         }
       });
       return value;
     },
+    /**
+     * 执行一个函数，简单可以理解为返回 self[keyStr](value)
+     * 如果 keyStr 为空，上面的调用中用 self 直接替代 self[keyStr]
+     * 如果 self[keyStr] 或者 self 不是一个函数，直接返回之
+     * 在 self[keyStr] 这个函数里面，this 指向当前 vm 实例
+     * @param self
+     * @param item
+     * @param keyStr
+     * @returns {*}
+     */
     evaluate(self, item, keyStr) {
+      const vm = this;
       if (keyStr && typeof keyStr !== 'string') {
         console.warn('evaluate 指定的 field 无效，应为一个字符串');
-        return this.evaluate(self, '', item);
+        return vm.evaluate(self, '', item);
       }
-      const obj = keyStr ? this.getProperty(self, keyStr) : self;
+      const obj = keyStr ? vm.getProperty(self, keyStr) : self;
+      // TODO: 存在缺陷待调试
+      // return obj instanceof Function ? obj.apply(vm, [item]) : obj;
       return obj instanceof Function ? obj(item) : obj;
     },
     setQueryKey(key, value) {
@@ -304,11 +327,26 @@ export default {
       vm.$router.replace({ query });
       vm.reload();
     },
-    dateformat(date, format='yyyy-mm-dd') {
+    dateformat(date, format = 'yyyy-mm-dd') {
       return dateformat(date, format);
     },
     echo(obj) {
       console.log(obj);
+    },
+    waitFor(obj, prop, timeout = 5000) {
+      const vm = this;
+      let timedOut = false;
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          timedOut = true;
+          reject();
+        }, timeout);
+        const func = () => {
+          if (vm.getProperty(obj, prop)) resolve();
+          if (!timedOut) setTimeout(func, 200);
+        };
+        func();
+      });
     },
   },
 };

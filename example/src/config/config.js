@@ -33,6 +33,8 @@ export default {
   cross_origin: true,
   // 权限菜单配置
   dynamic_menus: false,
+  // 是否不加载 Vue Beauty 库
+  skip_vue_beauty: false,
   // dynamic_menus: {
   //   model: 'Menu',
   //   action: 'get_user_menu',

@@ -84,7 +84,8 @@ export default {
         },
       },
     });
-    Vue.use(VueAntd);
+    // 如果传入 config.skip_vue_beauty = true，不加载 VueBeauty 库
+    if (!config.skip_vue_beauty) Vue.use(VueAntd);
     Vue.use(ImageViewer);
     Vue.use(Notifier);
     Vue.use(GeoPicker);
@@ -155,34 +156,37 @@ export default {
 
     Vue.use(VueRouter);
 
-    const router = new VueRouter({
-      routes: [{
-        // 内部指定登录页面
-        path: '/passport',
-        name: 'passport',
-        component: require('./components/passport/App.vue'),  // eslint-disable-line
-        children: [{
-          path: '/passport/login',
-          name: 'passport_login',
-          component: require('./components/passport/Login.vue'),  // eslint-disable-line
-        }],
-      }, {
-        path: '/',
-        name: 'main',
-        component: require('./components/main/App.vue'),  // eslint-disable-line
-        children: [{
-          path: '/change/password',
-          name: 'main_change_password',
-          component: require('./components/main/ChangePassword.vue'),  // eslint-disable-line
-        }, ...routes],
-      }, {
-        // 内部指定 404 页面
-        path: '*',
-        name: 'not_found',
-        component: require('./components/NotFound.vue'),  // eslint-disable-line
+    const allRoutes = [{
+      // 内部指定登录页面
+      path: '/passport',
+      name: 'passport',
+      component: require('./components/passport/App.vue'),  // eslint-disable-line
+      children: [{
+        path: '/passport/login',
+        name: 'passport_login',
+        component: require('./components/passport/Login.vue'),  // eslint-disable-line
       }],
-    });
+    }, {
+      path: '/',
+      name: 'main',
+      component: require('./components/main/App.vue'),  // eslint-disable-line
+      children: [{
+        path: '/change/password',
+        name: 'main_change_password',
+        component: require('./components/main/ChangePassword.vue'),  // eslint-disable-line
+      }, ...routes],
+    }, {
+      // 内部指定 404 页面
+      path: '*',
+      name: 'not_found',
+      component: require('./components/NotFound.vue'),  // eslint-disable-line
+    }];
 
+    // [config] route_filter
+    const router = new VueRouter({
+      routes: config.route_filter ? config.route_filter(allRoutes) : allRoutes
+    });
+    // const router = new VueRouter({ routes });
     // router.beforeEach((to, from, next) => {
     //   // noReuse 模式，启用组件内参数跳转自动 reload
     //   if (to.name === from.name && window.app) {

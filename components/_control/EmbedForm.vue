@@ -1,7 +1,6 @@
 <template>
 
-  <section class="item-form ant-form ant-form-horizontal"
-           style="max-width: 800px">
+  <section class="item-form ant-form ant-form-horizontal">
 
     <template v-for="field in fields">
 
@@ -198,6 +197,7 @@
                            :actions="field.options.actions"
                            :filters="field.options.filters"
                            :hooks="field.options.hooks"
+                           :pageSize="field.options.pageSize"
                            @loaded="$emit('loaded', field)"
                            :ref="field.id"></list-view-table>
           <!--:pager="pager"-->
@@ -213,7 +213,7 @@
             {{field.value[field.options.display_field || 'name']}}
           </router-link>
           <v-button size="small"
-                    @click="pickObject(field)">选择
+                    @click="pickFieldObject(field)">选择
           </v-button>
           <v-button size="small" v-if="field.value"
                     @click="field.value = null; updateField(field)">清除
@@ -237,10 +237,10 @@
 
     </template>
 
-    <object-picker :options="objectPickerField.options"
-                   v-if="objectPickerField"
-                   @input="pickObjectAction($event)"
-                   @cancel="objectPickerField=null"></object-picker>
+    <!--<object-picker :options="objectPickerField.options"-->
+    <!--v-if="objectPickerField"-->
+    <!--@input="pickObjectAction($event)"-->
+    <!--@cancel="objectPickerField=null"></object-picker>-->
 
   </section>
 
@@ -264,17 +264,20 @@
       });
     },
     methods: {
-      pickObject(field) {
-        const vm = this;
-        vm.objectPickerField = field;
-      },
-      pickObjectAction(id) {
-        const vm = this;
-        const field = vm.objectPickerField;
-        vm.objectPickerField = null;
-        field.value = id;
-        vm.$emit('update', field);
-      },
+//      fieldPickObject(field) {
+//        const vm = this;
+//        vm.pickObject(field).then(field => {
+//
+//        });
+//        vm.objectPickerField = field;
+//      },
+//      pickObjectAction(id) {;
+//        const vm = this;
+//        const field = vm.objectPickerField;
+//        vm.objectPickerField = null;
+//        field.value = id;
+//        vm.$emit('update', field);
+//      },
       updateField(field) {
         const vm = this;
         if (field.onUpdate) {
@@ -301,6 +304,12 @@
           return field.visible(field.context && field.context.item);
         }
         return typeof(field.visible) === 'undefined' || !!field;
+      },
+      pickFieldObject(field) {
+        const vm = this;
+        vm.pickObject(field).then(() => {
+          vm.updateField(field);
+        });
       },
     },
   };

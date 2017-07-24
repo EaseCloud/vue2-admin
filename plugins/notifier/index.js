@@ -36,21 +36,7 @@ export default {
             duration: options && options.duration || 4.5,
             top: options && options.top || 24,
           });
-          // const vm = this.vmNotifier;
-          // const DEFAULTS = {
-          //   type: 'info',
-          //   duration: 3000,
-          // };
-          // const item = Object.assign({ title, content }, options, DEFAULTS);
-          // vm.itemsNotify.unshift(item);
-          // setTimeout(() => {
-          //   vm.itemsNotify.shift(item);
-          // }, item.duration);
         },
-        // dismissNotify(index) {
-        //   const vm = this.vmNotifier;
-        //   vm.itemsNotify.splice(index, 1);
-        // },
         confirm(content, title = '操作确认', options = {}) {
           // const vm = this.$root;
           return new Promise((resolve, reject) => {
@@ -61,47 +47,30 @@ export default {
               onCancel: reject,
             });
           });
-          // const vm = this.vmNotifier;
-          // const DEFAULTS = {
-          //   size: 'md',  // sm/lg/md
-          // };
-          // const deferred = new Deferred();
-          // const item = Object.assign({
-          //   title,
-          //   content,
-          //   deferred,
-          // }, options, DEFAULTS);
-          // vm.itemsConfirm.unshift(item);
-          // return deferred.promise;
         },
-        // confirmAction(success = true, index = -1, params = {}) {
-        //   const vm = this.vmNotifier;
-        //   const pos = index === -1 ? vm.itemsConfirm.length - 1 : index;
-        //   const item = vm.itemsConfirm[pos];
-        //   vm.itemsConfirm.splice(pos, 1);
-        //   return item.deferred[success ? 'resolve' : 'reject'](params);
-        // },
         modalForm(form) {
           const vm = this.vmNotifier;
+          form.modalType = 'modalForm';
           form.deferred = new Deferred();
-          vm.modalFormData = form;
+          //vm.modalFormData = form;
+          vm.modalForms.push(form);
           return form.deferred.promise;
         },
-        modalFormAction(success = true) {
+        modalFormAction(form, success = true) {
           const vm = this.vmNotifier;
-          const deferred = vm.modalFormData.deferred;
-          const form = {};
+          const deferred = form.deferred;
+          const formData = {};
           if (success) {
             let checkRequiredOk = true;
-            let isNumberOk =true;
-            vm.modalFormData.fields.forEach(field => {
+            let isNumberOk = true;
+            form.fields.forEach(field => {
               if (field.type === 'object' && typeof field === 'object') {
-                form[field.name] = field.value[field.options.pk || 'id'];
+                formData[field.name] = field.value[field.options.pk || 'id'];
               } else {
-                form[field.name] = field.value;
+                formData[field.name] = field.value;
               }
-              if (field.required && !form[field.name]) {
-                vm.$message.warning(`必须填写${field.title||field.label}`);
+              if (field.required && (!formData[field.name] && formData[field.name] !== 0)) {
+                vm.$message.warning(`必须填写${field.title || field.label}`);
                 checkRequiredOk = false;
               }
               if (field.isDigit && !Number.isInteger(Number(field.value))) {
@@ -111,13 +80,35 @@ export default {
             });
             if (!checkRequiredOk) return false;
             if (!isNumberOk) return false;
-            if ((vm.modalFormData.validator instanceof Function)
-              && !vm.modalFormData.validator(form)) {
+            if ((form.validator instanceof Function)
+              && !form.validator(formData)) {
               return false;
             }
           }
-          vm.modalFormData = null;
-          return deferred[success ? 'resolve' : 'reject'](form);
+          vm.modalForms.splice(vm.modalForms.indexOf(form), 1);
+          return deferred[success ? 'resolve' : 'reject'](formData);
+        },
+        pickObject(field) {
+          const vm = this.vmNotifier;
+          field.modalType = 'objectPicker';
+          field.deferred = new Deferred();
+          vm.modalForms.push(field);
+          return field.deferred;
+        },
+        pickObjectAction(field, id) {
+          const vm = this.vmNotifier;
+          vm.modalForms.splice(vm.modalForms.indexOf(field), 1);
+          field.value = id;
+          //if (field.options.model) {
+          //  vm.api(field.options.model).get({ id }).then(resp => {
+          //    field.value = resp.data;
+          //    field.deferred.resolve(field);
+          //  }, () => {
+          //    field.deferred.resolve(field);
+          //  });
+          //} else {
+          field.deferred.resolve(field);
+          //}
         },
         pickFile() {
           const vm = this.vmNotifier;
@@ -148,7 +139,7 @@ export default {
           if (!files.length) {
             return deferred.reject('尚未选择图片文件');
           }
-          formdata.append('image', files[0]);
+          formdata.append('image', files[0], files[0].name);
           return api('Image').save(formdata).then(
             resp => deferred.resolve(resp.data)
           );

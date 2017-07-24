@@ -18,7 +18,7 @@
               <v-button
                 v-if="(action.htmlType||'button')==='button'"
                 :type="action.buttonClass || 'ghost'"
-                @click="action.action(selectedItems)">
+                @click="doAction(action.action, [selectedItems])">
                 {{evaluate(action.title)}}
               </v-button> <!--防止按钮之间粘住-->
               <!-- htmlType: text -->
@@ -103,6 +103,7 @@
       hooks: {
         type: Object,
       },
+      pageSize: Number,
     },
     data() {
       const vm = this;
@@ -110,9 +111,10 @@
         items: [],
         pager: {
           page: Number(vm.$route.query.page) || 1,
-          page_size: 10,
+          page_size: vm.pageSize || 10,
           page_count: 0,
         },
+        no_reload_on_mount: true,
       };
     },
     computed: {
