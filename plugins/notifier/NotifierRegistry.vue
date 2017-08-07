@@ -9,7 +9,7 @@
            style="z-index: 1">
         <div role="document" class="ant-modal" style="width: 520px;">
           <div class="ant-modal-content">
-            <button class="ant-modal-close" @click="modalFormAction(false)">
+            <button class="ant-modal-close" @click="modalFormAction(form, false)">
               <span class="ant-modal-close-x"></span>
             </button>
             <div class="ant-modal-header">
