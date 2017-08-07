@@ -100,6 +100,9 @@
             <template v-else-if="col.type=='html'">
               <div v-html="getColValue(col, item)"></div>
             </template>
+            <template v-else-if="col.type=='tag'">
+              <v-tag :color="col.color">{{getColValue(col, item)}}</v-tag>
+            </template>
             <!-- type: link -->
             <template v-else-if="col.type=='link'">
               <router-link :to="col.route(item)"

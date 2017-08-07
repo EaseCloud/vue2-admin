@@ -74,3 +74,14 @@
   };
 </script>
 
+<style lang="less" type="text/less">
+  .image-picker-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    line-height: 78px;
+    text-align: center;
+    z-index: 1;
+  }
+</style>
