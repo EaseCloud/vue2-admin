@@ -50,24 +50,26 @@ export default {
         },
         modalForm(form) {
           const vm = this.vmNotifier;
+          form.modalType = 'modalForm';
           form.deferred = new Deferred();
-          vm.modalFormData = form;
+          //vm.modalFormData = form;
+          vm.modalForms.push(form);
           return form.deferred.promise;
         },
-        modalFormAction(success = true) {
+        modalFormAction(form, success = true) {
           const vm = this.vmNotifier;
-          const deferred = vm.modalFormData.deferred;
-          const form = {};
+          const deferred = form.deferred;
+          const formData = {};
           if (success) {
             let checkRequiredOk = true;
             let isNumberOk = true;
-            vm.modalFormData.fields.forEach(field => {
+            form.fields.forEach(field => {
               if (field.type === 'object' && typeof field === 'object') {
-                form[field.name] = field.value[field.options.pk || 'id'];
+                formData[field.name] = field.value[field.options.pk || 'id'];
               } else {
-                form[field.name] = field.value;
+                formData[field.name] = field.value;
               }
-              if (field.required && (!form[field.name] && form[field.name] !== 0)) {
+              if (field.required && (!formData[field.name] && formData[field.name] !== 0)) {
                 vm.$message.warning(`必须填写${field.title || field.label}`);
                 checkRequiredOk = false;
               }
@@ -78,31 +80,35 @@ export default {
             });
             if (!checkRequiredOk) return false;
             if (!isNumberOk) return false;
-            if ((vm.modalFormData.validator instanceof Function)
-              && !vm.modalFormData.validator(form)) {
+            if ((form.validator instanceof Function)
+              && !form.validator(formData)) {
               return false;
             }
           }
-          vm.modalFormData = null;
-          return deferred[success ? 'resolve' : 'reject'](form);
+          vm.modalForms.splice(vm.modalForms.indexOf(form), 1);
+          return deferred[success ? 'resolve' : 'reject'](formData);
         },
         pickObject(field) {
           const vm = this.vmNotifier;
-          vm.objectPickerField = field;
-          vm.objectPickerDeferred = new Deferred();
-          return vm.objectPickerDeferred;
+          field.modalType = 'objectPicker';
+          field.deferred = new Deferred();
+          vm.modalForms.push(field);
+          return field.deferred;
         },
-        pickObjectAction(id) {
+        pickObjectAction(field, id) {
           const vm = this.vmNotifier;
-          const field = vm.objectPickerField;
-          const deferred = vm.objectPickerDeferred;
-          vm.objectPickerField = null;
-          vm.objectPickerDeferred = null;
+          vm.modalForms.splice(vm.modalForms.indexOf(field), 1);
           field.value = id;
-          deferred.resolve(field);
-          // vm.api(field.options.model).get({ id }).then(resp => {
-          //   field.value = resp.data;
-          // });
+          //if (field.options.model) {
+          //  vm.api(field.options.model).get({ id }).then(resp => {
+          //    field.value = resp.data;
+          //    field.deferred.resolve(field);
+          //  }, () => {
+          //    field.deferred.resolve(field);
+          //  });
+          //} else {
+          field.deferred.resolve(field);
+          //}
         },
         pickFile() {
           const vm = this.vmNotifier;
