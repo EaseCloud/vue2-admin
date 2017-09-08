@@ -142,6 +142,7 @@
             <!-- type: switch -->
             <template v-else-if="col.type=='switch'">
               <v-switch v-model="item[col.key]"
+                        :disabled="evaluate(col, item, 'disabled')"
                         @input="updateModel(
                             model, item[pk], col.key, $event, '操作成功', reload)">
                 <span slot="checked">{{col.checked}}</span>
