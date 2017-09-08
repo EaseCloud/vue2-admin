@@ -54,11 +54,10 @@
           :chart-data="datacollection"
           :options="options"></line-chart>
       </div>
+      <div class="pie">
+        <pie-chart :chart-data="pie_data" :options="{responsive: false, maintainAspectRatio: false}"></pie-chart>
+      </div>
     </section>
-
-    <div class="pie">
-      <pie-chart :chart-data="pie_data" :options="{responsive: false, maintainAspectRatio: false}"></pie-chart>
-    </div>
 
     <slot name="before"></slot>
     <slot name="after"></slot>
@@ -196,8 +195,8 @@
     margin: 50px auto;
   }
   .pie {
-    position: absolute;
-    width: 50%;
+    margin: 0 auto;
+    width: 30%;
     text-align: center;
     bottom: 10%;
     height: 30%;
