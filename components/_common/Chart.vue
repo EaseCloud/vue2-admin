@@ -31,6 +31,19 @@
           <v-button type="primary" @click="filter">搜索</v-button>
         </v-col>
       </v-row>
+      <template v-for="row in rows">
+        <v-row :gutter="6"
+               type="flex"
+               v-if="show_date"
+               style="margin: 4px 0">
+          <v-col :span="6" class="ant-form-item-label" style="padding: 0">
+            <label>{{row.title || '标题'}}</label>
+          </v-col>
+          <v-col :span="8" class="ant-form-item-control">
+            <label>{{row.content || '内容'}}</label>
+          </v-col>
+        </v-row>
+      </template>
       <div class="small">
         <bar-chart
           v-if="chart_type==='bar'"
@@ -43,22 +56,34 @@
       </div>
     </section>
 
+    <div class="pie">
+      <pie-chart :chart-data="pie_data" :options="{responsive: false, maintainAspectRatio: false}"></pie-chart>
+    </div>
+
+    <slot name="before"></slot>
+    <slot name="after"></slot>
+
+
   </div>
 </template>
 
 <script lang="babel">
   import BarChart from '../../lib/vue-chartjs/BarChart';
   import LineChart from '../../lib/vue-chartjs/LineChart';
+  import PieChart from '../../lib/vue-chartjs/PieChart';
 
   export default {
     components: {
       BarChart,
       LineChart,
+      PieChart,
     },
     props: {
       title: String,
       subtitle: String,
+      rows: Array,
       chart_type: String,
+      filters: Object,
       show_date: {
         type: Boolean,
         default: true,
@@ -69,6 +94,7 @@
       },
       actions: Array,
       listActions: Array,
+      pie_action: Object,
     },
     data() {
       return {
@@ -77,6 +103,9 @@
         amounts: [],
         datasets: [],
         datacollection: null,
+        pie_labels: [],
+        pie_datasets: [],
+        pie_data: null,
         options: {
           scales: {
             yAxes: [{
@@ -111,18 +140,22 @@
           labels: vm.labels,
           datasets: vm.datasets,
         };
+        this.pie_data = {
+          labels: vm.pie_labels,
+          datasets: vm.pie_datasets,
+        };
       },
       filter() {
         const vm = this;
         let promise = [];
         vm.datasets = [];
-        console.log(vm.actions);
         vm.actions.forEach(item => {
           promise.push(vm.api(item.model).get({
             action: item.action,
             time_begin: vm.duration[0],
             time_end: vm.duration[1],
             ...item.params,
+            ...vm.filters,
           }).then(resp => {
             vm.labels = resp.data.labels;
             vm.datasets.push({
@@ -135,6 +168,20 @@
             });
           }));
         });
+        if (vm.pie_action) {
+          promise.push(vm.api(vm.pie_action.model).get({
+            action: vm.pie_action.action,
+            ...vm.filters,
+          }).then(resp => {
+            vm.pie_labels = resp.data.labels;
+            vm.pie_datasets = [
+              {
+                backgroundColor: ['#434348', '#79b4ee'],
+                data: resp.data.amounts,
+              },
+            ];
+          }));
+        }
         Promise.all(promise).then(() => {
           vm.fillData();
         });
@@ -146,6 +193,15 @@
 <style scoped lang="less" rel="stylesheet/less">
   .small {
     max-width: 1200px;
-    margin: 100px auto;
+    margin: 50px auto;
+  }
+  .pie {
+    position: absolute;
+    width: 50%;
+    text-align: center;
+    bottom: 10%;
+    height: 30%;
+    left: 50%;
+    transform: translateX(-50%);
   }
 </style>

@@ -8,6 +8,7 @@
     "antd": "^2.5.0",
     "babel-runtime": "^6.18.0",
     "chalk": "^1.1.3",
+    "chart.js": "^2.6.0",
     "china-area-data": "^1.0.0",
     "date-format": "^0.0.2",
     "dom-scroll-into-view": "^1.2.1",
