@@ -177,7 +177,7 @@
               <v-button v-if="options.can_delete"
                         size="small" type="danger"
                         @click="deleteModel(
-                            model, item[pk], '确认删除'+(item.name?'【'+item.name+'】':'这个对象')+'?', '操作成功', reload)">
+                            model, item[pk], '确认删除'+(item.name?'【'+item.name+'】':'这个对象')+'?', '操作成功', afterDelete)">
                 删除
               </v-button>
             </slot>
@@ -290,6 +290,15 @@
           }
         });
         vm.selectedItems = [];
+      },
+      afterDelete() {
+        const vm = this;
+        if (vm.items.length > 1) {
+          vm.reload();
+        } else {
+          // 删没了的话向前跳一页
+          vm.pageTo(Math.max(1, vm.pager.page - 1));
+        }
       },
       doQuery(query) {
         const vm = this;
