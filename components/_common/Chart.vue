@@ -20,7 +20,7 @@
              v-if="show_date"
              style="margin: 4px 0">
         <v-col :span="6" class="ant-form-item-label" style="padding: 0">
-          <label>請選擇時間區間</label>
+          <label>{{date_title || '請選擇時間區间'}}</label>
         </v-col>
         <v-col :span="8" class="ant-form-item-control">
           <v-date-picker v-model="duration"
@@ -80,6 +80,7 @@
     props: {
       title: String,
       subtitle: String,
+      date_title: String,
       rows: Array,
       chart_type: String,
       filters: Object,
