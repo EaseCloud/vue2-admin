@@ -15,6 +15,8 @@
     </header>
 
     <section class="page-body">
+      <slot name="before"></slot>
+
       <v-row :gutter="6"
              type="flex"
              v-if="show_date"
@@ -40,7 +42,7 @@
             <label>{{row.title || '标题'}}</label>
           </v-col>
           <v-col :span="8" class="ant-form-item-control">
-            <label>{{row.content || '内容'}}</label>
+            <label>{{row.content}}</label>
           </v-col>
         </v-row>
       </template>
@@ -57,11 +59,10 @@
       <div class="pie">
         <pie-chart :chart-data="pie_data" :options="{responsive: false, maintainAspectRatio: false}"></pie-chart>
       </div>
+
+      <slot name="after"></slot>
+
     </section>
-
-    <slot name="before"></slot>
-    <slot name="after"></slot>
-
 
   </div>
 </template>
