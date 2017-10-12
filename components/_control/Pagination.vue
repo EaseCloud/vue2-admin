@@ -62,10 +62,15 @@
     },
     methods: {
       go(page) {
-        const vm = this;
-        const query = JSON.parse(JSON.stringify(vm.$route.query));
-        query.page = page;
-        vm.$emit('change', page);
+        if (page === '>' || page === '<') {
+          // todo 点击省略号后显示隐藏的页码
+          console.log(page);
+        } else {
+          const vm = this;
+          const query = JSON.parse(JSON.stringify(vm.$route.query));
+          query.page = page;
+          vm.$emit('change', page);
+        }
         // Deprecated: maual
         // manual 模式通过捕获 @change 事件自行处理换页
         // 如果没有输入 manual，直接通过 $router 参数跳转进行换页

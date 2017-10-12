@@ -10,17 +10,14 @@
                target="_blank" rel="noopener noreferrer">
               <img :src="image.image" alt=""/>
             </a>
-            <div>
-              <a href="javascript:"
-                 @click="previewImages(value, i)"
-                 rel="noopener noreferrer">
-                <i class="anticon anticon-eye-o"
-                   style="margin: -8px 0 0 -22px"></i>
-              </a>
-              <i class="anticon anticon-delete"
-                 v-if="!readonly"
-                 @click="removeImage(i)"
-                 style="margin: -8px 0 0 6px"></i>
+            <div class="image-picker-actions">
+              <a class="anticon anticon-eye-o"
+                 href="javascript:"
+                 @click="previewImages(value, i)"></a>
+              <a v-if="!readonly"
+                 class="anticon anticon-delete"
+                 href="javascript:"
+                 @click="removeImage(i)"></a>
             </div>
           </div>
         </div>
@@ -77,3 +74,14 @@
   };
 </script>
 
+<style lang="less" type="text/less">
+  .image-picker-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    line-height: 78px;
+    text-align: center;
+    z-index: 1;
+  }
+</style>

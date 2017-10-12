@@ -18,7 +18,7 @@
               <v-button
                 v-if="(action.htmlType||'button')==='button'"
                 :type="action.buttonClass || 'ghost'"
-                @click="action.action(selectedItems)">
+                @click="doAction(action.action, [selectedItems])">
                 {{evaluate(action.title)}}
               </v-button> <!--防止按钮之间粘住-->
               <!-- htmlType: text -->
@@ -27,6 +27,9 @@
               <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
             </template>
           </template>
+          <v-button @click="refresh">
+            刷新
+          </v-button>
           <v-button v-if="options.can_download" @click="download">
             导出
           </v-button>
@@ -100,6 +103,7 @@
       hooks: {
         type: Object,
       },
+      pageSize: Number,
     },
     data() {
       const vm = this;
@@ -107,9 +111,10 @@
         items: [],
         pager: {
           page: Number(vm.$route.query.page) || 1,
-          page_size: 10,
+          page_size: vm.pageSize || 10,
           page_count: 0,
         },
+        no_reload_on_mount: true,
       };
     },
     computed: {
@@ -186,6 +191,10 @@
           page_size: 1000000,
           ...vm.filters,
         });
+      },
+      refresh() {
+        const vm = this;
+        vm.$refs.table.reload();
       },
     },
   };

@@ -51,7 +51,7 @@
           const district = vm.value;
           return district - district % 10000 || '';
         },
-        set(value) { this.$emit('input', value); },
+        set(value) { console.log('prov'); this.$emit('input', value); },
       },
       zip_city: {
         get() {
@@ -60,7 +60,14 @@
           if (district % 10000 === 0) return '';
           return district - district % 100 || '';
         },
-        set(value) { this.$emit('input', value); },
+        set(value) {
+//          TODO： 在某种不明情况下会触发两次，第二次value为空导致选择不了地区。先补丁
+          console.log('city');
+          if (!value) {
+            return;
+          }
+          this.$emit('input', value);
+        },
       },
       zip_district: {
         get() {
@@ -69,7 +76,14 @@
           if (district % 100 === 0) return '';
           return district || '';
         },
-        set(value) { this.$emit('input', value); },
+        set(value) {
+          console.log('dist');
+          //          TODO： 在某种不明情况下会触发两次，第二次value为空导致选择不了地区。先补丁
+          if (!value) {
+            return;
+          }
+          this.$emit('input', value);
+        },
       },
     },
     methods: {

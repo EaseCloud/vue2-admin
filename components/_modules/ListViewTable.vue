@@ -100,6 +100,9 @@
             <template v-else-if="col.type=='html'">
               <div v-html="getColValue(col, item)"></div>
             </template>
+            <template v-else-if="col.type=='tag'">
+              <v-tag :color="col.color">{{getColValue(col, item)}}</v-tag>
+            </template>
             <!-- type: link -->
             <template v-else-if="col.type=='link'">
               <router-link :to="col.route(item)"
@@ -139,6 +142,7 @@
             <!-- type: switch -->
             <template v-else-if="col.type=='switch'">
               <v-switch v-model="item[col.key]"
+                        :disabled="evaluate(col, item, 'disabled')"
                         @input="updateModel(
                             model, item[pk], col.key, $event, '操作成功', reload)">
                 <span slot="checked">{{col.checked}}</span>
@@ -156,7 +160,7 @@
                     v-if="(action.htmlType||'button')==='button'"
                     size="small"
                     :type="action.buttonClass || 'ghost'"
-                    @click="action.action(item)">
+                    @click="doAction(action.action, [item])">
                     {{evaluate(action.title, item)}}
                   </v-button> <!--防止按钮之间粘住-->
                   <!-- htmlType: text -->
@@ -171,9 +175,9 @@
                 编辑
               </v-button>
               <v-button v-if="options.can_delete"
-                        size="small" type="dashed"
+                        size="small" type="danger"
                         @click="deleteModel(
-                            model, item[pk], '确认删除'+(item.name?'【'+item.name+'】':'这个对象')+'?', '操作成功', reload)">
+                            model, item[pk], '确认删除'+(item.name?'【'+item.name+'】':'这个对象')+'?', '操作成功', afterDelete)">
                 删除
               </v-button>
             </slot>
@@ -193,7 +197,7 @@
                 @change="pageTo"
                 :page="query.page"
                 :page_count="pager.page_count"
-                :page_size="pager.page_size"/>
+                :page_size="pageSize || pager.page_size"/>
 
     <img ref="image_previewer"
          class="image-previewer"
@@ -205,6 +209,8 @@
 </template>
 
 <script type="text/babel" lang="babel">
+  import * as apiUtils from '../../resource/utils';
+
   export default {
     props: {
       model: String,
@@ -236,6 +242,7 @@
           return ['large', 'middle', 'small'].indexOf(value) > -1;
         },
       },
+      pageSize: Number,
     },
     data() {
       const vm = this;
@@ -253,12 +260,16 @@
       reload() {
         const vm = this;
         // 读取当前分页的所有对象
-        vm.api().get({
-          page: vm.pager.page || 1,
-          page_size: vm.pager.page_size,
-          ...vm.query,
+        // 之所以要这样实现而不用 vm.api().get() 方法，是为了避免 query 中含有 params 关键词
+        // 影响诸如 {/action}{/id} 这样的 URL 路径
+        vm.$http.get(apiUtils.getModelUrlRaw(vm.model), {
+          params: {
+            page: vm.pager.page || 1,
+            page_size: vm.pageSize || vm.pager.page_size,
+            ...vm.query,
+          },
         }).then(resp => {
-          vm.pager.page_count = Math.ceil(resp.data.count / vm.pager.page_size - 1e-5);
+          vm.pager.page_count = Math.ceil(resp.data.count / (vm.pageSize || vm.pager.page_size) - 1e-5);
           vm.total = resp.data.count;
           // 处理延迟计算
           const items = resp.data.results;
@@ -279,6 +290,15 @@
           }
         });
         vm.selectedItems = [];
+      },
+      afterDelete() {
+        const vm = this;
+        if (vm.items.length > 1) {
+          vm.reload();
+        } else {
+          // 删没了的话向前跳一页
+          vm.pageTo(Math.max(1, vm.pager.page - 1));
+        }
       },
       doQuery(query) {
         const vm = this;
@@ -394,6 +414,7 @@
               vm.$set(col, 'displayValue', result);
               vm.doQuery({
                 [col.filtering.search_field]: data.value,
+                page: 1,  // 改变筛选条件，页码归零
               });
             });
           });
@@ -415,6 +436,7 @@
             vm.doQuery({
               [col.filtering.from_field]: data.range[0],
               [col.filtering.to_field]: data.range[1],
+              page: 1,  // 改变筛选条件，页码归零
             })
           });
         }
