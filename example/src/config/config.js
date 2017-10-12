@@ -45,5 +45,12 @@ export default {
   //   // is_superuser: true,
   //   is_active: true,
   // },
+  extra_routes: [{
+    // path: '/passport/forgot',
+    // name: 'passport_forgot',
+    // component: require('./components/Forgot.vue'), // eslint-disable-line
+  }],
+  // 是否显示忘记密码
+  show_forgot: false,
 };
 
