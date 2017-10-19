@@ -175,7 +175,7 @@ export default {
         name: 'main_change_password',
         component: require('./components/main/ChangePassword.vue'),  // eslint-disable-line
       }, ...routes],
-    }, {
+    }, ...(config.extra_routes || []), {
       // 内部指定 404 页面
       path: '*',
       name: 'not_found',

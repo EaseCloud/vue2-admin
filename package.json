@@ -8,7 +8,7 @@
     "antd": "^2.5.0",
     "babel-runtime": "^6.18.0",
     "chalk": "^1.1.3",
-    "chart.js": "^2.6.0",
+    "chart.js": "^2.7.0",
     "china-area-data": "^1.0.0",
     "date-format": "^0.0.2",
     "dom-scroll-into-view": "^1.2.1",
@@ -22,7 +22,7 @@
     "react-cookie": "^1.0.4",
     "vue": "^2.1.0",
     "vue-beauty": "^2.0.0-alpha1",
-    "vue-chartjs": "^2.8.2",
+    "vue-chartjs": "^2.8.7",
     "vue-resource": "^1.3.1",
     "vue-router": "^2.1.1",
     "vue-spinner": "^1.0.2"

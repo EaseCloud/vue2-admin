@@ -44,6 +44,7 @@
                   <button class="ant-btn ant-btn-primary ant-btn-lg"
                           type="submit" @click="submit">登录
                   </button>
+                  <a v-if="config.show_forgot" class="btn-forgot" style="float:right;" @click="$router.push({ name: 'passport_forgot' })">忘记密码</a>
                 </div>
               </div>
             </div>
