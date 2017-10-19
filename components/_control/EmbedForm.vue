@@ -77,6 +77,12 @@
           <p class="ant-form-text">{{field.value}}</p>
         </v-col>
 
+        <!--type: tab-->
+        <v-col :span="field.span || 8" class="ant-form-item-control"
+               v-else-if="field.type == 'tab'">
+          <v-tag :color="field.color || 'green-inverse'">{{field.value}}</v-tag>
+        </v-col>
+
         <!-- type: html -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'html'"
