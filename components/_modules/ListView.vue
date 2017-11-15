@@ -13,7 +13,7 @@
         <slot name="actions">
           <!-- TODO: 这部分实现是从 ListViewTable 内部行 actions 复制粘贴出来的，后期考虑合并成一个独立组件 -->
           <template v-for="action in listActions">
-            <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible(item)">
+            <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible()">
               <!-- htmlType: button (默认) -->
               <v-button
                 v-if="(action.htmlType||'button')==='button'"
