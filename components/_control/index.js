@@ -1,9 +1,15 @@
 /* eslint-disable */
 
-export const Pagination = require('./Pagination.vue');
-export const Datepicker = require('./Datepicker.vue');
-export const ImagePicker = require('./ImagePicker.vue');
-export const GalleryPicker = require('./GalleryPicker.vue');
-export const DistrictPicker = require('./DistrictPicker.vue');
-export const ObjectPicker = require('./ObjectPicker.vue');
-export const EmbedForm = require('./EmbedForm');
+import MPagination from './Pagination.vue'
+import MImagePicker from './ImagePicker.vue'
+import MGalleryPicker from './GalleryPicker.vue'
+import MDistrictPicker from './DistrictPicker.vue'
+import MObjectPicker from './ObjectPicker.vue'
+import MEmbedForm from './EmbedForm.vue'
+
+export const Pagination = MPagination
+export const ImagePicker = MImagePicker
+export const GalleryPicker = MGalleryPicker
+export const DistrictPicker = MDistrictPicker
+export const ObjectPicker = MObjectPicker
+export const EmbedForm = MEmbedForm

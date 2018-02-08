@@ -22,7 +22,15 @@ import mixins from './mixins';
 // 应用内配置文件
 import config from '../config/config';
 // Components routes and entrance
-import routes from '../components/routes';
+
+import App from './components/App.vue'
+import PassportApp from './components/passport/App.vue'
+import PassportLoginApp from './components/passport/Login.vue'
+import MainApp from './components/main/App.vue'
+import MainChangePasswordApp from './components/main/ChangePassword.vue'
+import NotFoundApp from './components/NotFound.vue'
+
+
 
 export default {
   install(Vue, options = {}) {
@@ -160,32 +168,33 @@ export default {
       // 内部指定登录页面
       path: '/passport',
       name: 'passport',
-      component: require('./components/passport/App.vue'),  // eslint-disable-line
+      component: PassportApp,
       children: [{
         path: '/passport/login',
         name: 'passport_login',
-        component: require('./components/passport/Login.vue'),  // eslint-disable-line
+        component: PassportLoginApp
       }],
     }, {
       path: '/',
       name: 'main',
-      component: require('./components/main/App.vue'),  // eslint-disable-line
+      component: MainApp,
       children: [{
         path: '/change/password',
         name: 'main_change_password',
-        component: require('./components/main/ChangePassword.vue'),  // eslint-disable-line
-      }, ...routes],
+        component: MainChangePasswordApp
+      }, ...(config.main_routes || [])],
     }, ...(config.extra_routes || []), {
       // 内部指定 404 页面
       path: '*',
       name: 'not_found',
-      component: require('./components/NotFound.vue'),  // eslint-disable-line
+      component: NotFoundApp
     }];
 
     // [config] route_filter
     const router = new VueRouter({
       routes: config.route_filter ? config.route_filter(allRoutes) : allRoutes
     });
+
     // const router = new VueRouter({ routes });
     // router.beforeEach((to, from, next) => {
     //   // noReuse 模式，启用组件内参数跳转自动 reload
@@ -228,7 +237,7 @@ export default {
       console.log(`>>> ${route.name}`);
     });
 
-    const AppConstructor = Vue.extend(require('./components/App.vue'));  // eslint-disable-line
+    const AppConstructor = Vue.extend(App);  // eslint-disable-line
     window.app = new AppConstructor({ router, el: '#app' });
   },
 };

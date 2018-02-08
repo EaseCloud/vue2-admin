@@ -44,6 +44,11 @@ button,input,select,textarea {
   color: inherit;
 }
 
+input[type="text"],
+textarea {
+  -webkit-appearance: none;
+}
+
 ul,
 ol {
   list-style: none;
@@ -59,11 +64,17 @@ input::-ms-clear, input::-ms-reveal {
   color: #fff;
 }
 
+// Headers
+h1, h2, h3, h4, h5, h6 {
+  color: @heading-color;
+  font-weight: 500;
+}
+
 // Links
 a {
   color: @link-color;
   background: transparent;
-  text-decoration: none;
+  text-decoration: @link-decoration;
   outline: none;
   cursor: pointer;
   transition: color .3s ease;
@@ -84,7 +95,7 @@ a {
   &:active,
   &:hover {
     outline: 0;
-    text-decoration: none;
+    text-decoration: @link-hover-decoration;
   }
 
   &[disabled] {

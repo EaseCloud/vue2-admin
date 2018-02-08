@@ -7,13 +7,18 @@
 .@{table-prefix-cls} {
   font-size: @font-size-base;
   color: @text-color;
-  overflow: hidden;
+  height: 100%;
   position: relative;
-  border-radius: @border-radius-base @border-radius-base 0 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: @border-radius-base;
 
   &-content {
+    flex: 1;
+    position: relative;
     overflow: auto;
+    border-radius: @border-radius-base;
   }
 
   &-body {
@@ -26,12 +31,11 @@
     border-collapse: separate;
     border-spacing: 0;
     text-align: left;
-    border-radius: @border-radius-base @border-radius-base 0 0;
     overflow: hidden;
   }
 
   &-thead > tr > th {
-    background: @table-head-background-color;
+    background: #f3f3f3;
     font-weight: bold;
     transition: background .3s ease;
     text-align: left;
@@ -62,7 +66,7 @@
     transition: all .3s ease;
     &.@{table-prefix-cls}-row-hover,
     &:hover {
-      background: tint(@primary-color, 90%);
+      background-color: tint(@primary-color, 90%) !important;
     }
   }
 
@@ -71,20 +75,17 @@
   }
 
   &-footer {
-    padding: 8px;
-    background: @table-head-background-color;
+    height: 50px;
+    padding: 10px 0;
     position: relative;
-    top: -1px;
-    border-radius: 0 0 @border-radius-base @border-radius-base;
 
     .@{table-prefix-cls}-description{
       line-height: 30px;
     }
   }
-
-  &.@{table-prefix-cls}-bordered &-footer {
-    border: 1px solid @border-color-split;
-  }
+ &.@{table-prefix-cls}-stripe table tr:nth-child(2n){
+   background-color: #f9f9f9;
+ }
 
   &-title {
     padding: 16px 8px;
@@ -124,17 +125,20 @@
   &-thead > tr > th.@{table-prefix-cls}-selection-column,
   &-tbody > tr > td.@{table-prefix-cls}-selection-column {
     text-align: center;
-    width: 60px;
+    width:30px;
   }
 
   &-header {
+    position: absolute;
+    top: 0;
+    z-index: 1;
     background: @table-head-background-color;
     overflow: hidden;
-    height: 40px;
     border-radius: @border-radius-base @border-radius-base 0 0;
   }
 
   &-header table {
+    table-layout: fixed;
     border-radius: @border-radius-base @border-radius-base 0 0;
   }
 
@@ -248,12 +252,8 @@
       border: 1px solid @border-color-split;
     }
 
-    .@{table-prefix-cls}-body table {
-      border-bottom: 1px solid @border-color-split;
-    }
-
-    &.@{table-prefix-cls}-fixed-header {
-      border: 1px solid @border-color-split;
+    .@{table-prefix-cls}-header {
+      margin: 1px 0 0 1px;
       table {
         border: 0;
       }
@@ -263,6 +263,15 @@
       .@{table-prefix-cls}-fixed-right {
         border-left: 1px solid @border-color-split;
       }
+    }
+
+    >.@{table-prefix-cls}-fixed-left {
+      border-left: 1px solid @border-color-split;
+      border-top: 1px solid @border-color-split;
+    }
+    >.@{table-prefix-cls}-fixed-right {
+      border-top: 1px solid @border-color-split;
+      border-right: 1px solid @border-color-split;
     }
 
     .@{table-prefix-cls}-thead > tr > th {
@@ -297,8 +306,8 @@
   }
 
   &-pagination {
-    position: absolute;
-    right: 0;
+    float: right;
+    margin-right: -8px;
   }
 
   &-filter-dropdown {
@@ -373,13 +382,15 @@
     &-expand-icon {
       cursor: pointer;
       display: inline-block;
-      width: 17px;
-      height: 17px;
+      width: 16px;
+      height: 16px;
       text-align: center;
       line-height: 14px;
-      border: 1px solid @border-color-split;
+      color: #ffffff;
+      font-weight: bold;
       user-select: none;
-      background: #fff;
+      border-radius: 1px;
+      background: #666;
       &-cell {
         width: 18px;
       }
@@ -414,26 +425,6 @@
 
   .@{table-prefix-cls}-row-indent + .@{table-prefix-cls}-row-expand-icon {
     margin-right: 3px;
-  }
-
-  &-scroll {
-    overflow: hidden !important;
-
-    .@{table-prefix-cls}-header{
-      position: relative;
-      z-index: 99;
-      width: 100%;
-    }
-    .@{table-prefix-cls}-body{
-      margin-top: -40px;
-      overflow: scroll;
-    }
-
-
-    table {
-      width: auto;
-      min-width: 100%;
-    }
   }
 
   &-body-inner {
@@ -476,7 +467,7 @@
 
   &-fixed-left {
     left: 0;
-    box-shadow: @shadow-1-right;
+    box-shadow: 2px -2px 5px @shadow-color;
     .@{table-prefix-cls}-header {
       overflow-y: hidden;
     }
@@ -496,7 +487,8 @@
 
   &-fixed-right {
     right: 0;
-    box-shadow: @shadow-1-left;
+    background: #f3f3f3;
+    box-shadow: -2px -2px 5px @shadow-color;
     &,
     table {
       border-radius: 0 @border-radius-base 0 0;

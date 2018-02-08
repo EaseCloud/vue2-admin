@@ -1,6 +1,6 @@
 <template>
     <base-select v-model="value" :popup-container="popupContainer" :placeholder="placeholder" :search="search" :position="position" :multiple="multiple" :allow-clear="allowClear" @clear="clear" ref="select" @search="searchFn">
-        <v-tree prefix-cls="ant-select-tree" :data="data" @select="select" @check="check" :multiple="multiple" :checkable="checkable" ref="tree"></v-tree>
+        <v-tree prefix-cls="ant-select-tree" :data="data" @select="select" @check="check" :multiple="multiple" :checkable="checkable" ref="tree" :async="async"></v-tree>
     </base-select>
 </template>
 <script>
@@ -46,6 +46,7 @@
                 type: String,
                 default: 'absolute',
             },
+            async: Function,
         },
         mounted() {
             if (this.multiple) {
@@ -115,6 +116,7 @@
                     uids.push(item.uid);
                 }
                 this.resetTreeData(uids, this.data);
+                this.$emit('clear', null);
             },
             resetTreeData(uids, data) {
                 for (let i = 0; i < data.length; i++) {
@@ -135,14 +137,15 @@
             setCheck(clue) {
                 const route = clue.split('-');
                 let node = this.$refs.tree;
-                for (var i = 1; i < route.length - 1; i++) {
+                let i = 1;
+                for (; i < route.length - 1; i++) {
                     node = node.$children[route[i]];
                 }
                 const item = node.data[route[i]];
                 node.setCheck(item.disabled, route[i]);
             },
             searchFn(val) {
-                console.log(val)
+                console.log(val);
             },
         },
     };

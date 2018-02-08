@@ -1,6 +1,11 @@
 /* eslint-disable */
 
-export const OptionForm = require('./OptionForm.vue');
-export const ListView = require('./ListView.vue');
-export const ListViewTable = require('./ListViewTable.vue');
-export const EditView = require('./EditView.vue');
+import MOptionForm from './OptionForm.vue'
+import MListView from './ListView.vue'
+import MListViewTable from './ListViewTable.vue'
+import MEditView from './EditView.vue'
+
+export const OptionForm = MOptionForm
+export const ListView = MListView
+export const ListViewTable = MListViewTable
+export const EditView = MEditView
