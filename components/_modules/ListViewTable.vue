@@ -171,7 +171,7 @@
               </template>
               <v-button v-if="options.can_edit"
                         size="small" type="ghost"
-                        @click="$router.push({name:'main_'+modelUnderscore+'_edit', params: {id: item[pk]}})">
+                        @click="redirectEdit(item)">
                 编辑
               </v-button>
               <v-button v-if="options.can_delete"
@@ -465,6 +465,13 @@
           img.style.top = `${top}px`;
         };
       },
+      redirectEdit(item) {
+        const vm = this;
+        console.log(vm.options);
+        const route = vm.options.getEditUrl ? vm.options.getEditUrl(item[vm.pk])
+          : { name: 'main_' + vm.modelUnderscore + '_edit', params: { id: item[vm.pk] } };
+        this.$router.push(route)
+      }
     },
   };
 </script>

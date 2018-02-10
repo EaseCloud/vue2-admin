@@ -1,6 +1,6 @@
 /** Absolute Imports */
 // Ant Design UI - 恶魔模式
-import 'antd/dist/antd.less';
+import 'antd/dist/antd.min.css';
 import 'font-awesome/less/font-awesome.less';
 
 import VueRouter from 'vue-router';
@@ -29,7 +29,6 @@ import PassportLoginApp from './components/passport/Login.vue'
 import MainApp from './components/main/App.vue'
 import MainChangePasswordApp from './components/main/ChangePassword.vue'
 import NotFoundApp from './components/NotFound.vue'
-
 
 
 export default {
@@ -107,7 +106,15 @@ export default {
     // -------------------------
     // Vue resource config
     // -------------------------
+    // Vue.http.options.headers.common['Content-Type'] = 'multipart/form-data';
+    // Vue.http.options.headers = {
+    //   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    // }
+    // Vue.http.options.emulateJSON = false
     Vue.http.options.root = config.api_root || '/api';
+    if (localStorage.getItem('session_token')) {
+      Vue.http.headers.common['Authorization'] = `Bearer ${localStorage.getItem('session_token')}`
+    }
     if (config.cross_origin !== false) {
       Vue.http.options.credentials = true;
       Vue.http.options.xhr = { withCredentials: true };

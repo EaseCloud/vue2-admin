@@ -74,7 +74,10 @@
         <!-- type: label -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
                v-else-if="field.type == 'label'">
-          <p class="ant-form-text">{{field.value}}</p>
+          <p class="ant-form-text">
+            {{field.filter?field.filter(field.value):field.value}}
+            <!--{{(field.filter?field.filter(field.value):field.value)||field.default||''}}-->
+          </p>
         </v-col>
 
         <!--type: tab-->
@@ -111,6 +114,7 @@
         <v-col :span="field.span || 8" class="ant-form-item-control"
                v-else-if="field.type == 'switch'">
           <v-switch v-model="field.value"
+                    :disabled="field.disabled"
                     @input="updateField(field)">
             <template slot="checked">{{field.checked}}</template>
             <template slot="unchecked">{{field.unchecked}}</template>
@@ -320,3 +324,4 @@
     },
   };
 </script>
+

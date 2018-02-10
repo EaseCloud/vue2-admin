@@ -173,12 +173,12 @@ export default {
     getDistrict(adcode = 86) {
       return this.$root.areaData[adcode] || [];
     },
-    getDistrictFullNameByCode(zipCode) {
+    getDistrictFullNameByCode(adcode) {
       const vm = this;
-      return zipCode ?
-        `${vm.getDistrictNameByCode(vm.areaPrefix(zipCode, 2))} ` +
-        `${vm.getDistrictNameByCode(vm.areaPrefix(zipCode, 4))} ` +
-        `${vm.getDistrictNameByCode(zipCode)}` : '';
+      return adcode ?
+        `${vm.getDistrictNameByCode(vm.areaPrefix(adcode, 2))} ` +
+        `${vm.getDistrictNameByCode(vm.areaPrefix(adcode, 4))} ` +
+        `${vm.getDistrictNameByCode(adcode)}` : '';
     },
     getDistrictNameByCode(adcode) {
       const data = this.$root.areaData;
@@ -189,6 +189,12 @@ export default {
       if (adcode % 10000 === 0) return 86;
       if (adcode % 100 === 0) return adcode - adcode % 10000;
       return adcode - adcode % 100;
+    },
+    getProvinceNameByCode(adcode) {
+      return this.getDistrictNameByCode(adcode - adcode % 10000);
+    },
+    getCityNameByCode(adcode) {
+      return this.getDistrictNameByCode(adcode - adcode % 100);
     },
     getUrlFromRoute(route, absolute = true) {
       const vm = this;
