@@ -125,7 +125,29 @@
         </v-col>
 
         <!-- type: select -->
-        <span v-else-if="field.type == 'select'">尚未实现</span>
+        <v-col :span="field.span || 18" class="ant-form-item-control"
+               v-else-if="field.type == 'select'">
+          <v-select placement="top" :data="field.choices"
+                    style="width: 120px;"
+                    dropdown-width="240px"
+                    v-model="field.value"></v-select>
+          <div v-if="field.description"
+               class="ant-form-explain">{{field.description}}
+          </div>
+        </v-col>
+
+        <!-- type: checkbox -->
+        <v-col :span="field.span || 18" class="ant-form-item-control"
+               v-else-if="field.type == 'checkbox'">
+          <v-checkbox-group v-if="field.choices"
+                            v-model="field.value"
+                            :disabled="!!field.readonly"
+                            :data="field.choices"
+                            :max="field.max"></v-checkbox-group>
+          <div v-if="field.description"
+               class="ant-form-explain">{{field.description}}
+          </div>
+        </v-col>
 
         <!-- type: radio -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
@@ -271,6 +293,7 @@
       vm.fields.forEach(field => {
         // 注意 ref_name 配置尽量避免重复，否则只返回第一个
         field.ref = field.id && vm.$refs[field.id] && vm.$refs[field.id][0];
+//        vm.echo(field);
       });
     },
     methods: {

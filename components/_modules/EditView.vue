@@ -115,11 +115,31 @@
           return vm.api().get({
             id: vm.$route.params.id,
           }).then(resp => {
-            vm.item = resp.data;
+            vm.item = vm.options.hooks && vm.options.hooks.fetch
+              ? vm.options.hooks.fetch(resp.data) : resp.data;
             return vm.render().then(() => {
               vm.$emit('loaded');
             });
           });
+        } else {
+          // 新增的情况自动产生一个默认的 item
+          const item = {};
+          vm.fields.forEach(field => {
+            // 注意主键缺省
+            if (field.hasOwnProperty('key')) {
+              if ((typeof field.key) === 'string' && field.key !== vm.pk) {
+                item[field.key] = field.hasOwnProperty('default') ? field.default : null
+              } else if (field.type === 'gallery') {
+                if (field.key.read) item[field.key.read] = []
+                if (field.key.write) item[field.key.write] = []
+              } else if (field.type === 'image') {
+                if (field.key.read) item[field.key.read] = null
+                if (field.key.write) item[field.key.write] = null
+              }
+            }
+          });
+//          console.log(JSON.parse(JSON.stringify(item)));
+          vm.item = item;
         }
         return vm.render();
       },
@@ -239,13 +259,15 @@
             && !vm.options.hooks.pre_save(vm)) {
             return Promise.reject();
           }
+          const itemToSave = vm.options.hooks && vm.options.hooks.item_filter ?
+            vm.options.hooks.item_filter(vm.item) : vm.item;
           const promise = Number(vm.$route.params.id)
-            ? api(vm.model).patch({ id: vm.item[vm.pk] }, vm.item)
-            : api(vm.model).save({ ...vm.item });
+            ? api(vm.model).patch({ id: itemToSave[vm.pk] }, itemToSave)
+            : api(vm.model).save({ ...itemToSave });
           return promise.then(resp => {
             vm.notify('操作成功');
             // 创建的情况
-            if (!vm.item[vm.pk]) {
+            if (!itemToSave[vm.pk]) {
               vm.$router.replace({
                 params: {
                   id: resp.data[vm.pk],

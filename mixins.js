@@ -243,6 +243,9 @@ export default {
         $1 => `_${$1.toLowerCase()}`
       ).replace(/^_/, '');
     },
+    wrapChoices(choice) {
+      return Object.keys(choice).map(key => ({ label: choice[key], value: key }))
+    },
     getChoiceText(choice, value, fieldText = 'text', fieldValue = 'value') {
       const vm = this;
       let result = null;

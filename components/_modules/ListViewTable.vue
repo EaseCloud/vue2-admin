@@ -467,7 +467,6 @@
       },
       redirectEdit(item) {
         const vm = this;
-        console.log(vm.options);
         const route = vm.options.getEditUrl ? vm.options.getEditUrl(item[vm.pk])
           : { name: 'main_' + vm.modelUnderscore + '_edit', params: { id: item[vm.pk] } };
         this.$router.push(route)
