@@ -128,9 +128,11 @@
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'select'">
           <v-select placement="top" :data="field.choices"
+                    v-if="field.choices"
                     style="width: 120px;"
                     dropdown-width="240px"
-                    v-model="field.value"></v-select>
+                    v-model="field.value"
+                    @input="updateField(field)"></v-select>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
           </div>
