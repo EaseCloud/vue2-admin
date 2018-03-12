@@ -29,7 +29,7 @@
             删除
           </v-button>
         </template>
-        <v-button type="ghost" @click="$router.back()">返回</v-button>
+        <v-button type="ghost" @click="back()">返回</v-button>
       </div>
     </header>
 
@@ -180,6 +180,13 @@
           promiseGetResult = objectId
             ? vm.api(field.options.model).get({ id: objectId }).then(resp => resp.data)
             : Promise.resolve(null);
+//        } else if (field.type === 'datepicker') {
+//          if (typeof field.value === 'number') {
+//            promiseGetResult = Promise.resolve(
+//              vm.dateformat(new Date(field.value), "yyyy-mm-dd HH:MM:ss"));
+//          } else {
+//            promiseGetResult = Promise.resolve(field.value);
+//          }
         } else {
           promiseGetResult = Promise.resolve(vm.getField(field.key));
         }
@@ -285,8 +292,7 @@
         const vm = this;
         vm.save().then(() => {
           // 保存后置钩子
-          const hookPostSave = vm.options.hooks && vm.options.hooks.post_save
-            || (() => vm.redirectList());
+          const hookPostSave = vm.options.hooks && vm.options.hooks.post_save || vm.back();
           hookPostSave(vm);
         });
       },
@@ -327,6 +333,13 @@
 //        console.log(JSON.parse(JSON.stringify(field)));
         vm.renderField(field);
       },
+      back() {
+        const vm = this;
+        if (vm.hooks && vm.hooks.action_back) {
+          vm.hooks.action_back();
+        }
+        vm.$router.back();
+      }
     },
   };
 </script>

@@ -6,11 +6,16 @@ import * as utils from './utils';
 Vue.use(VueResource);
 
 const wrapFormData = json => {
+  if (json instanceof FormData) return json;
   const formdata = new FormData();
-  for (const key in json) {
-    if (!json.hasOwnProperty(key)) continue;
+  Object.keys(json).forEach(key => {
+    const value = json[key];
+    // if (typeof value === 'object') {
+    //   formdata.append(key, JSON.stringify(json[key]));
+    // } else {
     formdata.append(key, json[key]);
-  }
+    // }
+  })
   return formdata;
 };
 
@@ -28,7 +33,7 @@ const callMethod = (resource, method, args) => {
 };
 
 // TODO: 这里的第二个参数尚未调通，原因是 data() 方法的时机 vm 尚未加载完全
-export default function resource(model, api_root = config.api_root) {
+export default function resource (model, api_root = config.api_root) {
   const resource = Vue.resource(
     utils.getModelUrl(model),  // url
     {},  // params

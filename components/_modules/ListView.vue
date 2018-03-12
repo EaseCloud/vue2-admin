@@ -37,7 +37,7 @@
                     @click="$router.push({name: 'main_'+modelUnderscore+'_edit', params: {id: 0}})">
             新增
           </v-button>
-          <v-button type="ghost" @click="$router.back()">返回</v-button>
+          <v-button type="ghost" @click="back()">返回</v-button>
         </slot>
       </div>
     </header>
@@ -161,7 +161,7 @@
             o = o[key];
           });
           return (o || '').toString();
-        }
+       }
 
         // 密码验证
         vm.verifyPassword(vm.options.download_need_password).then(() => {
@@ -196,6 +196,13 @@
         const vm = this;
         vm.$refs.table.reload();
       },
+      back() {
+        const vm = this;
+        if (vm.hooks.action_back) {
+          vm.hooks.action_back();
+        }
+        vm.$router.back();
+      }
     },
   };
 </script>

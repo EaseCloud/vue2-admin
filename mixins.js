@@ -11,7 +11,10 @@ import api from './resource/api';
 import utils from './utils';
 
 import choices from '../config/choices';
-import config from '../config/config';
+import customConfig from '../config/config'
+import defaultConfig from './default_config'
+
+const config = Object.assign(defaultConfig, customConfig)
 
 export default {
   mounted() {
