@@ -29,20 +29,24 @@
 </template>
 
 <script type="text/babel">
-  import menus from '../../../config/menus';
   import api from '../../resource/api';
 
   export default {
-    data() {
-      return {
-        menus: [],
-      };
+    computed: {
+      menus: {
+        get() {
+          return this.$root.menus;
+        },
+        set(value) {
+          this.$root.menus = value;
+        }
+      }
     },
     methods: {
       reload() {
-        const vm = this;
+        const vm = this.$root;
         const config = vm.config;
-        let promiseLoadMenus = Promise.resolve(menus);
+        let promiseLoadMenus = Promise.resolve(vm.menus);
         // 默认情况下在 config.menus 下面配置菜单列表
         if (config.dynamic_menus) {
           const menuConfig = {
@@ -99,7 +103,7 @@
         });
       },
       toggle(menu, event) {
-        const vm = this;
+        const vm = this.$root;
         // 如果有链接直接跳转
         if (menu.link) {
           vm.$router.push(menu.link);
