@@ -198,7 +198,7 @@
       },
       back() {
         const vm = this;
-        if (vm.hooks.action_back) {
+        if (vm.hooks && vm.hooks.action_back) {
           vm.hooks.action_back();
         }
         vm.$router.back();

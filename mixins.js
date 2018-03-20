@@ -349,13 +349,16 @@ export default {
       const vm = this;
       let timedOut = false;
       return new Promise((resolve, reject) => {
-        setTimeout(() => {
+        let timerTimeout = setTimeout(() => {
           timedOut = true;
           reject();
         }, timeout);
         const func = () => {
-          if (vm.getProperty(obj, prop)) resolve();
-          if (!timedOut) setTimeout(func, 200);
+          let value = vm.getProperty(obj, prop)
+          if (value) {
+            clearTimeout(timerTimeout);
+            resolve(value);
+          } else if (!timedOut) setTimeout(func, 200);
         };
         func();
       });

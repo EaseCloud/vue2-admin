@@ -54,6 +54,7 @@
 
   export default {
     props: {
+      id: Number,
       title: String,
       subtitle: String,
       model: String,  // 主模型
@@ -89,6 +90,12 @@
         },
       },
     },
+    computed: {
+      objectId () {
+        const vm = this;
+        return vm.id || Number(vm.$route.params.id);
+      }
+    },
     data() {
       const vm = this;
       const defaultItem = {};
@@ -111,10 +118,8 @@
       reload() {
         const vm = this;
         // 获取主体信息
-        if (Number(vm.$route.params.id)) {
-          return vm.api().get({
-            id: vm.$route.params.id,
-          }).then(resp => {
+        if (vm.objectId) {
+          return vm.api().get({ id: vm.objectId }).then(resp => {
             vm.item = vm.options.hooks && vm.options.hooks.fetch
               ? vm.options.hooks.fetch(resp.data) : resp.data;
             return vm.render().then(() => {
@@ -142,6 +147,12 @@
           vm.item = item;
         }
         return vm.render();
+      },
+      setField(key, value) {
+        const vm = this;
+        vm.waitFor(vm.$refs, 'form').then(form => {
+          form.setField(key, value);
+        })
       },
       getField(path) {
         let result = this.item;
@@ -268,7 +279,7 @@
           }
           const itemToSave = vm.options.hooks && vm.options.hooks.item_filter ?
             vm.options.hooks.item_filter(vm.item) : vm.item;
-          const promise = Number(vm.$route.params.id)
+          const promise = vm.objectId
             ? api(vm.model).patch({ id: itemToSave[vm.pk] }, itemToSave)
             : api(vm.model).save({ ...itemToSave });
           return promise.then(resp => {
@@ -292,8 +303,8 @@
         const vm = this;
         vm.save().then(() => {
           // 保存后置钩子
-          const hookPostSave = vm.options.hooks && vm.options.hooks.post_save || vm.back();
-          hookPostSave(vm);
+          const hookPostSave = vm.options.hooks && vm.options.hooks.post_save || vm.back;
+          hookPostSave.apply(vm);
         });
       },
       erase() {
@@ -337,8 +348,9 @@
         const vm = this;
         if (vm.hooks && vm.hooks.action_back) {
           vm.hooks.action_back();
+        } else {
+          vm.$router.back();
         }
-        vm.$router.back();
       }
     },
   };

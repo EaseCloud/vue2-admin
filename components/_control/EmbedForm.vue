@@ -6,9 +6,11 @@
 
       <h3 style="margin-top: 20px;" v-if="field.display == 'full'">{{field.title}}</h3>
 
+      <template v-if="field.type=='title'"></template>
+
       <v-row :gutter="6"
              type="flex"
-             v-if="isVisible(field)"
+             v-else-if="isVisible(field)"
              :key="field.pk"
              style="margin: 4px 0">
 
@@ -313,6 +315,17 @@
 //        field.value = id;
 //        vm.$emit('update', field);
 //      },
+      setField(key, value) {
+        const vm = this;
+//        console.warn(key,value);
+        vm.fields.forEach(field => {
+          if (field.key === key) {
+//            console.warn(field);
+            field.value = value;
+            vm.updateField(field);
+          }
+        })
+      },
       updateField(field) {
         const vm = this;
         if (field.onUpdate) {

@@ -411,7 +411,7 @@ TODO: 尚未撰写
 
 1. 在 EditView 或者 EmbedForm 中使用 `col.type == list-view` 字段的时候，
    绑定后通过 `vm.fields[i].ref` 即可获取到该内部 ListViewTable 的组件对象。
-     
+
 ##### col.display
 
 列的样式，有如下几种选项：
@@ -620,8 +620,66 @@ label 的别名，已经废弃，仅 ListView 保留支持，请避免使用。
 #### 4.3.2. 属性
 ### 4.4. 表单字段
 
+## 5. 样例
 
+### 5.1. vm.modalForm()
 
+获取指定格式的表单值
 
+```
+vm.modalForm({
+  title: '请输入关键词',
+  fields: [{
+    type: 'text',
+    name: 'username',
+    label: '登录名',
+    value: '',
+  }, {
+    type: 'password',
+    name: 'password',
+    label: '密码',
+  }, {
+    type: 'number',
+    name: 'age',
+    label: '年龄',
+    placeholder: '年龄',
+  }, {
+    type: 'date',  // datetime 也可以
+    name: 'date_created',
+    label: '注册时间',
+    readonly: true,
+  }, {
+    type: 'textarea',
+    name: 'introduction',
+    label: '个人简介',
+  }, {
+    type: 'district',
+    name: 'district_id',
+    label: '地区',
+  }, {
+    type: 'select',
+    name: 'agree',
+    label: '同意',
+    choices: [
+      {text: '好', 'yes'},
+      {text: '不好', 'no'},
+    ]
+  }, {
+    type: 'multi-select',
+    name: 'hobbies',
+    label: '同意',
+    choices: [
+      {text: '好', 'yes'},
+      {text: '不好', 'no'},
+    ]
+  }, {
+    type: 'object',
+    name: 'district_id',
+    label: '推荐人',
 
+  }],
+}).then(data => {
+  console.log(data);
+});
+```
 

@@ -19,6 +19,7 @@
   //  import * as controls from '../components/_control';
   //  import * as modules from '../components/_modules';
   //  import * as api from '../resource/api';
+  import menus from '../../config/menus';
   import config from '../../config/config';
 
   // Root component
@@ -27,6 +28,7 @@
     name: 'vue2-admin',
     data() {
       return {
+        menus,
         current_user: config.current_user || null,
         hide_sidebar: !!localStorage.getItem('hide_sidebar'),
         context: {},

@@ -33,7 +33,7 @@
 
     <div v-if="me">
 
-      <sidebar :class="{'no-sidebar': $root.hide_sidebar}"></sidebar>
+      <sidebar ref="sidebar" :class="{'no-sidebar': $root.hide_sidebar}"></sidebar>
 
       <a class="btn-toggle-sidebar"
          :class="{'no-sidebar': $root.hide_sidebar}"
