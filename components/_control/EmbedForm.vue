@@ -28,7 +28,9 @@
                    :min="field.min"
                    :disabled="field.disabled"
                    :max="field.max"
+                   :rows="field.rows"
                    size="large"
+                   :style="field.style"
                    :placeholder="field.placeholder"
                    @keypress.enter="$emit('submit')">
             <template slot="before" v-if="field.before">{{field.before}}</template>
