@@ -131,7 +131,7 @@
         <!-- type: select -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'select'">
-          <v-select placement="top" :data="field.choices"
+          <v-select placement="top" :data="wrapChoices(field.choices)"
                     v-if="field.choices"
                     style="width: 120px;"
                     dropdown-width="240px"
@@ -235,7 +235,7 @@
                            :actions="field.options.actions"
                            :filters="field.options.filters"
                            :hooks="field.options.hooks"
-                           :pageSize="field.options.pageSize"
+                           :pageSize="field.options.pageSize || field.options.page_size"
                            @loaded="$emit('loaded', field)"
                            :ref="field.id"></list-view-table>
           <!--:pager="pager"-->
@@ -330,6 +330,7 @@
       },
       updateField(field) {
         const vm = this;
+//        console.log('updateField', JSON.parse(JSON.stringify(field)))
         if (field.onUpdate) {
           field.onUpdate(field);
         }

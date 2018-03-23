@@ -120,32 +120,36 @@
         // 获取主体信息
         if (vm.objectId) {
           return vm.api().get({ id: vm.objectId }).then(resp => {
-            vm.item = vm.options.hooks && vm.options.hooks.fetch
+            if (!resp.data) {
+              vm.$message.error('接口没有响应内容')
+              return Promise.reject(new Error('响应没有内容'))
+            }
+            vm.item = (vm.options.hooks && vm.options.hooks.fetch)
               ? vm.options.hooks.fetch(resp.data) : resp.data;
             return vm.render().then(() => {
+//              console.log(vm.item)
               vm.$emit('loaded');
             });
           });
-        } else {
-          // 新增的情况自动产生一个默认的 item
-          const item = {};
-          vm.fields.forEach(field => {
-            // 注意主键缺省
-            if (field.hasOwnProperty('key')) {
-              if ((typeof field.key) === 'string' && field.key !== vm.pk) {
-                item[field.key] = field.hasOwnProperty('default') ? field.default : null
-              } else if (field.type === 'gallery') {
-                if (field.key.read) item[field.key.read] = []
-                if (field.key.write) item[field.key.write] = []
-              } else if (field.type === 'image') {
-                if (field.key.read) item[field.key.read] = null
-                if (field.key.write) item[field.key.write] = null
-              }
-            }
-          });
-//          console.log(JSON.parse(JSON.stringify(item)));
-          vm.item = item;
         }
+        // 新增的情况自动产生一个默认的 item
+        const item = {};
+        vm.fields.forEach(field => {
+          // 注意主键缺省
+          if (field.hasOwnProperty('key')) {
+            if ((typeof field.key) === 'string' && field.key !== vm.pk) {
+              item[field.key] = field.hasOwnProperty('default') ? field.default : null
+            } else if (field.type === 'gallery') {
+              if (field.key.read) item[field.key.read] = []
+              if (field.key.write) item[field.key.write] = []
+            } else if (field.type === 'image') {
+              if (field.key.read) item[field.key.read] = null
+              if (field.key.write) item[field.key.write] = null
+            }
+          }
+        });
+//          console.log(JSON.parse(JSON.stringify(item)));
+        vm.item = item;
         return vm.render();
       },
       setField(key, value) {
@@ -328,6 +332,7 @@
       },
       onUpdate(field) {
         const vm = this;
+//        console.warn(vm.item, field);
         if (field.type === 'geo') {
           vm.item[field.key && field.key.lat || 'geo_lat'] = field.value.lat;
           vm.item[field.key && field.key.lng || 'geo_lng'] = field.value.lng;
