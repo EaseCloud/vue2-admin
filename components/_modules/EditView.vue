@@ -18,7 +18,7 @@
           <v-button
             v-show="!action.isVisible || action.isVisible(item)"
             :type="action.buttonClass || 'ghost'"
-            @click="action.action(item)">
+            @click="action.action.apply($parent, [item])">
             {{action.title}}
           </v-button> <!--防止按钮之间粘住-->
         </template>
@@ -100,15 +100,14 @@
       const vm = this;
       const defaultItem = {};
       vm.fields.forEach(field => {
-        // skip readonly fields
-        if (!field.type || field.type === 'label') return;
-        // make links
-        if (field.type === 'link') return;
-        // skip nested fields
-        if (/\./.test(field.key)) return;
         // write init field value
-        defaultItem[field.key] = field.value || field.default;
+        if (typeof(field.value) === 'undefined') {
+          vm.$set(field, 'value', field.default || undefined)
+        }
+//        console.warn(field.key)
+        vm.writeField(field, defaultItem)
       });
+//      console.warn(defaultItem)
       return {
         initialized: false,
         item: defaultItem,
@@ -132,24 +131,25 @@
             });
           });
         }
-        // 新增的情况自动产生一个默认的 item
-        const item = {};
-        vm.fields.forEach(field => {
-          // 注意主键缺省
-          if (field.hasOwnProperty('key')) {
-            if ((typeof field.key) === 'string' && field.key !== vm.pk) {
-              item[field.key] = field.hasOwnProperty('default') ? field.default : null
-            } else if (field.type === 'gallery') {
-              if (field.key.read) item[field.key.read] = []
-              if (field.key.write) item[field.key.write] = []
-            } else if (field.type === 'image') {
-              if (field.key.read) item[field.key.read] = null
-              if (field.key.write) item[field.key.write] = null
-            }
-          }
-        });
+        console.error(vm.item)
+//        // 新增的情况自动产生一个默认的 item
+//        const item = {};
+//        vm.fields.forEach(field => {
+//          // 注意主键缺省
+//          if (field.hasOwnProperty('key')) {
+//            if ((typeof field.key) === 'string' && field.key !== vm.pk) {
+//              item[field.key] = field.hasOwnProperty('default') ? field.default : null
+//            } else if (field.type === 'gallery') {
+//              if (field.key.read) item[field.key.read] = []
+//              if (field.key.write) item[field.key.write] = []
+//            } else if (field.type === 'image') {
+//              if (field.key.read) item[field.key.read] = null
+//              if (field.key.write) item[field.key.write] = null
+//            }
+//          }
+//        });
 //          console.log(JSON.parse(JSON.stringify(item)));
-        vm.item = item;
+//        vm.item = item;
         return vm.render();
       },
       setField(key, value) {
@@ -330,23 +330,30 @@
           hookPostDelete(vm);
         });
       },
+      writeField(field, item) {
+        const vm = this;
+        // skip readonly fields
+        if (field.type === 'label' || field.type === 'link') {
+          return;
+        } else if (field.type === 'geo') {
+          vm.setProperty(item, field.key && field.key.lat || 'geo_lat', field.value.lat);
+          vm.setProperty(item, field.key && field.key.lng || 'geo_lng', field.value.lng);
+          vm.setProperty(item, field.key && field.key.label || 'geo_label', field.value.label);
+        } else if (field.type === 'image') {
+          vm.setProperty(item, field.key.read, field.value);
+          vm.setProperty(item, field.key.write, field.value && field.value.id);
+        } else if (field.type === 'gallery') {
+          vm.setProperty(item, field.key.read, field.value);
+          vm.setProperty(item, field.key.write, field.value.map(image => image.id));
+        } else {
+          vm.setProperty(item, field.key, field.value);
+        }
+      },
       onUpdate(field) {
         const vm = this;
 //        console.warn(vm.item, field);
-        if (field.type === 'geo') {
-          vm.item[field.key && field.key.lat || 'geo_lat'] = field.value.lat;
-          vm.item[field.key && field.key.lng || 'geo_lng'] = field.value.lng;
-          vm.item[field.key && field.key.label || 'geo_label'] = field.value.label;
-        } else if (field.type === 'image') {
-          vm.item[field.key.read] = field.value;
-          vm.item[field.key.write] = field.value && field.value.id;
-        } else if (field.type === 'gallery') {
-          vm.item[field.key.read] = field.value;
-          vm.item[field.key.write] = field.value.map(image => image.id);
-        } else {
-          vm.item[field.key] = field.value;
-        }
 //        console.log(JSON.parse(JSON.stringify(field)));
+        vm.writeField(field, vm.item);
         vm.$emit('update', field);
         vm.renderField(field);
       },

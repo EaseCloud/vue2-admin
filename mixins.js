@@ -304,6 +304,25 @@ export default {
       });
       return value;
     },
+    setProperty(item, keyStr, value) {
+      const vm = this
+      // 缺省 keyStr 的时候直接返回 item
+      if (!keyStr) return item;
+      // 执行 keyStr 级联求值
+      let obj = item;
+      if (typeof (keyStr || '') !== 'string') {
+        console.warn('getProperty 属性的 key 取值不规范');
+        console.log('keyStr:', keyStr);
+        console.log('item:', item);
+      }
+      const keys = keyStr.split('.')
+      for (let i = 0; i < keys.length - 1; ++i) {
+        const key = keys[i]
+        if (!obj[key]) vm.$set(obj, key, {})
+        obj = obj[key]
+      }
+      vm.$set(obj, keys[keys.length - 1], value)
+    },
     /**
      * 执行一个函数，简单可以理解为返回 self[keyStr](value)
      * 如果 keyStr 为空，上面的调用中用 self 直接替代 self[keyStr]
