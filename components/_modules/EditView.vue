@@ -256,7 +256,7 @@
               return true;
             } else if (field.validator) {
               if (typeof(field.validator) !== 'function') return false;
-              const result = field.validator(item);
+              const result = field.validator(vm.item);
               if (!result) {
                 reject(`字段【${field.title}】校验失败`);
                 return true;
@@ -347,6 +347,7 @@
           vm.item[field.key] = field.value;
         }
 //        console.log(JSON.parse(JSON.stringify(field)));
+        vm.$emit('update', field);
         vm.renderField(field);
       },
       back() {

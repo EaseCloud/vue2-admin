@@ -18,14 +18,14 @@
             <div class="ant-modal-body">
               <div class="ant-form ant-form-horizontal">
                 <div class="ant-row" v-for="field in form.fields">
-                  <div class="ant-col-6 ant-form-item-label">
+                  <div class="ant-col-6 ant-form-item-label" style="padding: 0">
                     <label>
                       <span v-if="field.required" style="color: red">*</span>
                       {{field.label}}
                     </label>
                   </div>
                   <!-- type: text -->
-                  <div class="ant-col-18 ant-form-item-control" v-if="field.type == 'text'">
+                  <div class="ant-col-18 ant-form-item-control" v-if="(field.type || 'text') == 'text'">
                     <input type="text"
                            class="ant-input"
                            :placeholder="field.placeholder"
@@ -132,6 +132,10 @@
                         全选
                       </v-checkbox>
                     </v-checkbox-group>
+                  </div>
+                  <!-- type: label -->
+                  <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'label'">
+                    {{field.value}}
                   </div>
 
                   <!--<div class="ant-col-16 ant-form-item-control" v-if="field.type == text">-->

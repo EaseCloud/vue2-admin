@@ -66,11 +66,11 @@
           <!-- TODO: from/to 未实现 -->
           <!-- TODO: 时间选择有问题，不能读取以及 emit 出去 -->
           <!-- TODO: format 未实现，因为 time 选择时输入 format 会报错 -->
-          <v-date-picker v-model="field.value"
+          <v-date-picker :value="dateformat(field.value, 'yyyy-mm-dd HH:MM:ss')"
                          :time="field.value"
                          clearable
                          :show-time="field.show_time || field.pick_time"
-                         @input="updateField(field)"
+                         @input="field.value=$event; updateField(field)"
           ></v-date-picker>
           <!--:format="field.format || (field.show_time || field.pick_time ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')"-->
         </v-col>
@@ -250,10 +250,12 @@
                   params: {id: field.value[field.options.pk || 'id']}}">
             {{field.value[field.options.display_field || 'name']}}
           </router-link>
-          <v-button size="small"
+          <v-button v-if="!field.readonly && !field.disabled"
+                    size="small"
                     @click="pickFieldObject(field)">选择
           </v-button>
-          <v-button size="small" v-if="field.value"
+          <v-button v-if="field.value && !field.readonly && !field.disabled"
+                    size="small"
                     @click="field.value = null; updateField(field)">清除
           </v-button>
         </v-col>
@@ -365,4 +367,3 @@
     },
   };
 </script>
-
