@@ -17,7 +17,7 @@
             </div>
             <div class="ant-modal-body">
               <div class="ant-form ant-form-horizontal">
-                <div class="ant-row" v-for="field in form.fields">
+                <div class="ant-row" v-for="(field, i) in form.fields">
                   <div class="ant-col-6 ant-form-item-label" style="padding: 0">
                     <label>
                       <span v-if="field.required" style="color: red">*</span>
@@ -77,12 +77,12 @@
                   </div>
                   <!-- type: textarea -->
                   <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'textarea'">
-                <textarea class="ant-input"
-                          :placeholder="field.placeholder"
-                          @keypress.enter="modalFormAction(form, true)"
-                          :disabled="field.disabled"
-                          :readonly="field.readonly"
-                          v-model="field.value"></textarea>
+                    <textarea class="ant-input"
+                              :placeholder="field.placeholder"
+                              @keypress.enter="modalFormAction(form, true)"
+                              :disabled="field.disabled"
+                              :readonly="field.readonly"
+                              v-model="field.value"></textarea>
                   </div>
                   <!-- type: district -->
                   <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'district'">
@@ -119,29 +119,21 @@
                   </div>
                   <!-- type: multi-select -->
                   <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'multi-select'">
-                    <v-checkbox-group :data="field.choices"
+                    <v-checkbox :ref="'check-all-'+i"
+                                @click="field.value=field.value.length===field.choices.length?[]:field.choices.map(x=>x.value)"
+                                :value="field.value.length===field.choices.length">
+                      全选
+                    </v-checkbox>
+                    <v-checkbox-group style="display: inline-block"
+                                      :data="field.choices"
                                       label="text"
                                       v-model="field.value">
-                      <!--{{field.value.length}} xx-->
-                      <!--{{field.choices.length}}-->
-                      <!--:value="field.value.length===field.choices.length"-->
-                      <v-checkbox
-                        @input="(field.value=!$event?field.choices.map(x=>x.value):[])">
-                        <!--:on-change="field.value=[]">-->
-                        <!--<span v-if="!checked"></span>-->
-                        全选
-                      </v-checkbox>
                     </v-checkbox-group>
                   </div>
                   <!-- type: label -->
                   <div class="ant-col-18 ant-form-item-control" v-else-if="field.type == 'label'">
                     {{field.value}}
                   </div>
-
-                  <!--<div class="ant-col-16 ant-form-item-control" v-if="field.type == text">-->
-                  <!--</div>-->
-                  <!--<div class="ant-col-16 ant-form-item-control" v-if="field.type == text">-->
-                  <!--</div>-->
                 </div>
               </div>
             </div>
