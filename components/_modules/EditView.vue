@@ -39,7 +39,6 @@
         <embed-form :fields="fields"
                     v-if="initialized"
                     @update="onUpdate"
-                    @loaded="$emit('loaded', $event)"
                     ref="form"></embed-form>
       </section>
       <slot name="after"></slot>
@@ -102,7 +101,7 @@
       vm.fields.forEach(field => {
         // write init field value
         if (typeof(field.value) === 'undefined') {
-          vm.$set(field, 'value', field.default || undefined)
+          vm.$set(field, 'value', field.hasOwnProperty('default') ? field.default : null)
         }
 //        console.warn(field.key)
         vm.writeField(field, defaultItem)
@@ -131,7 +130,7 @@
             });
           });
         }
-        console.error(vm.item)
+//        console.error(vm.item)
 //        // 新增的情况自动产生一个默认的 item
 //        const item = {};
 //        vm.fields.forEach(field => {
@@ -192,9 +191,11 @@
           });
         } else if (field.type === 'object') {
           const objectId = vm.getField(field.key);
-          promiseGetResult = objectId
-            ? vm.api(field.options.model).get({ id: objectId }).then(resp => resp.data)
-            : Promise.resolve(null);
+          promiseGetResult = objectId ?
+            vm.api(field.options.model).get({ id: objectId }).then(resp => {
+              vm.$set(field, 'object', resp.data)
+              return Promise.resolve(objectId)
+            }) : Promise.resolve(null);
 //        } else if (field.type === 'datepicker') {
 //          if (typeof field.value === 'number') {
 //            promiseGetResult = Promise.resolve(

@@ -236,7 +236,7 @@
                            :filters="field.options.filters"
                            :hooks="field.options.hooks"
                            :pageSize="field.options.pageSize || field.options.page_size"
-                           @loaded="$emit('loaded', field)"
+                           @loaded="field.onLoad && field.onLoad(field)"
                            :ref="field.id"></list-view-table>
           <!--:pager="pager"-->
         </v-col>
@@ -244,11 +244,11 @@
         <!-- type: object -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'object'">
-          <router-link v-if="field.value && field.value[field.options.pk || 'id']"
+          <router-link v-if="field.object && field.object[field.options.pk || 'id']"
                        style="margin-right: 10px;"
                        :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
-                  params: {id: field.value[field.options.pk || 'id']}}">
-            {{field.value[field.options.display_field || 'name']}}
+                  params: {id: field.object[field.options.pk || 'id']}}">
+            {{field.object[field.options.display_field || 'name']}}
           </router-link>
           <v-button v-if="!field.readonly && !field.disabled"
                     size="small"
@@ -256,7 +256,7 @@
           </v-button>
           <v-button v-if="field.value && !field.readonly && !field.disabled"
                     size="small"
-                    @click="field.value = null; updateField(field)">清除
+                    @click="field.value=null; field.object=null; updateField(field)">清除
           </v-button>
         </v-col>
 
@@ -334,7 +334,7 @@
         const vm = this;
 //        console.log('updateField', JSON.parse(JSON.stringify(field)))
         if (field.onUpdate) {
-          field.onUpdate(field);
+          field.onUpdate.apply(vm, [field]);
         }
         vm.$emit('update', field);
       },
