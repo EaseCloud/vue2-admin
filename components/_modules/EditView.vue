@@ -314,7 +314,6 @@
       },
       erase() {
         const vm = this;
-        // 删除前置钩子
         if (vm.options.hooks && vm.options.hooks.pre_delete
           && !vm.options.hooks.pre_delete(vm)) {
           return Promise.reject();
@@ -344,8 +343,8 @@
           vm.setProperty(item, field.key.read, field.value);
           vm.setProperty(item, field.key.write, field.value && field.value.id);
         } else if (field.type === 'gallery') {
-          vm.setProperty(item, field.key.read, field.value);
-          vm.setProperty(item, field.key.write, field.value.map(image => image.id));
+          vm.setProperty(item, field.key.read, field.value || []);
+          vm.setProperty(item, field.key.write, (field.value || []).map(image => image.id));
         } else {
           vm.setProperty(item, field.key, field.value);
         }
