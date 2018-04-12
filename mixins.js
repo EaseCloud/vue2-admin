@@ -247,6 +247,7 @@ export default {
       ).replace(/^_/, '');
     },
     wrapChoices(choice) {
+      if (choice instanceof Array) return choice
       return Object.keys(choice).map(key => ({ label: choice[key], value: key }))
     },
     getChoiceText(choice, value, fieldText = 'text', fieldValue = 'value') {

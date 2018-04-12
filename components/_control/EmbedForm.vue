@@ -131,7 +131,8 @@
         <!-- type: select -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'select'">
-          <v-select placement="top" :data="wrapChoices(field.choices)"
+          <v-select placement="top"
+                    :data="wrapChoices(field.choices)"
                     v-if="field.choices"
                     style="width: 120px;"
                     dropdown-width="240px"
@@ -248,6 +249,8 @@
                        style="margin-right: 10px;"
                        :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
                   params: {id: field.object[field.options.pk || 'id']}}">
+            <!--{{field.object}}-->
+            <!--{{getProperty(field.object, field.options.display_field || 'name')}}-->
             {{field.object[field.options.display_field || 'name']}}
           </router-link>
           <v-button v-if="!field.readonly && !field.disabled"

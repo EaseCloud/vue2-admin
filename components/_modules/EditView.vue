@@ -279,7 +279,7 @@
         return vm.validate().then(() => {
           // 保存前置钩子
           if (vm.options.hooks && vm.options.hooks.pre_save
-            && !vm.options.hooks.pre_save(vm)) {
+            && !vm.options.hooks.pre_save.apply(vm, [vm])) {
             return Promise.reject();
           }
           const itemToSave = vm.options.hooks && vm.options.hooks.item_filter ?
