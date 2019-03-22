@@ -2,7 +2,7 @@
 
   <section class="item-form ant-form ant-form-horizontal">
 
-    <template v-for="field in fields">
+    <template v-for="field in fields" v-if="!field.skip || !field.skip()">
 
       <h3 style="margin-top: 20px;" v-if="field.display == 'full'">{{field.title}}</h3>
 
@@ -289,7 +289,7 @@
 
 </template>
 
-<script type="text/babel" lang="babel">
+<script>
   export default {
     props: {
       fields: Array,
@@ -304,6 +304,12 @@
       vm.fields.forEach(field => {
         // 注意 ref_name 配置尽量避免重复，否则只返回第一个
         field.ref = field.id && vm.$refs[field.id] && vm.$refs[field.id][0];
+        // 将更新方法设置到这里
+        field.update = field.update || (() => vm.updateField(field));
+        field.setValue = field.setValue || (value => {
+          field.value = value;
+          field.update();
+        });
 //        vm.echo(field);
       });
     },

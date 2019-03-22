@@ -48,7 +48,7 @@
 
 </template>
 
-<script lang="babel">
+<script>
   import api from '../../resource/api';
 
   export default {
@@ -71,18 +71,18 @@
           can_edit: true,
           can_delete: true,
           hooks: {
-            pre_delete(vm) {
+            pre_delete (vm) {
               // 如果返回 false，取消动作
               return true;
             },
-            post_delete(vm) {
+            post_delete (vm) {
               // 删除之后执行
             },
-            pre_save(vm) {
+            pre_save (vm) {
               // 如果返回 false，取消动作
               return true;
             },
-            post_save(vm) {
+            post_save (vm) {
               // 保存之后执行，如果需要控制保存之后的跳转动作，可以在这里实现
             },
           },
@@ -95,7 +95,7 @@
         return vm.id || Number(vm.$route.params.id);
       }
     },
-    data() {
+    data () {
       const vm = this;
       const defaultItem = {};
       vm.fields.forEach(field => {
@@ -113,7 +113,7 @@
       };
     },
     methods: {
-      reload() {
+      reload () {
         const vm = this;
         // 获取主体信息
         if (vm.objectId) {
@@ -151,13 +151,13 @@
 //        vm.item = item;
         return vm.render();
       },
-      setField(key, value) {
+      setField (key, value) {
         const vm = this;
         vm.waitFor(vm.$refs, 'form').then(form => {
           form.setField(key, value);
         })
       },
-      getField(path) {
+      getField (path) {
         let result = this.item;
         if (typeof path !== 'string') return null;
         path.split('.').forEach(key => {
@@ -166,7 +166,7 @@
         });
         return result;
       },
-      renderField(field) {
+      renderField (field) {
         const vm = this;
         // 获取初始值
         let promiseGetResult = null;
@@ -225,7 +225,7 @@
           vm.$set(field, 'value', result);
         });
       },
-      render() {
+      render () {
         const vm = this;
         // set default value
         return Promise.all(vm.fields.map(field => {
@@ -235,7 +235,7 @@
           vm.initialized = true;
         });
       },
-      redirectList() {
+      redirectList () {
         const vm = this;
         // 检查路由是否存在，如果不存在就 router.back
         try {
@@ -247,7 +247,7 @@
           vm.$router.back();
         }
       },
-      validate() {
+      validate () {
         const vm = this;
         return new Promise((resolve, reject) => {
           const promises = [];
@@ -274,7 +274,7 @@
           Promise.all(promises).then(() => resolve(), () => reject());
         });
       },
-      save() {
+      save () {
         const vm = this;
         return vm.validate().then(() => {
           // 保存前置钩子
@@ -304,7 +304,7 @@
           vm.$message.error(msg);
         });
       },
-      submit() {
+      submit () {
         const vm = this;
         vm.save().then(() => {
           // 保存后置钩子
@@ -312,7 +312,7 @@
           hookPostSave.apply(vm);
         });
       },
-      erase() {
+      erase () {
         const vm = this;
         if (vm.options.hooks && vm.options.hooks.pre_delete
           && !vm.options.hooks.pre_delete(vm)) {
@@ -330,7 +330,7 @@
           hookPostDelete(vm);
         });
       },
-      writeField(field, item) {
+      writeField (field, item) {
         const vm = this;
         // skip readonly fields
         if (field.type === 'label' || field.type === 'link') {
@@ -349,7 +349,7 @@
           vm.setProperty(item, field.key, field.value);
         }
       },
-      onUpdate(field) {
+      onUpdate (field) {
         const vm = this;
 //        console.warn(vm.item, field);
 //        console.log(JSON.parse(JSON.stringify(field)));
@@ -357,7 +357,7 @@
         vm.$emit('update', field);
         vm.renderField(field);
       },
-      back() {
+      back () {
         const vm = this;
         if (vm.hooks && vm.hooks.action_back) {
           vm.hooks.action_back();
