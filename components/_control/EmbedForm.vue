@@ -4,7 +4,8 @@
 
     <template v-for="field in fields" v-if="!field.skip || !field.skip()">
 
-      <h3 style="margin-top: 20px;" v-if="field.display == 'full'">{{field.title}}</h3>
+      <h3 style="margin-top: 20px;"
+          v-if="field.display == 'full' && isVisible(field)">{{field.title}}</h3>
 
       <template v-if="field.type=='title'"></template>
 

@@ -8,7 +8,8 @@
         <template v-for="action in listActions">
           <v-button v-if="(action.htmlType||'button')==='button'"
                     @click="doAction(action.action)"
-                    :type="action.buttonClass || 'ghost'">{{action.title}}</v-button>
+                    :type="action.buttonClass || 'ghost'">{{action.title}}
+          </v-button>
         </template>
         <v-button type="ghost" @click="$router.back()">返回</v-button>
       </div>
@@ -28,8 +29,7 @@
           <v-date-picker v-model="duration"
                          :range="true"
                          :clearable="true"
-                         format="yyyy-MM-dd"
-          ></v-date-picker>
+                         format="yyyy-MM-dd"></v-date-picker>
           <v-button type="primary" @click="filter">搜索</v-button>
         </v-col>
       </v-row>
@@ -67,7 +67,7 @@
   </div>
 </template>
 
-<script lang="babel">
+<script>
   import BarChart from '../../lib/vue-chartjs/BarChart';
   import LineChart from '../../lib/vue-chartjs/LineChart';
   import PieChart from '../../lib/vue-chartjs/PieChart';
@@ -97,7 +97,7 @@
       listActions: Array,
       pie_action: Object,
     },
-    data() {
+    data () {
       return {
         duration: '',
         labels: [],
@@ -131,11 +131,11 @@
         },
       };
     },
-    mounted() {
+    mounted () {
       this.fillData();
     },
     methods: {
-      fillData() {
+      fillData () {
         const vm = this;
         this.datacollection = {
           labels: vm.labels,
@@ -146,7 +146,7 @@
           datasets: vm.pie_datasets,
         };
       },
-      filter() {
+      filter () {
         const vm = this;
         let promise = [];
         vm.datasets = [];
@@ -196,6 +196,7 @@
     max-width: 1200px;
     margin: 50px auto;
   }
+
   .pie {
     margin: 0 auto;
     width: 30%;

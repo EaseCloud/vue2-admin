@@ -388,7 +388,7 @@ export default {
       if (vm.fields && vm.fields.length) {
         for (let i = 0; i < vm.fields.length; ++i) {
           const field = vm.fields[i];
-          if (field.key === key) return field;
+          if (field.key === key || field.id === key) return field;
         }
       }
       return null;
