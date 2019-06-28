@@ -129,7 +129,7 @@ export default {
       // 对响应结果的业务处理
       next(response => {
         if (window.app && window.app.notify &&
-          ((typeof config.report_http_error === 'undefined') || !!config.report_http_error)) {
+          (config.report_http_error === void 0 || !!config.report_http_error)) {
           if (response.data && response.data.msg) {
             // console.log(response);
             if (response.data.ok) {
@@ -138,7 +138,9 @@ export default {
               window.app.notify(response.data.msg, '接口调用失败');
             }
           } else if (response.status >= 400) {
-            window.app.notify(response.body, `接口调用失败：${response.status}`);
+            console.error(response.body);
+            // window.app.notify(response.body, `接口调用失败：${response.status}`);
+            window.app.notify('未知系统错误，请联系系统管理员。', `接口调用失败：${response.status}`);
           }
         }
         return response;
