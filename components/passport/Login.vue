@@ -44,10 +44,14 @@
                   <button class="ant-btn ant-btn-primary ant-btn-lg"
                           type="submit" @click="submit">登录
                   </button>
-                  <a v-if="config.show_forgot" class="btn-forgot" style="float:right;" @click="$router.push({ name: 'passport_forgot' })">忘记密码</a>
+                  <a v-if="config.show_forgot" class="btn-forgot" style="float:right;"
+                     @click="$router.push({ name: 'passport_forgot' })">忘记密码</a>
                 </div>
               </div>
             </div>
+          </div>
+          <div class="beian" v-if="config.beian">
+            <a href="http://beian.miit.gov.cn/">{{config.beian}}</a>
           </div>
         </div>
       </div>
@@ -57,18 +61,31 @@
 
 <script type="text/babel">
   export default {
-    data() {
+    data () {
       return {
         username: '',
         password: '',
       };
     },
     methods: {
-      submit() {
+      submit () {
         const vm = this;
         return vm.login(vm.username, vm.password);
       },
     },
   };
 </script>
+
+<style lang="less" scoped>
+  .beian {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    a {
+      color: #c2c2c2;
+      padding: 10px 15px;
+      display: inline-block;
+    }
+  }
+</style>
 
