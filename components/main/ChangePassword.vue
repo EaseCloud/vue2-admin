@@ -58,8 +58,6 @@
 </template>
 
 <script type="text/babel">
-  import menus from '../../../config/menus';
-
   export default {
     route: { canReuse: false },
     data() {
@@ -88,19 +86,6 @@
             vm.confirm_password = '';
           });
         }
-      },
-      syncMenus() {
-        const vm = this;
-        const menuModel = typeof vm.config.dynamic_menus === 'object'
-          && vm.config.dynamic_menus.model || 'Menu';
-        vm.api(menuModel).save({
-          action: 'sync',
-        }, {
-          project: vm.config.project || '',
-          menus,
-        }).then(resp => {
-          console.log(resp);
-        });
       },
     },
   };

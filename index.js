@@ -32,7 +32,7 @@ import NotFoundApp from './components/NotFound.vue'
 
 
 export default {
-  install(Vue, options = {}) {
+  install (Vue, options = {}) {
     // -------------------------
     // Vue Plugins
     // -------------------------
@@ -79,7 +79,7 @@ export default {
         height: 1600,
         quality: 80,
         // handle response data，return image url
-        uploadHandler(responseText) {
+        uploadHandler (responseText) {
           // default accept json data like  {ok:false,msg:'unexpected'} or {ok:true,data:'image url'}
           const json = JSON.parse(responseText);
           return json.image;
@@ -102,6 +102,9 @@ export default {
     // Vue Mixin
     // -------------------------
     Vue.mixin(mixins);
+    if (config.mixins) {
+      Vue.mixin(config.mixins);
+    }
 
     // -------------------------
     // Vue resource config

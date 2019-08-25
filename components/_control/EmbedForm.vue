@@ -67,11 +67,11 @@
           <!-- TODO: from/to 未实现 -->
           <!-- TODO: 时间选择有问题，不能读取以及 emit 出去 -->
           <!-- TODO: format 未实现，因为 time 选择时输入 format 会报错 -->
-          <v-date-picker :value="dateformat(field.value, 'yyyy-mm-dd HH:MM:ss')"
+          <v-date-picker :value="field.value && dateformat(field.value, 'yyyy-mm-dd HH:MM:ss')"
                          :time="field.value"
                          clearable
                          :show-time="field.show_time || field.pick_time"
-                         @input="field.value=$event; updateField(field)"
+                         @input="field.value=$event||null; updateField(field)"
           ></v-date-picker>
           <!--:format="field.format || (field.show_time || field.pick_time ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')"-->
         </v-col>

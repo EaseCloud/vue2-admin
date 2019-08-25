@@ -208,7 +208,7 @@
 
 </template>
 
-<script type="text/babel" lang="babel">
+<script>
   import * as apiUtils from '../../resource/utils';
 
   export default {
