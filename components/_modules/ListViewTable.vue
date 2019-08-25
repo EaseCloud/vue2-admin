@@ -259,6 +259,7 @@ export default {
   methods: {
     reload () {
       const vm = this;
+      // 要响应外部 filters 的修改
       vm.query = { ...vm.query, ...vm.filters };
       // 读取当前分页的所有对象
       // 之所以要这样实现而不用 vm.api().get() 方法，是为了避免 query 中含有 params 关键词
