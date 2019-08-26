@@ -50,29 +50,33 @@
   </div>
 </template>
 
-<script type="text/babel" lang="babel">
-  export default{
-    methods: {
-      reload() {
-        const vm = this;
-        // 登录判定，没有登录者踢出
-        vm.authenticate().then(() => {
-          // 已经登陆，如果是直接访问，跳转到功能页
-          if (vm.$route.name === 'main') {
-            if(vm.config.on_login) {
-              vm.config.on_login(vm);
-            } else if(vm.config.init_route) {
-              vm.$router.push(vm.config.init_route || { name: 'main_user_list' });
-            } else {
-              vm.notify('请在配置中配置 on_login(vm) 事件 或 init_route 初始路由');
-            }
+<script>
+export default {
+  methods: {
+    async reload () {
+      const vm = this;
+      // 登录判定，没有登录者踢出
+      await vm.authenticate().then(async () => {
+        // 已经登陆，如果是直接访问，跳转到功能页
+        if (vm.$route.name === 'main') {
+          if (vm.config.on_login) {
+            vm.config.on_login(vm);
+          } else if (vm.config.init_route) {
+            const initRoute = vm.config.init_route instanceof Function
+              ? await vm.config.init_route.apply(vm, [])
+              : vm.config.init_route;
+            if (initRoute) vm.$router.replace(initRoute);
+            else vm.notify('没有找到可用的菜单');
+          } else {
+            vm.notify('请在配置中配置 on_login(vm) 事件 或 init_route 初始路由');
           }
-        }, () => {
-          // 尚未登录，跳转回登录页面
-          vm.$router.push({ name: 'passport_login' });
-        });
-      },
+        }
+      }, () => {
+        // 尚未登录，跳转回登录页面
+        vm.$router.push({ name: 'passport_login' });
+      });
     },
-  };
+  },
+};
 </script>
 
