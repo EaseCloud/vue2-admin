@@ -4,7 +4,7 @@
 // export const Chart = require('./Chart.vue');
 
 import MSidebar from './Sidebar.vue'
-import MChart from './Chart.vue'
+// import MChart from './Chart.vue'
 
 export const Sidebar = MSidebar
-export const Chart = MChart
+// export const Chart = MChart

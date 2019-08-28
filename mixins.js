@@ -88,7 +88,7 @@ export default {
         return vm.me;
       });
     },
-    doAction (func, params) {
+    doAction (func, params = []) {
       const vm = this;
       func.apply(vm, params);
     },

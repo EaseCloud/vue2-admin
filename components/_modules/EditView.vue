@@ -20,7 +20,7 @@
             :type="action.buttonClass || 'ghost'"
             @click="action.action.apply($parent, [item])">
             {{action.title}}
-          </v-button> <!--防止按钮之间粘住-->
+          </v-button> <span><!-- 防止按钮之间粘住 --></span>
         </template>
         <!-- 删除动作 -->
         <template v-if="options.can_delete">

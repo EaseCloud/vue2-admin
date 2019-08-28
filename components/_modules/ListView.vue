@@ -20,11 +20,12 @@
                 :type="action.buttonClass || 'ghost'"
                 @click="doAction(action.action, [selectedItems])">
                 {{evaluate(action.title)}}
-              </v-button> <!--防止按钮之间粘住-->
+              </v-button>
               <!-- htmlType: text -->
               <template v-else-if="action.htmlType==='text'">{{evaluate(action.title)}}</template>
               <!-- htmlType: not defined -->
               <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
+              <span><!--防止按钮之间粘住--></span>
             </template>
           </template>
           <v-button @click="refresh">

@@ -155,6 +155,7 @@
       </div>
 
       <object-picker v-else-if="form.modalType === 'objectPicker'"
+                     :multi="form.multi"
                      :options="form.options"
                      @input="pickObjectAction(form, $event)"
                      @cancel="modalForms.splice(modalForms.indexOf(form), 1)"></object-picker>

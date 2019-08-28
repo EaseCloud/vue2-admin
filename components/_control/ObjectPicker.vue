@@ -14,10 +14,11 @@
           <list-view-table :model="options.model"
                            :pk="options.pk"
                            :cols="options.cols"
-                           :options="{show_pager: true}"
+                           :options="{show_pager: true, can_select: multi, show_actions: !multi}"
                            :actions="actions"
                            :pager="pager"
                            :filters="options.filters"
+                           ref="listView"
           ></list-view-table>
         </div>
         <div class="ant-modal-footer">
@@ -27,7 +28,8 @@
             <span>取消</span>
           </button>
           <button type="button"
-                  @click="pickGeoAction(true)"
+                  v-if="multi"
+                  @click="$emit('input', $refs.listView.selectedItems)"
                   class="ant-btn ant-btn-primary">
             <span>确认</span>
           </button>
@@ -38,34 +40,29 @@
   </div>
 </template>
 
-<script type="text/babel">
-  export default {
-    props: {
-      options: Object,
-    },
-    data() {
-      const vm = this;
-      return {
-        actions: [{
-          title: '选择',
-          action(item) {
-            vm.$emit('input', item[vm.options.pk || 'id']);
-          },
-        }],
-        pager: {
-          page: 1,
-          page_size: 10,
-          page_count: 1,
+<script>
+export default {
+  props: {
+    options: Object,
+    multi: Boolean,
+  },
+  data () {
+    const vm = this;
+    return {
+      actions: [{
+        title: '选择',
+        action (item) {
+          vm.$emit('input', item[vm.options.pk || 'id']);
         },
-      };
-    },
-    methods: {
-//      doQuery(query) {
-//        const vm = this;
-//        if (query.page) {
-//          vm.pager.page = query.page;
-//        }
-//      },
-    },
-  };
+      }],
+      pager: {
+        page: 1,
+        page_size: 10,
+        page_count: 1,
+      },
+    };
+  },
+  methods: {
+  },
+};
 </script>

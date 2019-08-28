@@ -235,6 +235,7 @@
                            :cols="field.options.cols"
                            :options="field.options.options"
                            :actions="field.options.actions"
+                           :listActions="field.options.listActions"
                            :filters="field.options.filters"
                            :hooks="field.options.hooks"
                            :pageSize="field.options.pageSize || field.options.page_size"

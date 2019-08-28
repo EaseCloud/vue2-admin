@@ -82,7 +82,26 @@
               </template>
             </template>
           </th>
-          <th v-if="options.show_actions !== false">操作</th>
+          <th v-if="options.show_actions !== false">
+            操作
+            <template v-for="action in listActions" v-if="options.show_list_actions !== false">
+              <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible()">
+                <!-- htmlType: button (默认) -->
+                <v-button
+                  v-if="(action.htmlType||'button')==='button'"
+                  size="small"
+                  :type="action.buttonClass || 'ghost'"
+                  @click="doAction(action.action, [])">
+                  {{evaluate(action.title)}}
+                </v-button>
+                <!-- htmlType: text -->
+                <template v-else-if="action.htmlType==='text'">{{evaluate(action.title)}}</template>
+                <!-- htmlType: not defined -->
+                <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
+                <span><!--防止按钮之间粘住--></span>
+              </template>
+            </template>
+          </th>
         </tr>
         </thead>
         <tbody class="ant-table-tbody">
@@ -162,11 +181,12 @@
                     :type="action.buttonClass || 'ghost'"
                     @click="doAction(action.action, [item])">
                     {{evaluate(action.title, item)}}
-                  </v-button> <!--防止按钮之间粘住-->
+                  </v-button>
                   <!-- htmlType: text -->
                   <template v-else-if="action.htmlType==='text'">{{evaluate(action.title, item)}}</template>
                   <!-- htmlType: not defined -->
                   <template v-else>不支持的 action.htmlType: {{action.htmlType}}</template>
+                  <span><!--防止按钮之间粘住--></span>
                 </template>
               </template>
               <v-button v-if="options.can_edit"

@@ -3,15 +3,15 @@ import NotifierRegistry from './NotifierRegistry.vue';
 import api from '../../resource/api';
 
 export default {
-  install(Vue, opts) {
+  install (Vue, opts) {
     Vue.mixin({
       components: { NotifierRegistry },
       computed: {
-        vmNotifier() {
+        vmNotifier () {
           return this.$root.$refs.notifier;
         },
       },
-      mounted() {
+      mounted () {
         const vm = this;
         if (vm.$root === vm && vm.$route && !vm.vmNotifier) {
           const msg = '请在路由根的插件内置入 <notifier-registry ref="notifier"/>';
@@ -29,7 +29,7 @@ export default {
          *   options.type: 提示类型图标 success/error/info/warning
          *   options.top: 离顶部的高度，默认 24
          */
-        notify(content, title = '系统消息', options = {}) {
+        notify (content, title = '系统消息', options = {}) {
           this.$notification[options && options.type || 'info']({
             message: title,
             description: content,
@@ -37,7 +37,7 @@ export default {
             top: options && options.top || 24,
           });
         },
-        confirm(content, title = '操作确认', options = {}) {
+        confirm (content, title = '操作确认', options = {}) {
           // const vm = this.$root;
           return new Promise((resolve, reject) => {
             Vue.$modal.confirm({
@@ -48,7 +48,7 @@ export default {
             });
           });
         },
-        modalForm(form) {
+        modalForm (form) {
           const vm = this.vmNotifier;
           form.modalType = 'modalForm';
           form.deferred = new Deferred();
@@ -56,7 +56,7 @@ export default {
           vm.modalForms.push(form);
           return form.deferred.promise;
         },
-        modalFormAction(form, success = true) {
+        modalFormAction (form, success = true) {
           const vm = this.vmNotifier;
           const deferred = form.deferred;
           const formData = {};
@@ -88,49 +88,41 @@ export default {
           vm.modalForms.splice(vm.modalForms.indexOf(form), 1);
           return deferred[success ? 'resolve' : 'reject'](formData);
         },
-        pickObject(field) {
+        pickObject (field) {
           const vm = this.vmNotifier;
           field.modalType = 'objectPicker';
           field.deferred = new Deferred();
+          // 如果 field.multi = true，支持同时返回多个对象 id
           vm.modalForms.push(field);
           return field.deferred;
         },
-        pickObjectAction(field, id) {
+        pickObjectAction (field, value) {
           const vm = this.vmNotifier;
           vm.modalForms.splice(vm.modalForms.indexOf(field), 1);
-          field.value = id;
-          //if (field.options.model) {
-          //  vm.api(field.options.model).get({ id }).then(resp => {
-          //    field.value = resp.data;
-          //    field.deferred.resolve(field);
-          //  }, () => {
-          //    field.deferred.resolve(field);
-          //  });
-          //} else {
+          field.value = value;
           field.deferred.resolve(field);
-          //}
         },
-        pickFile() {
+        pickFile () {
           const vm = this.vmNotifier;
           const deferred = new Deferred();
           vm.filepicker.deferred = deferred;
           vm.$refs.uploader_file.click();
           return deferred.promise;
         },
-        pickFileAction() {
+        pickFileAction () {
           const vm = this.vmNotifier;
           const deferred = vm.filepicker.deferred;
           vm.filepicker.deferred = null;
           return deferred.resolve(vm.$refs.uploader_file.files);
         },
-        pickImage() {
+        pickImage () {
           const vm = this.vmNotifier;
           const deferred = new Deferred();
           vm.imagepicker.deferred = deferred;
           vm.$refs.uploader.click();
           return deferred.promise;
         },
-        pickImageAction() {
+        pickImageAction () {
           const vm = this.vmNotifier;
           const deferred = vm.imagepicker.deferred;
           vm.imagepicker.deferred = null;
@@ -149,7 +141,7 @@ export default {
          * @param needVerify
          * @returns {*}
          */
-        verifyPassword(needVerify = false) {
+        verifyPassword (needVerify = false) {
           const vm = this;
           if (!needVerify) return Promise.resolve();
           return new Promise((resolve, reject) => {
@@ -161,7 +153,7 @@ export default {
                 label: '管理员密码',
                 value: '',
               }],
-              validator(data) {
+              validator (data) {
                 if (!data.password.length) {
                   vm.notify('密码不能为空');
                   return false;
