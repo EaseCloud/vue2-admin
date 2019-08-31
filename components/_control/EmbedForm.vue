@@ -149,7 +149,7 @@
                v-else-if="field.type == 'checkbox'">
           <v-checkbox-group v-if="field.choices"
                             v-model="field.value"
-                            :disabled="!!field.readonly"
+                            :disabled="isReadOnly(field)"
                             :data="field.choices"
                             :max="field.max"></v-checkbox-group>
           <div v-if="field.description"
@@ -162,7 +162,7 @@
                v-else-if="field.type == 'radio'">
           <v-radio-group v-model="field.value"
                          @input="updateField(field)"
-                         :disabled="!!field.readonly"
+                         :disabled="isReadOnly(field)"
                          :data="getRadioChoices(field)"></v-radio-group>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
@@ -175,7 +175,7 @@
           <v-radio-group type="button"
                          v-model="field.value"
                          @input="updateField(field)"
-                         :disabled="!!field.readonly"
+                         :disabled="isReadOnly(field)"
                          :data="getRadioChoices(field)"></v-radio-group>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
@@ -186,7 +186,7 @@
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'image'">
           <image-picker v-model="field.value"
-                        :readonly="!!field.readonly"
+                        :readonly="isReadOnly(field)"
                         @input="updateField(field)"></image-picker>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
@@ -196,7 +196,7 @@
         <!-- type: qrcode -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'qrcode'">
-          <img :src="field.src" alt="二维码"/>
+          <img :src="field.src" alt="二维码" />
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
           </div>
@@ -206,7 +206,7 @@
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'gallery'">
           <gallery-picker v-model="field.value"
-                          :readonly="!!field.readonly"
+                          :readonly="isReadOnly(field)"
                           @input="updateField(field)"></gallery-picker>
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
@@ -217,14 +217,14 @@
         <v-col :span="field.span || 18" v-else-if="field.type == 'geo'">
           <geo-picker v-model="field.value"
                       :max="field.max"
-                      :readonly="field.readonly"
+                      :readonly="isReadOnly(field)"
                       @input="updateField(field)"></geo-picker>
         </v-col>
 
         <!-- type: district -->
         <v-col :span="field.span || 12" v-else-if="field.type == 'district'">
           <district-picker v-model="field.value"
-                           :readonly="field.readonly"
+                           :readonly="isReadOnly(field)"
                            @input="updateField(field)"></district-picker>
         </v-col>
 
@@ -255,11 +255,11 @@
             <!--{{getProperty(field.object, field.options.display_field || 'name')}}-->
             {{field.object[field.options.display_field || 'name']}}
           </router-link>
-          <v-button v-if="!field.readonly && !field.disabled"
+          <v-button v-if="!isReadOnly(field) && !field.disabled"
                     size="small"
                     @click="pickFieldObject(field)">选择
           </v-button>
-          <v-button v-if="field.value && !field.readonly && !field.disabled"
+          <v-button v-if="field.value && !isReadOnly(field) && !field.disabled"
                     size="small"
                     @click="field.value=null; field.object=null; updateField(field)">清除
           </v-button>
@@ -292,30 +292,30 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      fields: Array,
-    },
-    data() {
-      return {
-        objectPickerField: null,
-      };
-    },
-    mounted() {
-      const vm = this;
-      vm.fields.forEach(field => {
-        // 注意 ref_name 配置尽量避免重复，否则只返回第一个
-        field.ref = field.id && vm.$refs[field.id] && vm.$refs[field.id][0];
-        // 将更新方法设置到这里
-        field.update = field.update || (() => vm.updateField(field));
-        field.setValue = field.setValue || (value => {
-          field.value = value;
-          field.update();
-        });
-//        vm.echo(field);
+export default {
+  props: {
+    fields: Array,
+  },
+  data () {
+    return {
+      objectPickerField: null,
+    };
+  },
+  mounted () {
+    const vm = this;
+    vm.fields.forEach(field => {
+      // 注意 ref_name 配置尽量避免重复，否则只返回第一个
+      field.ref = field.id && vm.$refs[field.id] && vm.$refs[field.id][0];
+      // 将更新方法设置到这里
+      field.update = field.update || (() => vm.updateField(field));
+      field.setValue = field.setValue || (value => {
+        field.value = value;
+        field.update();
       });
-    },
-    methods: {
+//        vm.echo(field);
+    });
+  },
+  methods: {
 //      fieldPickObject(field) {
 //        const vm = this;
 //        vm.pickObject(field).then(field => {
@@ -330,51 +330,55 @@
 //        field.value = id;
 //        vm.$emit('update', field);
 //      },
-      setField(key, value) {
-        const vm = this;
+    setField (key, value) {
+      const vm = this;
 //        console.warn(key,value);
-        vm.fields.forEach(field => {
-          if (field.key === key) {
+      vm.fields.forEach(field => {
+        if (field.key === key) {
 //            console.warn(field);
-            field.value = value;
-            vm.updateField(field);
-          }
-        })
-      },
-      updateField(field) {
-        const vm = this;
-//        console.log('updateField', JSON.parse(JSON.stringify(field)))
-        if (field.onUpdate) {
-          field.onUpdate.apply(vm, [field]);
-        }
-        vm.$emit('update', field);
-      },
-      getRadioChoices(field) {
-        // 格式参照 vue-beauty 的 :radios 属性
-        // https://fe-driver.github.io/vue-beauty/#!/components/radio
-        if (typeof field.choices === 'object') {
-          return Object.keys(field.choices).map(key => ({
-//              name: field.choices[key],
-            text: field.choices[key],
-            value: key,
-          }));
-        } else {
-          // 支持其他输入方式（例如直接输入数组）
-          return field.choices;
-        }
-      },
-      isVisible(field) {
-        if (typeof(field.visible) === 'function') {
-          return field.visible(field.context && field.context.item);
-        }
-        return typeof(field.visible) === 'undefined' || !!field;
-      },
-      pickFieldObject(field) {
-        const vm = this;
-        vm.pickObject(field).then(() => {
+          field.value = value;
           vm.updateField(field);
-        });
-      },
+        }
+      })
     },
-  };
+    updateField (field) {
+      const vm = this;
+//        console.log('updateField', JSON.parse(JSON.stringify(field)))
+      if (field.onUpdate) {
+        field.onUpdate.apply(vm, [field]);
+      }
+      vm.$emit('update', field);
+    },
+    getRadioChoices (field) {
+      // 格式参照 vue-beauty 的 :radios 属性
+      // https://fe-driver.github.io/vue-beauty/#!/components/radio
+      if (typeof field.choices === 'object') {
+        return Object.keys(field.choices).map(key => ({
+//              name: field.choices[key],
+          text: field.choices[key],
+          value: key,
+        }));
+      } else {
+        // 支持其他输入方式（例如直接输入数组）
+        return field.choices;
+      }
+    },
+    isReadOnly (field) {
+      if (typeof(field.readonly) === 'function')
+        return field.readonly(field.context && field.context.item);
+      return !!field.readonly;
+    },
+    isVisible (field) {
+      if (typeof(field.visible) === 'function')
+        return field.visible(field.context && field.context.item);
+      return typeof(field.visible) === 'undefined' || !!field.visible;
+    },
+    pickFieldObject (field) {
+      const vm = this;
+      vm.pickObject(field).then(() => {
+        vm.updateField(field);
+      });
+    },
+  },
+};
 </script>

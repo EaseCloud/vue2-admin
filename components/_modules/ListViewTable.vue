@@ -9,7 +9,7 @@
         <tr>
           <th v-if="options.can_select">
             <input type="checkbox"
-                   :checked="items.length === selectedItems.length"
+                   :checked="items.filter(x=>x._is_selectable).length === selectedItems.length"
                    @click="checkAll()" />
           </th>
           <th v-for="(col, i) in cols" :style="col.thStyle || {}">
@@ -107,7 +107,9 @@
         <tbody class="ant-table-tbody">
         <tr class="ant-table" v-for="item in items">
           <td v-if="options.can_select">
-            <input type="checkbox" :value="item[pk]" v-model="selectedItems" />
+            <input type="checkbox" :value="item[pk]"
+                   :disabled="item._is_selectable===false"
+                   v-model="selectedItems" />
           </td>
           <td v-for="(col, i) in cols"
               style="white-space: normal; overflow: hidden; position: relative;"
@@ -293,6 +295,12 @@ export default {
         vm.total = resp.data.count;
         // 处理延迟计算
         const items = resp.data.results;
+        // 写入 is_items_selectable
+        if (vm.options.is_item_selectable) {
+          items.forEach(item => {
+            item._is_selectable = vm.options.is_item_selectable(item);
+          });
+        }
         if (vm.hooks && vm.hooks.item_before_render) {
           const deferredPromises = [];
           for (let i = 0; i < items.length; i += 1) {
@@ -423,7 +431,7 @@ export default {
               type: 'select',
               name: 'value',
               label: '选项',
-              value: vm.query[col.filtering.search_field],
+              value: vm.query[col.filtering.search_field] || '',
               choices,
             }],
           }).then(data => {
@@ -463,10 +471,12 @@ export default {
     },
     checkAll () {
       const vm = this;
-      if (vm.items.length === vm.selectedItems.length) {
+      const items = vm.items.filter(x => x._is_selectable !== false);
+      // 全选或者全反选
+      if (items.length === vm.selectedItems.length) {
         vm.selectedItems = [];
       } else {
-        vm.selectedItems = vm.items.map(item => item[vm.pk]);
+        vm.selectedItems = items.map(item => item[vm.pk]);
       }
     },
     pageTo (page) {
