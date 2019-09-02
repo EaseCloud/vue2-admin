@@ -113,7 +113,9 @@ export default {
           const vm = this.vmNotifier;
           const deferred = vm.filepicker.deferred;
           vm.filepicker.deferred = null;
-          return deferred.resolve(vm.$refs.uploader_file.files);
+          const files = [...vm.$refs.uploader_file.files];
+          vm.$refs.uploader_file.value = null;
+          return deferred.resolve(files);
         },
         pickImage () {
           const vm = this.vmNotifier;
@@ -127,7 +129,8 @@ export default {
           const deferred = vm.imagepicker.deferred;
           vm.imagepicker.deferred = null;
           const formdata = new FormData();
-          const files = vm.$refs.uploader.files;
+          const files = [...vm.$refs.uploader.files];
+          vm.$refs.uploader.value = null;
           if (!files.length) {
             return deferred.reject('尚未选择图片文件');
           }

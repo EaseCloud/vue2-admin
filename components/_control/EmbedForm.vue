@@ -247,14 +247,18 @@
         <!-- type: object -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
                v-else-if="field.type == 'object'">
-          <router-link v-if="field.object && field.object[field.options.pk || 'id']"
-                       style="margin-right: 10px;"
-                       :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
+          <template v-if="field.object && field.object[field.options.pk || 'id']">
+            <span v-if="field.no_link" style="margin-right: 10px;"
+                >{{field.object[field.options.display_field || 'name']}}</span>
+            <router-link v-else
+                         style="margin-right: 10px;"
+                         :to="{name: 'main_'+toUnderscore(field.options.model)+'_edit',
                   params: {id: field.object[field.options.pk || 'id']}}">
-            <!--{{field.object}}-->
-            <!--{{getProperty(field.object, field.options.display_field || 'name')}}-->
-            {{field.object[field.options.display_field || 'name']}}
-          </router-link>
+              <!--{{field.object}}-->
+              <!--{{getProperty(field.object, field.options.display_field || 'name')}}-->
+              {{field.object[field.options.display_field || 'name']}}
+            </router-link>
+          </template>
           <v-button v-if="!isReadOnly(field) && !field.disabled"
                     size="small"
                     @click="pickFieldObject(field)">选择
