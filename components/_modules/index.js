@@ -9,4 +9,5 @@ import MEmptyView from './EmptyView.vue'
 export const OptionForm = MOptionForm
 export const ListView = MListView
 export const ListViewTable = MListViewTable
-export const EditView = MEmptyView
+export const EditView = MEditView
+export const EmptyView = MEmptyView
