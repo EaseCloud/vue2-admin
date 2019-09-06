@@ -414,8 +414,8 @@ export default {
             // 默认总数
             total: 0,
             // class前缀
-            prefix: 'ant-table',
-            contentClass: 'ant-table-content',
+            prefix: 'ant-xtable',
+            contentClass: 'ant-xtable-content',
             // 默认加载第一页
             defaultCurrent: 1,
             // 加载状态

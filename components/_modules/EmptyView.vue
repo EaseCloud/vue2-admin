@@ -11,14 +11,14 @@
         <!-- 动态动作按钮 -->
         <template v-for="action in actions">
           <v-button
-            v-show="!action.isVisible || action.isVisible(item)"
+            v-show="!action.isVisible || action.isVisible()"
             :type="action.buttonClass || 'ghost'"
-            @click="action.action.apply($parent, [item])">
+            @click="action.action.apply($parent, [])">
             {{action.title}}
           </v-button>
           <span><!-- 防止按钮之间粘住 --></span>
         </template>
-        <v-button type="ghost" @click="back()">返回</v-button>
+        <v-button type="ghost" @click="$router.back()">返回</v-button>
       </div>
     </header>
 
@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import api from '../../resource/api';
-
 export default {
   props: {
     id: Number,
@@ -41,8 +39,7 @@ export default {
     actions: Array,
     options: {
       type: Object,
-      default: {
-      },
+      default: () => ({}),
     },
   },
   data () {
