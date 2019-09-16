@@ -9,7 +9,7 @@
         <tr>
           <th v-if="options.can_select">
             <input type="checkbox"
-                   :checked="items.filter(x=>x._is_selectable).length === selectedItems.length"
+                   :checked="selectedItems.length&&items.filter(x=>x._is_selectable).length === selectedItems.length"
                    @click="checkAll()" />
           </th>
           <th v-for="(col, i) in cols" :style="col.thStyle || {}">
@@ -84,8 +84,8 @@
           </th>
           <th v-if="options.show_actions !== false">
             操作
-            <template v-for="action in listActions" v-if="options.show_list_actions !== false">
-              <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible()">
+            <template v-for="action in listActions" v-if="options.show_list_actions">
+              <template v-if="action.isVisible === void 0 || !action.isVisible || action.isVisible()">
                 <!-- htmlType: button (默认) -->
                 <v-button
                   v-if="(action.htmlType||'button')==='button'"
@@ -279,44 +279,42 @@ export default {
   },
   computed: {},
   methods: {
-    reload () {
+    async reload () {
       const vm = this;
       // 读取当前分页的所有对象
       // 之所以要这样实现而不用 vm.api().get() 方法，是为了避免 query 中含有 params 关键词
       // 影响诸如 {/action}{/id} 这样的 URL 路径
-      vm.$http.get(apiUtils.getModelUrlRaw(vm.model), {
+      const resp = await vm.$http.get(apiUtils.getModelUrlRaw(vm.model), {
         params: {
           page: vm.pager.page || 1,
           page_size: vm.pageSize || vm.pager.page_size,
           ...vm.query,
         },
-      }).then(resp => {
-        vm.pager.page_count = Math.ceil(resp.data.count / (vm.pageSize || vm.pager.page_size) - 1e-5);
-        vm.total = resp.data.count;
-        // 处理延迟计算
-        const items = resp.data.results;
-        // 写入 is_items_selectable
-        if (vm.options.is_item_selectable) {
-          items.forEach(item => {
-            item._is_selectable = vm.options.is_item_selectable(item);
-          });
+      });
+      vm.pager.page_count = Math.ceil(resp.data.count / (vm.pageSize || vm.pager.page_size) - 1e-5);
+      vm.total = resp.data.count;
+      // 处理延迟计算
+      const items = resp.data.results;
+      // 写入 is_items_selectable
+      items.forEach(async item => {
+        item._is_selectable = !vm.options.is_item_selectable ||
+          await vm.options.is_item_selectable(item);
+      });
+      if (vm.hooks && vm.hooks.item_before_render) {
+        const deferredPromises = [];
+        for (let i = 0; i < items.length; i += 1) {
+          deferredPromises.push(vm.hooks.item_before_render(items[i]).then(item => {
+            items[i] = item;
+          }));
         }
-        if (vm.hooks && vm.hooks.item_before_render) {
-          const deferredPromises = [];
-          for (let i = 0; i < items.length; i += 1) {
-            deferredPromises.push(vm.hooks.item_before_render(items[i]).then(item => {
-              items[i] = item;
-            }));
-          }
-          Promise.all(deferredPromises).then(() => {
-            vm.items = items;
-            vm.$emit('loaded');
-          });
-        } else {
+        Promise.all(deferredPromises).then(() => {
           vm.items = items;
           vm.$emit('loaded');
-        }
-      });
+        });
+      } else {
+        vm.items = items;
+        vm.$emit('loaded');
+      }
       vm.selectedItems = [];
     },
     afterDelete () {
