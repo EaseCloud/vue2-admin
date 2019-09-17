@@ -68,142 +68,142 @@
 </template>
 
 <script>
-  import BarChart from '../../lib/vue-chartjs/BarChart';
-  import LineChart from '../../lib/vue-chartjs/LineChart';
-  import PieChart from '../../lib/vue-chartjs/PieChart';
+import BarChart from '../../lib/vue-chartjs/BarChart';
+import LineChart from '../../lib/vue-chartjs/LineChart';
+import PieChart from '../../lib/vue-chartjs/PieChart';
 
-  export default {
-    components: {
-      BarChart,
-      LineChart,
-      PieChart,
+export default {
+  components: {
+    BarChart,
+    LineChart,
+    PieChart,
+  },
+  props: {
+    title: String,
+    subtitle: String,
+    date_title: String,
+    rows: Array,
+    chart_type: String,
+    filters: Object,
+    show_date: {
+      type: Boolean,
+      default: true,
     },
-    props: {
-      title: String,
-      subtitle: String,
-      date_title: String,
-      rows: Array,
-      chart_type: String,
-      filters: Object,
-      show_date: {
-        type: Boolean,
-        default: true,
-      },
-      show_refresh: {
-        type: Boolean,
-        default: false,
-      },
-      actions: Array,
-      listActions: Array,
-      pie_action: Object,
+    show_refresh: {
+      type: Boolean,
+      default: false,
     },
-    data () {
-      return {
-        duration: '',
-        labels: [],
-        amounts: [],
-        datasets: [],
-        datacollection: null,
-        pie_labels: [],
-        pie_datasets: [],
-        pie_data: null,
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true,
-              },
-              gridLines: {
-                display: true,
-              },
-            }],
-            xAxes: [{
-              gridLines: {
-                display: false,
-              },
-            }],
-          },
-          legend: {
-            display: true,
-          },
-          responsive: true,
-          maintainAspectRatio: false,
+    actions: Array,
+    listActions: Array,
+    pie_action: Object,
+  },
+  data () {
+    return {
+      duration: '',
+      labels: [],
+      amounts: [],
+      datasets: [],
+      datacollection: null,
+      pie_labels: [],
+      pie_datasets: [],
+      pie_data: null,
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+            },
+            gridLines: {
+              display: true,
+            },
+          }],
+          xAxes: [{
+            gridLines: {
+              display: false,
+            },
+          }],
         },
+        legend: {
+          display: true,
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    };
+  },
+  mounted () {
+    this.fillData();
+  },
+  methods: {
+    fillData () {
+      const vm = this;
+      this.datacollection = {
+        labels: vm.labels,
+        datasets: vm.datasets,
+      };
+      this.pie_data = {
+        labels: vm.pie_labels,
+        datasets: vm.pie_datasets,
       };
     },
-    mounted () {
-      this.fillData();
-    },
-    methods: {
-      fillData () {
-        const vm = this;
-        this.datacollection = {
-          labels: vm.labels,
-          datasets: vm.datasets,
-        };
-        this.pie_data = {
-          labels: vm.pie_labels,
-          datasets: vm.pie_datasets,
-        };
-      },
-      filter () {
-        const vm = this;
-        let promise = [];
-        vm.datasets = [];
-        vm.actions.forEach(item => {
-          promise.push(vm.api(item.model).get({
-            action: item.action,
-            time_begin: vm.duration[0],
-            time_end: vm.duration[1],
-            ...item.params,
-            ...vm.filters,
-          }).then(resp => {
-            vm.labels = resp.data.labels;
-            vm.datasets.push({
-              label: item.datasets.label,
+    filter () {
+      const vm = this;
+      let promise = [];
+      vm.datasets = [];
+      vm.actions.forEach(item => {
+        promise.push(vm.api(item.model).get({
+          action: item.action,
+          time_begin: vm.duration[0],
+          time_end: vm.duration[1],
+          ...item.params,
+          ...vm.filters,
+        }).then(resp => {
+          vm.labels = resp.data.labels;
+          vm.datasets.push({
+            label: item.datasets.label,
+            data: resp.data.amounts,
+            borderColor: item.datasets.borderColor,
+            pointBackgroundColor: item.datasets.pointBackgroundColor,
+            borderWidth: 1,
+            pointBorderColor: '#ffffff',
+          });
+        }));
+      });
+      if (vm.pie_action) {
+        promise.push(vm.api(vm.pie_action.model).get({
+          action: vm.pie_action.action,
+          ...vm.filters,
+        }).then(resp => {
+          vm.pie_labels = resp.data.labels;
+          vm.pie_datasets = [
+            {
+              backgroundColor: ['#434348', '#79b4ee'],
               data: resp.data.amounts,
-              borderColor: item.datasets.borderColor,
-              pointBackgroundColor: item.datasets.pointBackgroundColor,
-              borderWidth: 1,
-              pointBorderColor: '#ffffff',
-            });
-          }));
-        });
-        if (vm.pie_action) {
-          promise.push(vm.api(vm.pie_action.model).get({
-            action: vm.pie_action.action,
-            ...vm.filters,
-          }).then(resp => {
-            vm.pie_labels = resp.data.labels;
-            vm.pie_datasets = [
-              {
-                backgroundColor: ['#434348', '#79b4ee'],
-                data: resp.data.amounts,
-              },
-            ];
-          }));
-        }
-        Promise.all(promise).then(() => {
-          vm.fillData();
-        });
-      },
+            },
+          ];
+        }));
+      }
+      Promise.all(promise).then(() => {
+        vm.fillData();
+      });
     },
-  };
+  },
+};
 </script>
 
 <style scoped lang="less" rel="stylesheet/less">
-  .small {
-    max-width: 1200px;
-    margin: 50px auto;
-  }
+.small {
+  max-width: 1200px;
+  margin: 50px auto;
+}
 
-  .pie {
-    margin: 0 auto;
-    width: 30%;
-    text-align: center;
-    bottom: 10%;
-    height: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
+.pie {
+  margin: 0 auto;
+  width: 30%;
+  text-align: center;
+  bottom: 10%;
+  height: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+}
 </style>

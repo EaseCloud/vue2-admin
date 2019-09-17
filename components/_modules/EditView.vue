@@ -298,7 +298,7 @@ export default {
       // 创建的情况
       if (!itemToSave[vm.pk]) {
         let redirect = true;
-        if (vm.options.hooks.post_create) {
+        if (vm.options && vm.options.hooks && vm.options.hooks.post_create) {
           redirect = await vm.options.hooks.post_create.apply(vm, [resp.data]);
         }
         if (redirect !== false) {
