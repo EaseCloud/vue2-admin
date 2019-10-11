@@ -284,17 +284,28 @@ export default {
       // 读取当前分页的所有对象
       // 之所以要这样实现而不用 vm.api().get() 方法，是为了避免 query 中含有 params 关键词
       // 影响诸如 {/action}{/id} 这样的 URL 路径
-      const resp = await vm.$http.get(apiUtils.getModelUrlRaw(vm.model), {
-        params: {
+      let data;
+      if (vm.options.action_load_data) {
+        data = await vm.options.action_load_data.apply(vm, [{
           page: vm.pager.page || 1,
           page_size: vm.pageSize || vm.pager.page_size,
           ...vm.query,
-        },
-      });
-      vm.pager.page_count = Math.ceil(resp.data.count / (vm.pageSize || vm.pager.page_size) - 1e-5);
-      vm.total = resp.data.count;
+        }])
+      } else {
+        const resp = await vm.$http.get(apiUtils.getModelUrlRaw(vm.model), {
+          params: {
+            page: vm.pager.page || 1,
+            pageSize: vm.pageSize || vm.pager.page_size,
+            ...vm.query,
+          },
+        });
+        data = resp.data;
+      }
+      console.log(data);
+      vm.pager.page_count = Math.ceil(data.count / (vm.pageSize || vm.pager.page_size) - 1e-5);
+      vm.total = data.count;
       // 处理延迟计算
-      const items = resp.data.results;
+      const items = data.results;
       // 写入 is_items_selectable
       items.forEach(async item => {
         item._is_selectable = !vm.options.is_item_selectable ||

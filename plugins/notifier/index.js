@@ -48,6 +48,17 @@ export default {
             });
           });
         },
+        showDialog ({ title, render }) {
+          const vm = this.vmNotifier;
+          const form = {
+            title,
+            modalType: 'render',
+            render,
+            deferred: new Deferred(),
+          };
+          vm.modalForms.push(form);
+          return form.deferred.promise;
+        },
         modalForm (form) {
           const vm = this.vmNotifier;
           form.modalType = 'modalForm';

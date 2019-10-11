@@ -47,17 +47,12 @@
         </v-row>
       </template>
       <div class="small">
-        <bar-chart
-          v-if="chart_type==='bar'"
-          :chart-data="datacollection"
-          :options="options"></bar-chart>
-        <line-chart
-          v-if="chart_type==='line'"
-          :chart-data="datacollection"
-          :options="options"></line-chart>
+        <bar-chart v-if="chart_type==='bar'" ref="barChart"></bar-chart>
+        <line-chart v-else-if="chart_type==='line'" ref="lineChart"></line-chart>
       </div>
       <div class="pie">
-        <pie-chart :chart-data="pie_data" :options="{responsive: false, maintainAspectRatio: false}"></pie-chart>
+        <pie-chart :chart-data="pie_data"
+             :options="{responsive: false, maintainAspectRatio: false}"></pie-chart>
       </div>
 
       <slot name="after"></slot>
@@ -68,15 +63,13 @@
 </template>
 
 <script>
-import BarChart from '../../lib/vue-chartjs/BarChart';
-import LineChart from '../../lib/vue-chartjs/LineChart';
-import PieChart from '../../lib/vue-chartjs/PieChart';
+import { Line, Bar, Pie } from 'vue-chartjs';
 
 export default {
   components: {
-    BarChart,
-    LineChart,
-    PieChart,
+    LineChart: Line,
+    BarChart: Bar,
+    PieChart: Pie,
   },
   props: {
     title: String,
@@ -145,6 +138,9 @@ export default {
         labels: vm.pie_labels,
         datasets: vm.pie_datasets,
       };
+      vm.$refs.barChart && vm.$refs.barChart.renderChart(vm.datacollection, vm.options);
+      vm.$refs.lineChart && vm.$refs.lineChart.renderChart(vm.datacollection, vm.options);
+      // vm.renderChart(vm.chartData, vm.options);
     },
     filter () {
       const vm = this;

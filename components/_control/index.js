@@ -6,6 +6,7 @@ import MGalleryPicker from './GalleryPicker.vue'
 import MDistrictPicker from './DistrictPicker.vue'
 import MObjectPicker from './ObjectPicker.vue'
 import MEmbedForm from './EmbedForm.vue'
+import MRenderComponent from './RenderComponent.vue'
 
 export const Pagination = MPagination
 export const ImagePicker = MImagePicker
@@ -13,3 +14,4 @@ export const GalleryPicker = MGalleryPicker
 export const DistrictPicker = MDistrictPicker
 export const ObjectPicker = MObjectPicker
 export const EmbedForm = MEmbedForm
+export const RenderComponent = MRenderComponent
