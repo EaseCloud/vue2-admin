@@ -295,13 +295,12 @@ export default {
         const resp = await vm.$http.get(apiUtils.getModelUrlRaw(vm.model), {
           params: {
             page: vm.pager.page || 1,
-            pageSize: vm.pageSize || vm.pager.page_size,
+            page_size: vm.pageSize || vm.pager.page_size,
             ...vm.query,
           },
         });
         data = resp.data;
       }
-      console.log(data);
       vm.pager.page_count = Math.ceil(data.count / (vm.pageSize || vm.pager.page_size) - 1e-5);
       vm.total = data.count;
       // 处理延迟计算
