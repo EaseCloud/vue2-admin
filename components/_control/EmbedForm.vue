@@ -74,6 +74,9 @@
                          @input="field.value=$event||null; updateField(field)"
           ></v-date-picker>
           <!--:format="field.format || (field.show_time || field.pick_time ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')"-->
+          <div v-if="field.description"
+               class="ant-form-explain">{{field.description}}
+          </div>
         </v-col>
 
         <!-- type: label -->
