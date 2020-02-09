@@ -404,17 +404,18 @@ export default {
      * 执行返回或者（当已经返回到第一个页面的时候）跳转到指定的路由
      * @param route
      */
-    backOrRedirect (route) {
-      const vm = this
-      const originRoute = { ...vm.$route }
-      vm.$router.back()
-      vm.$nextTick(() => {
+    backOrRedirect (route = { name: 'main_index' }) {
+      const vm = this;
+      const originPath = vm.$route.fullPath;
+      vm.$router.back();
+      setTimeout(() => {
         // 如果路由并没有发生改变，则认为已经返回失败了
-        if (vm._.isEqual(originRoute, vm.$route)) {
+        console.log(originPath, vm.$route.fullPath);
+        if (originPath === vm.$route.fullPath) {
           // 这个时候，替换页面到指定的路由，默认值为根路径
-          vm.$router.replace(route || '/')
+          vm.$router.replace(route || '/');
         }
-      })
+      }, 50);
     },
   },
 };
