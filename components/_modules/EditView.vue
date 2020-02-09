@@ -9,7 +9,7 @@
       <div class="tooltips">
         <slot name="menu"></slot>
         <!-- 保存动作 -->
-        <template v-if="options.can_edit">
+        <template v-if="typeof(options.can_edit)==='function'?item&&options.can_edit(item):options.can_edit">
           <v-button @click="save()">保存并继续编辑</v-button>
           <v-button type="primary" @click="submit()">保存</v-button>
         </template>
@@ -236,14 +236,18 @@ export default {
         vm.initialized = true;
       });
     },
+    getListRoute () {
+      const vm = this;
+      return { name: `main_${vm.modelUnderscore}_list` };
+    },
     redirectList () {
       const vm = this;
       // 检查路由是否存在，如果不存在就 router.back
       try {
-        const route = { name: `main_${this.modelUnderscore}_list` };
         // 检查路由是否存在，如果路由不合法，会抛错
+        const route = vm.getListRoute();
         vm.$router.resolve(route);
-        this.$router.push(route);
+        vm.$router.push(route);
       } catch (e) {
         vm.$router.back();
       }
@@ -329,15 +333,16 @@ export default {
       ).then(() => {
         // 删除后置钩子
         const hookPostDelete = vm.options.hooks
-          && vm.options.hooks.post_delete || (() => vm.redirectList());
+          && vm.options.hooks.post_delete || (() => vm.backOrRedirect(vm.getListRoute()));
         hookPostDelete(vm);
       });
     },
     writeField (field, item) {
       const vm = this;
+      if (!field.key) return;
       // skip readonly fields
       if (field.type === 'label' || field.type === 'link') {
-        return;
+        vm.setProperty(item, field.key, field.value);
       } else if (field.type === 'geo') {
         vm.setProperty(item, field.key && field.key.lat || 'geo_lat', field.value.lat);
         vm.setProperty(item, field.key && field.key.lng || 'geo_lng', field.value.lng);

@@ -27,7 +27,7 @@
                    @input="updateField(field)"
                    :type="field.htmlType || 'text'"
                    :min="field.min"
-                   :disabled="field.disabled"
+                   :disabled="typeof(field.disabled)==='function'?!!field.disabled(field):!!field.disabled"
                    :max="field.max"
                    :rows="field.rows"
                    size="large"
@@ -50,7 +50,7 @@
                           :min="field.min"
                           :max="field.max"
                           :step="field.step"
-                          :disabled="field.disabled"
+                          :disabled="typeof(field.disabled)==='function'?!!field.disabled(field):!!field.disabled"
                           size="large"
                           :decimal-places="field.decimalPlaces"
                           :placeholder="field.placeholder"
@@ -68,8 +68,9 @@
           <!-- TODO: 时间选择有问题，不能读取以及 emit 出去 -->
           <!-- TODO: format 未实现，因为 time 选择时输入 format 会报错 -->
           <v-date-picker :value="field.value && dateformat(field.value, 'yyyy-mm-dd HH:MM:ss')"
+                         :disabled="typeof(field.disabled)==='function'?!!field.disabled(field):!!field.disabled"
                          :time="field.value"
-                         clearable
+                         :clearable="typeof(field.disabled)==='function'?!field.disabled(field):!field.disabled"
                          :show-time="field.show_time || field.pick_time"
                          @input="field.value=$event||null; updateField(field)"
           ></v-date-picker>
@@ -122,7 +123,7 @@
         <v-col :span="field.span || 8" class="ant-form-item-control"
                v-else-if="field.type == 'switch'">
           <v-switch v-model="field.value"
-                    :disabled="field.disabled"
+                    :disabled="typeof(field.disabled)==='function'?!!field.disabled(field):!!field.disabled"
                     @input="updateField(field)">
             <template slot="checked">{{field.checked}}</template>
             <template slot="unchecked">{{field.unchecked}}</template>
@@ -137,6 +138,7 @@
                v-else-if="field.type == 'select'">
           <v-select placement="top"
                     :data="wrapChoices(field.choices)"
+                    :disabled="typeof(field.disabled)==='function'?!!field.disabled(field):!!field.disabled"
                     v-if="field.choices"
                     style="width: 120px;"
                     dropdown-width="240px"
