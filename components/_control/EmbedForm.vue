@@ -17,7 +17,10 @@
 
         <v-col :span="field.titleSpan || 6" class="ant-form-item-label" style="padding: 0"
                v-if="(field.display || 'normal') == 'normal'">
-          <label>{{field.title}}</label>
+          <label>
+            <span v-if="field.required" style="color: red">*</span>
+            {{field.title}}
+          </label>
         </v-col>
 
         <!-- type: input -->
