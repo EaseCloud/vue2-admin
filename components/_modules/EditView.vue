@@ -25,9 +25,7 @@
         </template>
         <!-- 删除动作 -->
         <template v-if="options.can_delete">
-          <v-button type="dashed" v-if="item[pk]"
-                    @click="erase()">
-            删除
+          <v-button type="dashed" v-if="item[pk]" @click="erase()"> 删除
           </v-button>
         </template>
         <v-button type="ghost" @click="back()">返回</v-button>
@@ -101,7 +99,7 @@ export default {
     const defaultItem = {};
     vm.fields.forEach(field => {
       // write init field value
-      if (typeof(field.value) === 'undefined') {
+      if (field.value === void 0) {
         vm.$set(field, 'value', field.hasOwnProperty('default') ? field.default : null)
       }
 //        console.warn(field.key)

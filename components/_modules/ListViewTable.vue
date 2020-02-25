@@ -175,7 +175,7 @@
           <td v-if="options.show_actions !== false">
             <slot name="row-action">
               <template v-for="action in actions">
-                <template v-if="action.isVisible === undefined || !action.isVisible || action.isVisible(item)">
+                <template v-if="action.isVisible === void 0 || !action.isVisible || action.isVisible(item)">
                   <!-- htmlType: button (默认) -->
                   <v-button
                     v-if="(action.htmlType||'button')==='button'"
@@ -191,14 +191,20 @@
                   <span><!--防止按钮之间粘住--></span>
                 </template>
               </template>
-              <v-button v-if="options.can_edit"
-                        size="small" type="ghost"
-                        @click="redirectEdit(item)">
+              <v-button
+                v-if="options.can_edit===void 0||
+                      typeof(options.can_edit)==='function'&&options.can_edit(item)||
+                      typeof(options.can_edit)!=='function'&&options.can_edit"
+                size="small" type="ghost"
+                @click="redirectEdit(item)">
                 编辑
               </v-button>
-              <v-button v-if="options.can_delete"
-                        size="small" type="danger"
-                        @click="deleteModel(
+              <v-button
+                v-if="options.can_delete===void 0||
+                      typeof(options.can_delete)==='function'&&options.can_delete(item)||
+                      typeof(options.can_delete)!=='function'&&options.can_delete"
+                size="small" type="danger"
+                @click="deleteModel(
                             model, item[pk], '确认删除'+(item.name?'【'+item.name+'】':'这个对象')+'?', '操作成功', afterDelete)">
                 删除
               </v-button>

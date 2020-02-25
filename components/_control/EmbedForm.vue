@@ -5,9 +5,9 @@
     <template v-for="field in fields" v-if="!field.skip || !field.skip()">
 
       <h3 style="margin-top: 20px;"
-          v-if="field.display == 'full' && isVisible(field)">{{field.title}}</h3>
+          v-if="field.display==='full' && isVisible(field)">{{field.title}}</h3>
 
-      <template v-if="field.type=='title'"></template>
+      <template v-if="field.type==='title'"></template>
 
       <v-row :gutter="6"
              type="flex"
@@ -16,7 +16,7 @@
              style="margin: 4px 0">
 
         <v-col :span="field.titleSpan || 6" class="ant-form-item-label" style="padding: 0"
-               v-if="(field.display || 'normal') == 'normal'">
+               v-if="(field.display || 'normal')==='normal'">
           <label>
             <span v-if="field.required" style="color: red">*</span>
             {{field.title}}
@@ -25,7 +25,7 @@
 
         <!-- type: input -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
-               v-if="field.type == 'input' || field.type === undefined">
+               v-if="field.type==='input' || field.type === undefined">
           <v-input v-model="field.value"
                    @input="updateField(field)"
                    :type="field.htmlType || 'text'"
@@ -47,7 +47,7 @@
 
         <!-- type: number -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
-               v-else-if="field.type == 'number'">
+               v-else-if="field.type==='number'">
           <v-input-number v-model="field.value"
                           @input="updateField(field)"
                           :min="field.min"
@@ -66,7 +66,7 @@
 
         <!-- type: datepicker -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
-               v-else-if="field.type == 'datepicker'">
+               v-else-if="field.type==='datepicker'">
           <!-- TODO: from/to 未实现 -->
           <!-- TODO: 时间选择有问题，不能读取以及 emit 出去 -->
           <!-- TODO: format 未实现，因为 time 选择时输入 format 会报错 -->
@@ -75,7 +75,7 @@
                          :time="field.value"
                          :clearable="typeof(field.disabled)==='function'?!field.disabled(field):!field.disabled"
                          :show-time="field.show_time || field.pick_time"
-                         @input="field.value=$event||null; updateField(field)"
+                         @input="field.value=$event||null;updateField(field)"
           ></v-date-picker>
           <!--:format="field.format || (field.show_time || field.pick_time ? 'yyyy-MM-dd HH:mm' : 'yyyy-MM-dd')"-->
           <div v-if="field.description"
@@ -85,7 +85,7 @@
 
         <!-- type: label -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
-               v-else-if="field.type == 'label'">
+               v-else-if="field.type==='label'">
           <p class="ant-form-text">
             {{field.filter?field.filter(field.value):field.value}}
             <!--{{(field.filter?field.filter(field.value):field.value)||field.default||''}}-->
@@ -94,19 +94,19 @@
 
         <!--type: tab-->
         <v-col :span="field.span || 8" class="ant-form-item-control"
-               v-else-if="field.type == 'tab'">
+               v-else-if="field.type==='tab'">
           <v-tag :color="field.color || 'green-inverse'">{{field.value}}</v-tag>
         </v-col>
 
         <!-- type: html -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'html'"
+               v-else-if="field.type==='html'"
                v-html="field.value">
         </v-col>
 
         <!--&lt;!&ndash; type: router-link &ndash;&gt;-->
         <!--<v-col :span="8" class="ant-form-item-control"-->
-        <!--v-else-if="field.type == 'router-link'">-->
+        <!--v-else-if="field.type==='router-link'">-->
         <!--<router-link :to="field.to(item)">-->
         <!--123-->
         <!--{{field.text instanceof Function ? field.text(item) : field.text}}-->
@@ -115,7 +115,7 @@
 
         <!-- type: link -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
-               v-else-if="field.type == 'link'">
+               v-else-if="field.type==='link'">
           <router-link :to="field.value.route"
                        v-if="field.value && field.value.route">
             {{field.value.text}}
@@ -124,7 +124,7 @@
 
         <!-- type: switch -->
         <v-col :span="field.span || 8" class="ant-form-item-control"
-               v-else-if="field.type == 'switch'">
+               v-else-if="field.type==='switch'">
           <v-switch v-model="field.value"
                     :disabled="typeof(field.disabled)==='function'?!!field.disabled(field):!!field.disabled"
                     @input="updateField(field)">
@@ -138,7 +138,7 @@
 
         <!-- type: select -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'select'">
+               v-else-if="field.type==='select'">
           <v-select placement="top"
                     :data="wrapChoices(field.choices)"
                     :disabled="typeof(field.disabled)==='function'?!!field.disabled(field):!!field.disabled"
@@ -154,7 +154,7 @@
 
         <!-- type: checkbox -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'checkbox'">
+               v-else-if="field.type==='checkbox'">
           <v-checkbox-group v-if="field.choices"
                             v-model="field.value"
                             :disabled="isReadOnly(field)"
@@ -167,7 +167,7 @@
 
         <!-- type: radio -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'radio'">
+               v-else-if="field.type==='radio'">
           <v-radio-group v-model="field.value"
                          @input="updateField(field)"
                          :disabled="isReadOnly(field)"
@@ -179,7 +179,7 @@
 
         <!-- type: radio-button -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'radio-button'">
+               v-else-if="field.type==='radio-button'">
           <v-radio-group type="button"
                          v-model="field.value"
                          @input="updateField(field)"
@@ -192,7 +192,7 @@
 
         <!-- type: image -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'image'">
+               v-else-if="field.type==='image'">
           <image-picker v-model="field.value"
                         :readonly="isReadOnly(field)"
                         @input="updateField(field)"></image-picker>
@@ -203,7 +203,7 @@
 
         <!-- type: qrcode -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'qrcode'">
+               v-else-if="field.type==='qrcode'">
           <img :src="field.src" alt="二维码" />
           <div v-if="field.description"
                class="ant-form-explain">{{field.description}}
@@ -212,7 +212,7 @@
 
         <!-- type: gallery -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'gallery'">
+               v-else-if="field.type==='gallery'">
           <gallery-picker v-model="field.value"
                           :readonly="isReadOnly(field)"
                           @input="updateField(field)"></gallery-picker>
@@ -222,7 +222,7 @@
         </v-col>
 
         <!-- type: geo -->
-        <v-col :span="field.span || 18" v-else-if="field.type == 'geo'">
+        <v-col :span="field.span || 18" v-else-if="field.type==='geo'">
           <geo-picker v-model="field.value"
                       :max="field.max"
                       :readonly="isReadOnly(field)"
@@ -230,14 +230,14 @@
         </v-col>
 
         <!-- type: district -->
-        <v-col :span="field.span || 12" v-else-if="field.type == 'district'">
+        <v-col :span="field.span || 12" v-else-if="field.type==='district'">
           <district-picker v-model="field.value"
                            :readonly="isReadOnly(field)"
                            @input="updateField(field)"></district-picker>
         </v-col>
 
         <!-- type: list-view -->
-        <v-col :span="field.span || 18" v-else-if="field.type == 'list-view'">
+        <v-col :span="field.span || 18" v-else-if="field.type==='list-view'">
           <list-view-table :model="field.options.model"
                            :pk="field.options.pk"
                            :cols="field.options.cols"
@@ -254,7 +254,7 @@
 
         <!-- type: object -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'object'">
+               v-else-if="field.type==='object'">
           <template v-if="field.object && field.object[field.options.pk || 'id']">
             <span v-if="field.no_link" style="margin-right: 10px;"
                 >{{field.object[field.options.display_field || 'name']}}</span>
@@ -273,13 +273,13 @@
           </v-button>
           <v-button v-if="field.value && !isReadOnly(field) && !field.disabled"
                     size="small"
-                    @click="field.value=null; field.object=null; updateField(field)">清除
+                    @click="field.value=null;field.object=null;updateField(field)">清除
           </v-button>
         </v-col>
 
         <!-- type: editor -->
         <v-col :span="field.span || 18" class="ant-form-item-control"
-               v-else-if="field.type == 'editor'">
+               v-else-if="field.type==='editor'">
           <vue-html5-editor v-model="field.value"
                             @input="updateField(field)"></vue-html5-editor>
           <div v-if="field.description"
